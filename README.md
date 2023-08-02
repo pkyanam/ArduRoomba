@@ -1,13 +1,17 @@
 # ArduRoomba
 This library built for the Arduino IDE allows an Arduino Uno to interface with the 500 family of iRobot Roombas via 
-Designed around the iRobot ® Roomba 500 Open Interface (OI) Specification.
+Designed around the iRobot ® Roomba 500 Open Interface (OI) Specification (included in PDF form as part of this repo).
 Instructions for how to use and compatbility info can be found below.
+
+# TODO: LIBRARY IS TEMPORARILY OFFLINE UNTIL BUG FIXES ARE MADE.
 
 ## How to Use
 Please refer to the information below before proceeding. Please know that improper wiring may result in damage to your Arduino and/or Roomba unit.
 The OI operates at 5V logic levels therefore please ensure your specific board/MCU (if not using an Arduino Uno) is compatible with 5V logic levels.
-If not, you WILL have to shift voltage levels or risk damage to your board/MCU.
-![image](https://github.com/pkyanam/ArduRoomba/assets/37784174/051c9dfa-7be5-499a-87cb-5ec8794372a9)
+If not, you WILL have to shift voltage levels or risk damage to your board/MCU. Please refer to Page 3 of the PDF for more detailed info on the iRobot serial connector.
+
+# TODO: A WIRING DIAGRAM WILL BE INCLUDED HERE FOR EASY REFERENCE.
+# TODO: INSTRUCTIONS ON HOW TO UTILIZE LIBRARY WILL BE INCLUDED HERE UPON BUG FIXES WITH CURRENT LIBRARY VERSION.
 
 ## Compatibilty
 IDE(s):
