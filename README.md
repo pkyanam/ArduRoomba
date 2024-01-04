@@ -1,25 +1,25 @@
 # ArduRoomba
 
-ArduRoomba is a library for Arduino that facilitates interfacing with iRobot Create 2 devices and compatible iRobot Roombas (500 series through 800 series non-WiFi models). This library is tested with Uno R3 and Uno R4 Minima/WiFi, and it is based on the iRobot Roomba 500 Open Interface (OI) Specification.
+ArduRoomba is an Arduino library that enables interfacing with iRobot Create 2 and compatible iRobot Roomba models (500 series through 800 series non-WiFi models). Developed based on the iRobot Create 2 Open Interface (OI) Specification, this library is specifically designed for Arduino Uno R3 and Uno R4 Minima/WiFi.
 
 ## Features
 - Control iRobot Roomba/Create 2 devices using Arduino.
-- Utilizes the iRobot Roomba 500 series Open Interface Specification.
+- Based on the iRobot Create 2 Open Interface Specification.
 - Compatible with Arduino Uno R3 and Uno R4 Minima/WiFi.
 
 ## Installation
-To install the ArduRoomba library, download this repository and include it in your Arduino IDE. For more detailed instructions, refer to the [Arduino Library Installation Guide](https://www.arduino.cc/en/guide/libraries).
+To install the ArduRoomba library, download this repository and include it in your Arduino IDE. For detailed installation instructions, refer to the [Arduino Library Installation Guide](https://www.arduino.cc/en/guide/libraries).
 
 ## How to Use
-Before proceeding, ensure your wiring is correct and compatible with 5V logic levels. Improper wiring may damage your Arduino or iRobot unit. Refer to Page 3 of the included PDF for detailed information on the iRobot serial connector.
+Before using the library, ensure your wiring is compatible with 5V logic levels, as the OI operates at these levels. Improper wiring may result in damage to your Arduino or iRobot unit. Detailed information on the iRobot serial connector can be found in the included PDF (Page 3).
 
 ### Wiring Diagram
-This wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Minima, and Arduino Uno R4 WiFi:
+The following wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Minima, and Arduino Uno R4 WiFi:
 
 ![WiringDiagram](https://github.com/pkyanam/ArduRoomba/assets/37784174/cb9dd879-04ae-4499-ab68-aed5dfe68eef)
 
 ### Basic Usage
-To use the library, include `ArduRoomba.h` in your sketch. Refer to the included example sketches (`BasicUsage.ino` and `RemoteControl.ino`) for usage examples.
+Include `ArduRoomba.h` in your sketch to use the library. Example sketches (`BasicUsage.ino` and `RemoteControl.ino`) are provided for reference.
 
 ## Compatibility
 ### IDEs:
@@ -28,11 +28,11 @@ To use the library, include `ArduRoomba.h` in your sketch. Refer to the included
 ### Boards/MCUs:
 - Arduino Uno R3
 - Arduino Uno R4
-- Other boards/MCUs may be compatible but are not tested.
+- Other boards/MCUs may be compatible but have not been tested.
 
 ### iRobot Roomba Models:
 - Tested: iRobot Roomba 551 (Costco Wholesale model)
-- Untested but potentially compatible: iRobot Create 2, iRobot Roomba 500, 600, 700, and 800 series (excluding WiFi models).
+- Potentially Compatible: iRobot Create 2, iRobot Roomba 500, 600, 700, and 800 series (excluding WiFi models).
 
 ## Contributing
 If you test this library with other boards or iRobot models, please share your results by creating an issue in this repository.
@@ -41,7 +41,6 @@ If you test this library with other boards or iRobot models, please share your r
 - Preetham Kyanam <preetham@preetham.org>
 
 ## License
-This project is released under the [MIT License](https://opensource.org/licenses/MIT). For more details, see the LICENSE file in this repository.
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0). For more details, see the LICENSE file in this repository.
 
-For more information, visit the [project page](https://github.com/pkyanam/ArduRoomba).
-
+For additional information, visit the [project page](https://github.com/pkyanam/ArduRoomba).
