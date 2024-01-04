@@ -1,52 +1,47 @@
 # ArduRoomba
-This library built for the Arduino IDE allows an Arduino Uno to interface with the iRobot® Create 2 and compatible iRobot® Roombas (500 series through 800 series non-WiFi models)
 
-Designed around the iRobot® Roomba 500 Open Interface (OI) Specification (included in PDF form as part of this repo). This spec corresponds with the iRobot Create 2 Open Interface.
+ArduRoomba is a library for Arduino that facilitates interfacing with iRobot Create 2 devices and compatible iRobot Roombas (500 series through 800 series non-WiFi models). This library is tested with Uno R3 and Uno R4 Minima/WiFi, and it is based on the iRobot Roomba 500 Open Interface (OI) Specification.
 
-Instructions for how to use and compatbility info can be found below.
+## Features
+- Control iRobot Roomba/Create 2 devices using Arduino.
+- Utilizes the iRobot Roomba 500 series Open Interface Specification.
+- Compatible with Arduino Uno R3 and Uno R4 Minima/WiFi.
+
+## Installation
+To install the ArduRoomba library, download this repository and include it in your Arduino IDE. For more detailed instructions, refer to the [Arduino Library Installation Guide](https://www.arduino.cc/en/guide/libraries).
 
 ## How to Use
-Please refer to the information below before proceeding. Please know that improper wiring may result in damage to your Arduino and/or iRobot unit.
+Before proceeding, ensure your wiring is correct and compatible with 5V logic levels. Improper wiring may damage your Arduino or iRobot unit. Refer to Page 3 of the included PDF for detailed information on the iRobot serial connector.
 
-The OI operates at 5V logic levels therefore please ensure your specific board/MCU (if not using an Arduino Uno) is compatible with 5V logic levels.
-
-If not, you WILL have to shift voltage levels or risk damage to your board/MCU. Please refer to Page 3 of the PDF for more detailed info on the iRobot serial connector.
-
-
-
-##
-This wiring diagram will work for Arduino Uno R3, Arduino Uno R4 Minima, and Arduino Uno R4 WiFi
+### Wiring Diagram
+This wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Minima, and Arduino Uno R4 WiFi:
 
 ![WiringDiagram](https://github.com/pkyanam/ArduRoomba/assets/37784174/cb9dd879-04ae-4499-ab68-aed5dfe68eef)
 
-## Compatibilty
-IDE(s):
+### Basic Usage
+To use the library, include `ArduRoomba.h` in your sketch. Refer to the included example sketches (`BasicUsage.ino` and `RemoteControl.ino`) for usage examples.
 
-	Arduino IDE (tested with version(s) 2.X.X)
+## Compatibility
+### IDEs:
+- Arduino IDE (tested with version 2.X.X)
 
-Board(s) / MCU(s):
+### Boards/MCUs:
+- Arduino Uno R3
+- Arduino Uno R4
+- Other boards/MCUs may be compatible but are not tested.
 
-	Arduino Uno R3
-  
-	Arduino Uno R4
+### iRobot Roomba Models:
+- Tested: iRobot Roomba 551 (Costco Wholesale model)
+- Untested but potentially compatible: iRobot Create 2, iRobot Roomba 500, 600, 700, and 800 series (excluding WiFi models).
 
-Other MCUs/boards MAY be compatible, but have not been tested. If you would like to test another board or MCU, please share your results by creating a new Issue for this repository.
+## Contributing
+If you test this library with other boards or iRobot models, please share your results by creating an issue in this repository.
 
-iRobot Roomba model(s):
+## Authors and Acknowledgments
+- Preetham Kyanam <preetham@preetham.org>
 
-Tested:
+## License
+This project is released under the [MIT License](https://opensource.org/licenses/MIT). For more details, see the LICENSE file in this repository.
 
-	iRobot Roomba 551 (A model known to be sold at Costco Wholesale)
+For more information, visit the [project page](https://github.com/pkyanam/ArduRoomba).
 
-Untested (Non-WiFi from the following families should be compatible, but are not guaranteed to work. If you would like to test another robot from this list, please share your results by creating a new Issue for this repository):
-
-	iRobot® Create 2
-  
-	iRobot® Roomba 500 series (excluding 551)
-  
-	iRobot® Roomba 600 series
-  
-	iRobot® Roomba 700 series
-  
-	iRobot® Roomba 800 series
-  
