@@ -38,7 +38,7 @@ Tested:
 
 	iRobot Roomba 551 (A model known to be sold at Costco Wholesale)
 
-Untested (Products from the following families should be compatible (AS LONG AS THEY ARE NON-WIFI MODELS), but are not guaranteed to work. If you would like to test another robot from this list, please share your results by creating a new Issue for this repository):
+Untested (Non-WiFi from the following families should be compatible, but are not guaranteed to work. If you would like to test another robot from this list, please share your results by creating a new Issue for this repository):
 
 	iRobot® Create 2
   
