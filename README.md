@@ -21,7 +21,7 @@ The following wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Mini
 ![WiringDiagram](https://github.com/pkyanam/ArduRoomba/assets/37784174/cb9dd879-04ae-4499-ab68-aed5dfe68eef)
 
 ### Basic Usage
-Include `ArduRoomba.h` in your sketch to use the library. Example sketches (`BasicUsage.ino` and `RemoteControl.ino`) are provided for reference.
+Include `ArduRoomba.h` in your sketch to use the library. Example sketches (`BasicUsage.ino`, `SensorDataExample.ino`, `RemoteControl.ino`) are provided for reference.
 
 ## Compatibility
 ### IDEs:
@@ -37,9 +37,9 @@ Include `ArduRoomba.h` in your sketch to use the library. Example sketches (`Bas
 - Compatible (Untested): iRobot Create 2, iRobot Roomba 500, 600, 700, and 800 series (excluding WiFi models).
 
 ## Future Roadmap and Features
+- [x] Expose more features from OI (add support to control more functions of iRobot unit and retrieve additional sensor information)
 - [ ] ESP32/ESP8266 support (add support for 3.3v MCU/boards with disclaimer regarding voltage level shifting)
 - [ ] Local Alexa integration (add support for Alexa to discover WiFi enabled MCU/boards over local network for smart assistant control)
-- [ ] Expose more features from OI (add support to control more functions of iRobot unit and retrieve additional sensor information)
 - [ ] More features may be announced and/or added in future
 
 ## Contributing
