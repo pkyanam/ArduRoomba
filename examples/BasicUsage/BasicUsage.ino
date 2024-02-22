@@ -2,7 +2,8 @@
 
 ArduRoomba roomba(2, 3, 4); // rxPin, txPin, brcPin
 
-void setup() {
+void setup()
+{
   Serial.begin(19200);
   roomba.roombaSetup();
 
@@ -18,9 +19,7 @@ void setup() {
   roomba.halt();
 }
 
-void loop() {
-  if(roomba.shouldSeekDock()){
-    roomba.seekDock();
-  }
-  roomba.getEncoderCounts(); // built-in 100ms delay
+void loop()
+{
+  //
 }
