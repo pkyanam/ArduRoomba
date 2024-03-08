@@ -22,18 +22,18 @@ The following wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Mini
 
 ![arduino-wiring](https://github.com/pkyanam/ArduRoomba/assets/37784174/cb9dd879-04ae-4499-ab68-aed5dfe68eef)
 
-#### ESP-01 Borad
+#### ESP-01 Board
 
 > [!CAUTION]
 > You need to bring down the roomba battery (up to 15V-20v) to 3.3V
+> 
 > You ca use  **MP1584EN** Step-Down Adjustable Module Buck Converter for this purpose.
-
 
 ![esp01-wiring](https://raw.githubusercontent.com/oRiamn/ArduRoomba/acb016d59402e8e8f6d7e850406103f35f47a27d/docs/esp01-wiring.png)
 
-
 > [!TIP]
 > Using a 2N3906 transistor you can make stronger the weak Roomba TX signal.
+> 
 > Without transistor ESP is not able to get sensors data.
 
 ### Basic Usage
