@@ -29,7 +29,7 @@ The following wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Mini
 > You ca use  **MP1584EN** Step-Down Adjustable Module Buck Converter for this purpose.
 
 
-![esp01-wiring](https://raw.githubusercontent.com/oRiamn/ArduRoomba/main/docs/esp01-wiring.png)
+![esp01-wiring](https://raw.githubusercontent.com/oRiamn/ArduRoomba/acb016d59402e8e8f6d7e850406103f35f47a27d/docs/esp01-wiring.png)
 
 
 > [!TIP]
