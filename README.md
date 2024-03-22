@@ -27,7 +27,7 @@ The following wiring diagram is suitable for Arduino Uno R3, Arduino Uno R4 Mini
 > [!CAUTION]
 > You need to bring down the roomba battery (up to 15V-20v) to 3.3V
 > 
-> You ca use  **MP1584EN** Step-Down Adjustable Module Buck Converter for this purpose.
+> You can use  **MP1584EN** Step-Down Adjustable Module Buck Converter for this purpose.
 
 ![esp01-wiring](https://raw.githubusercontent.com/oRiamn/ArduRoomba/acb016d59402e8e8f6d7e850406103f35f47a27d/docs/esp01-wiring.png)
 
@@ -44,10 +44,10 @@ Include `ArduRoomba.h` in your sketch to use the library. Example sketches (`Bas
 - Arduino IDE (tested with version 2.X.X and 1.18.X)
 
 ### Boards/MCUs:
-- Arduino Uno R3
-- Arduino Uno R4 Minima/WiFi
-- Other boards/MCUs may be compatible but have not been tested.
-- ESP8266 01
+- Arduino Uno R3 (AVR)
+- Arduino Uno R4 Minima/WiFi (RENESAS_UNO)
+- ESP-01 (ESP8266)
+- Other boards/MCUs may be compatible, but have not been tested.
 
 ### iRobot Roomba Models:
 - Tested: iRobot Roomba 551 (Costco Wholesale model) and iRobot Roomba 605
