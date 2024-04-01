@@ -4,6 +4,33 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+#define ARDUROOMBA_REFRESH_DELAY 40
+#define ARDUROOMBA_STREAM_TIMEOUT 16 // stream time slot = 15ms
+
+#define ARDUROOMBA_STREAM_WAIT_HEADER 0
+#define ARDUROOMBA_STREAM_WAIT_SIZE 1
+#define ARDUROOMBA_STREAM_WAIT_CONTENT 2
+#define ARDUROOMBA_STREAM_WAIT_CHECKSUM 3
+#define ARDUROOMBA_STREAM_END 4;
+
+#define ARDUROOMBA_SENSOR_MODE 35
+#define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
+#define ARDUROOMBA_SENSOR_VOLTAGE 22
+#define ARDUROOMBA_SENSOR_TEMPERATURE 24
+#define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
+#define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
+#define ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS 7
+#define ARDUROOMBA_SENSOR_WALL 8
+#define ARDUROOMBA_SENSOR_CLIFFLEFT 9
+#define ARDUROOMBA_SENSOR_CLIFFFRONTLEFT 10
+#define ARDUROOMBA_SENSOR_CLIFFRIGHT 12
+#define ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT 11
+#define ARDUROOMBA_SENSOR_WHEELOVERCURRENTS 14
+#define ARDUROOMBA_SENSOR_DIRTDETECT 15
+#define ARDUROOMBA_SENSOR_VIRTUALWALL 13
+#define ARDUROOMBA_SENSOR_IROPCODE 17
+#define ARDUROOMBA_SENSOR_CHARGERAVAILABLE 34
+
 class ArduRoomba
 {
 public:
@@ -22,6 +49,40 @@ public:
     byte songNumber; // Song number (0 - 4)
     byte songLength; // Number of notes in the song (1 - 16)
     Note notes[16];  // Array of notes, up to 16
+  };
+
+  struct RoombaInfos {
+    long nextRefresh;
+    long lastSuccedRefresh;
+    int  attempt;
+
+    int mode;
+    int chargingState;
+    int voltage;
+    unsigned int temperature;
+    int batteryCapacity;
+    int batteryCharge;
+    int dirtdetect;
+    int irOpcode;
+    int chargerAvailable;
+
+    bool wall;
+    bool virtualWall;
+    bool cliffLeft;
+    bool cliffFrontLeft;
+    bool cliffRight;
+    bool cliffFrontRight;
+
+    bool wheelRightOvercurrent;
+    bool wheelLeftOvercurrent;
+    bool mainBrushOvercurrent;
+    bool sideBrushOvercurrent;
+    bool vacuumOvercurrent;       // no wacuum for serie 600
+
+    bool bumpRight;               // Bump Right ?
+    bool bumpLeft;                // Bump Left?
+    bool wheelDropRight;          // Wheel Drop Right ?
+    bool wheelDropLeft;           // Wheel Drop Left ?
   };
 
   struct ScheduleStore
@@ -49,7 +110,7 @@ public:
   void safe();                                       // Put the OI into Safe mode
   void full();                                       // Put the OI into Full mode
   void clean();                                      // Start the cleaning mode
-  void maxClean();                                        // Start the maximum time cleaning mode
+  void maxClean();                                   // Start the maximum time cleaning mode
   void spot();                                       // Start the spot cleaning mode
   void seekDock();                                   // Send the robot to the dock
   void schedule(ScheduleStore scheduleData);         // Set the schedule
@@ -72,6 +133,10 @@ public:
   void sensors(char packetID);                      // Request a sensor packet
   void queryList(byte numPackets, byte *packetIDs); // Request a list of sensor packets
 
+  void queryStream(char sensorlist[]);
+  void resetStream();
+  bool refreshData(RoombaInfos *infos);
+
   // Custom commands
   void roombaSetup(); // Setup the Roomba
   void goForward();   // Move the Roomba forward
@@ -84,6 +149,20 @@ private:
   const byte _zero = 0x00;
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
+  
+  uint8_t _streamBuffer[100] = {};
+  // warning don't request to many sensor
+  // stream data time slot = 15ms and
+  // max number of requested sensor depend on baudrate and number of bytes
+  int _nbSensorsStream = 0;
+  int _streamBufferSize = 0;
+  int _sensorsStream[52]; // max 52 sensors in OpenInterface spec
+
+  int _sensorsListLength(char sensorlist[]);
+  bool _readStream();
+  bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos);
+  uint8_t _parseOneByteStreamBuffer(uint8_t *packets, int &start);
+  int _parseTwoByteStreamBuffer(uint8_t *packets, int &start);
 };
 
 #endif

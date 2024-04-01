@@ -6,6 +6,197 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
   // Constructor implementation
 }
 
+uint8_t ArduRoomba::_parseOneByteStreamBuffer(uint8_t *packets, int &start) 
+{
+  uint8_t v = packets[start];
+  start++;
+  return v;
+}
+
+int ArduRoomba::_parseTwoByteStreamBuffer(uint8_t *packets, int &start) 
+{
+  int v = (int)(packets[start] * 256 + packets[start + 1]);
+  start += 2;
+  return v;
+}
+
+bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos) 
+{
+  int i = 0;
+  char packetID;
+  uint8_t onebytepacket;
+  while (i < len) {
+    packetID = (char)_parseOneByteStreamBuffer(packets, i);
+    switch (packetID) {
+    case ARDUROOMBA_SENSOR_MODE:
+      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_IROPCODE:
+      infos->irOpcode = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CHARGERAVAILABLE:
+      infos->chargerAvailable = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_DIRTDETECT:
+      infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CHARGINGSTATE:
+      infos->chargingState = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_VOLTAGE:
+      infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_TEMPERATURE:
+      infos->temperature = (unsigned int)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_BATTERYCHARGE:
+      infos->batteryCharge = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_BATTERYCAPACITY:
+      infos->batteryCapacity = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_WALL:
+      infos->wall = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_VIRTUALWALL:
+      infos->virtualWall = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFLEFT:
+      infos->cliffLeft = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFFRONTLEFT:
+      infos->cliffFrontLeft = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFRIGHT:
+      infos->cliffRight = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT:
+      infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
+      onebytepacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->bumpRight = (onebytepacket >> 0) & 1;
+      infos->bumpLeft = (onebytepacket >> 1) & 1;
+      infos->wheelDropRight = (onebytepacket >> 2) & 1;
+      infos->wheelDropLeft = (onebytepacket >> 3) & 1;
+      break;
+    case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
+      onebytepacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->sideBrushOvercurrent = (onebytepacket >> 0) & 1;
+      infos->vacuumOvercurrent = (onebytepacket >> 1) & 1;
+      infos->mainBrushOvercurrent = (onebytepacket >> 2) & 1;
+      infos->wheelRightOvercurrent = (onebytepacket >> 3) & 1;
+      infos->wheelLeftOvercurrent = (onebytepacket >> 4) & 1;
+      break;
+    default:
+      Serial.print("Unhandled Packet ID: ");
+      Serial.print(packetID, DEC);
+      Serial.print("\n");
+      return false;
+      break;
+    }
+  }
+  return true;
+}
+
+bool ArduRoomba::_readStream() 
+{
+  unsigned long timeout =
+      millis() + ARDUROOMBA_STREAM_TIMEOUT; // stream start every 15ms
+  while (!_irobot.available()) {
+    if (millis() > timeout) {
+      Serial.print("enable to ArduRoomba::_readStream (serial timeout)\n");
+      return false; // Timed out
+    }
+  }
+
+  int state = ARDUROOMBA_STREAM_WAIT_HEADER;
+  _streamBufferSize = 0;
+  uint8_t streamSize;
+  uint8_t lastChunk;
+  uint8_t checksum = 0;
+  while (_irobot.available()) {
+    uint8_t chunk = _irobot.read();
+    switch (state) {
+    case ARDUROOMBA_STREAM_WAIT_HEADER:
+      if (chunk == 19) {
+        state = ARDUROOMBA_STREAM_WAIT_SIZE;
+      }
+      break;
+    case ARDUROOMBA_STREAM_WAIT_SIZE:
+      streamSize = chunk;
+      state = ARDUROOMBA_STREAM_WAIT_CONTENT;
+      break;
+    case ARDUROOMBA_STREAM_WAIT_CONTENT:
+      if (_streamBufferSize < streamSize) {
+        _streamBuffer[_streamBufferSize] = chunk;
+        _streamBufferSize++;
+      } else {
+        state = ARDUROOMBA_STREAM_WAIT_CHECKSUM;
+      }
+      break;
+    case ARDUROOMBA_STREAM_WAIT_CHECKSUM:
+      lastChunk = chunk;
+      state = ARDUROOMBA_STREAM_END;
+      break;
+    }
+    checksum += chunk;
+  }
+
+  bool isChecksum = (checksum & 0xFF) == 0;
+  bool isStreamEnd = state == ARDUROOMBA_STREAM_END;
+  return isStreamEnd && isChecksum;
+}
+
+int ArduRoomba::_sensorsListLength(char sensorlist[]) 
+{
+  int i;
+  int count = 0;
+  for (i = 0; sensorlist[i] != '\0'; i++) {
+    count++;
+  }
+  return count;
+}
+
+void ArduRoomba::queryStream(char sensorlist[]) 
+{
+  Serial.print("ArduRoomba::queryStream:\n");
+  _nbSensorsStream = _sensorsListLength(sensorlist);
+  _irobot.write(148);
+  _irobot.write(_nbSensorsStream);
+  for (int i = 0; i < _nbSensorsStream; i++) {
+    _sensorsStream[i] = sensorlist[i];
+    Serial.print(" ");
+    Serial.print(_sensorsStream[i], DEC);
+    Serial.print("\n");
+    _irobot.write(_sensorsStream[i]);
+  }
+}
+
+void ArduRoomba::resetStream()
+{
+  Serial.print("ArduRoomba::resetStream\n");
+  _irobot.write(148);
+  _irobot.write(_zero);
+}
+
+bool ArduRoomba::refreshData(RoombaInfos *stateInfos) 
+{
+  long now = millis();
+  if (now > stateInfos->nextRefresh) {
+    stateInfos->nextRefresh = now + ARDUROOMBA_REFRESH_DELAY;
+    stateInfos->attempt++;
+    if (!_readStream() ||
+        !_parseStreamBuffer(_streamBuffer, _streamBufferSize, stateInfos)) {
+      // Serial.print("ArduRoomba::refreshData error\n");
+      return false;
+    }
+    stateInfos->lastSuccedRefresh = now;
+    stateInfos->attempt=0;
+    return true;
+  }
+  return false;
+}
 // OI commands
 void ArduRoomba::start()
 {
