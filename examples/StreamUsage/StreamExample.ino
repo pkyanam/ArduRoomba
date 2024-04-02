@@ -3,6 +3,11 @@
 ArduRoomba roomba(2, 3, 4); // rxPin, txPin, brcPin
 ArduRoomba::RoombaInfos infos = {};
 ArduRoomba::RoombaInfos update = {};
+
+  // warning don't request to many sensors
+  // stream data time slot = 15ms
+  // if the roomba doesn't have time to return all the sensor's data
+  // the stream will be unstable
   char sensorlist[] = {ARDUROOMBA_SENSOR_MODE,
                        ARDUROOMBA_SENSOR_TEMPERATURE,
                        ARDUROOMBA_SENSOR_VOLTAGE,

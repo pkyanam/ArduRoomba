@@ -52,9 +52,9 @@ public:
   };
 
   struct RoombaInfos {
-    long nextRefresh;
-    long lastSuccedRefresh;
-    int  attempt;
+    long nextRefresh;       // time of next update
+    long lastSuccedRefresh; // time of last successfull update
+    int  attempt;           // number of failed attempts since last success
 
     int mode;
     int chargingState;
@@ -73,16 +73,18 @@ public:
     bool cliffRight;
     bool cliffFrontRight;
 
+    // ARDUROOMBA_SENSOR_WHEELOVERCURRENTS
     bool wheelRightOvercurrent;
     bool wheelLeftOvercurrent;
     bool mainBrushOvercurrent;
     bool sideBrushOvercurrent;
     bool vacuumOvercurrent;       // no wacuum for serie 600
 
-    bool bumpRight;               // Bump Right ?
-    bool bumpLeft;                // Bump Left?
-    bool wheelDropRight;          // Wheel Drop Right ?
-    bool wheelDropLeft;           // Wheel Drop Left ?
+    // ARDUROOMBA_SENSOR_WHEELOVERCURRENTS
+    bool bumpRight;
+    bool bumpLeft;
+    bool wheelDropRight;
+    bool wheelDropLeft;
   };
 
   struct ScheduleStore
@@ -133,9 +135,9 @@ public:
   void sensors(char packetID);                      // Request a sensor packet
   void queryList(byte numPackets, byte *packetIDs); // Request a list of sensor packets
 
-  void queryStream(char sensorlist[]);
-  void resetStream();
-  bool refreshData(RoombaInfos *infos);
+  void queryStream(char sensorlist[]);              // Request a list of sensor packets to stream
+  void resetStream();                               // Request an empty list of sensor packets to stream
+  bool refreshData(RoombaInfos *infos);             // Read stream slot
 
   // Custom commands
   void roombaSetup(); // Setup the Roomba
@@ -150,17 +152,14 @@ private:
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
   
-  uint8_t _streamBuffer[100] = {};
-  // warning don't request to many sensor
-  // stream data time slot = 15ms and
-  // max number of requested sensor depend on baudrate and number of bytes
-  int _nbSensorsStream = 0;
-  int _streamBufferSize = 0;
-  int _sensorsStream[52]; // max 52 sensors in OpenInterface spec
+  uint8_t _streamBuffer[100] = {}; 
+  int _nbSensorsStream = 0; // number of requested sensors stream
+  int _streamBufferCursor = 0; 
+  int _sensorsStream[60]; // max 52 sensors in OpenInterface spec
 
-  int _sensorsListLength(char sensorlist[]);
-  bool _readStream();
-  bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos);
+  int _sensorsListLength(char sensorlist[]); // determines the size of the table
+  bool _readStream(); // read stream data and fill _streamBuffer and return checksum result
+  bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos); // parse _streamBuffer and return checksum result
   uint8_t _parseOneByteStreamBuffer(uint8_t *packets, int &start);
   int _parseTwoByteStreamBuffer(uint8_t *packets, int &start);
 };

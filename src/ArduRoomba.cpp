@@ -111,7 +111,7 @@ bool ArduRoomba::_readStream()
   }
 
   int state = ARDUROOMBA_STREAM_WAIT_HEADER;
-  _streamBufferSize = 0;
+  _streamBufferCursor = 0;
   uint8_t streamSize;
   uint8_t lastChunk;
   uint8_t checksum = 0;
@@ -128,9 +128,9 @@ bool ArduRoomba::_readStream()
       state = ARDUROOMBA_STREAM_WAIT_CONTENT;
       break;
     case ARDUROOMBA_STREAM_WAIT_CONTENT:
-      if (_streamBufferSize < streamSize) {
-        _streamBuffer[_streamBufferSize] = chunk;
-        _streamBufferSize++;
+      if (_streamBufferCursor < streamSize) {
+        _streamBuffer[_streamBufferCursor] = chunk;
+        _streamBufferCursor++;
       } else {
         state = ARDUROOMBA_STREAM_WAIT_CHECKSUM;
       }
@@ -187,7 +187,7 @@ bool ArduRoomba::refreshData(RoombaInfos *stateInfos)
     stateInfos->nextRefresh = now + ARDUROOMBA_REFRESH_DELAY;
     stateInfos->attempt++;
     if (_readStream() &&
-        _parseStreamBuffer(_streamBuffer, _streamBufferSize, stateInfos)) {
+        _parseStreamBuffer(_streamBuffer, _streamBufferCursor, stateInfos)) {
       stateInfos->lastSuccedRefresh = now;
       stateInfos->attempt=0;
       return true;
