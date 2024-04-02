@@ -24,7 +24,7 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
 {
   int i = 0;
   char packetID;
-  uint8_t onebytepacket;
+  uint8_t oneByteParsedPacket;
   while (i < len) {
     packetID = (char)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
@@ -74,24 +74,24 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
-      onebytepacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->bumpRight = (onebytepacket >> 0) & 1;
-      infos->bumpLeft = (onebytepacket >> 1) & 1;
-      infos->wheelDropRight = (onebytepacket >> 2) & 1;
-      infos->wheelDropLeft = (onebytepacket >> 3) & 1;
+      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->bumpRight = (oneByteParsedPacket >> 0) & 1;
+      infos->bumpLeft = (oneByteParsedPacket >> 1) & 1;
+      infos->wheelDropRight = (oneByteParsedPacket >> 2) & 1;
+      infos->wheelDropLeft = (oneByteParsedPacket >> 3) & 1;
       break;
     case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
-      onebytepacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->sideBrushOvercurrent = (onebytepacket >> 0) & 1;
-      infos->vacuumOvercurrent = (onebytepacket >> 1) & 1;
-      infos->mainBrushOvercurrent = (onebytepacket >> 2) & 1;
-      infos->wheelRightOvercurrent = (onebytepacket >> 3) & 1;
-      infos->wheelLeftOvercurrent = (onebytepacket >> 4) & 1;
+      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->sideBrushOvercurrent = (oneByteParsedPacket >> 0) & 1;
+      infos->vacuumOvercurrent = (oneByteParsedPacket >> 1) & 1;
+      infos->mainBrushOvercurrent = (oneByteParsedPacket >> 2) & 1;
+      infos->wheelRightOvercurrent = (oneByteParsedPacket >> 3) & 1;
+      infos->wheelLeftOvercurrent = (oneByteParsedPacket >> 4) & 1;
       break;
     default:
-      Serial.print("Unhandled Packet ID: ");
+      Serial.print("ArduRoomba::_parseStreamBuffer error: Unhandled Packet ID (");
       Serial.print(packetID, DEC);
-      Serial.print("\n");
+      Serial.print(")\n");
       return false;
       break;
     }
@@ -105,7 +105,7 @@ bool ArduRoomba::_readStream()
       millis() + ARDUROOMBA_STREAM_TIMEOUT; // stream start every 15ms
   while (!_irobot.available()) {
     if (millis() > timeout) {
-      Serial.print("enable to ArduRoomba::_readStream (serial timeout)\n");
+      Serial.print("ArduRoomba::_readStream enable to read stream (serial timeout)\n");
       return false; // Timed out
     }
   }
@@ -186,14 +186,13 @@ bool ArduRoomba::refreshData(RoombaInfos *stateInfos)
   if (now > stateInfos->nextRefresh) {
     stateInfos->nextRefresh = now + ARDUROOMBA_REFRESH_DELAY;
     stateInfos->attempt++;
-    if (!_readStream() ||
-        !_parseStreamBuffer(_streamBuffer, _streamBufferSize, stateInfos)) {
-      // Serial.print("ArduRoomba::refreshData error\n");
-      return false;
+    if (_readStream() &&
+        _parseStreamBuffer(_streamBuffer, _streamBufferSize, stateInfos)) {
+      stateInfos->lastSuccedRefresh = now;
+      stateInfos->attempt=0;
+      return true;
     }
-    stateInfos->lastSuccedRefresh = now;
-    stateInfos->attempt=0;
-    return true;
+    return false;
   }
   return false;
 }
