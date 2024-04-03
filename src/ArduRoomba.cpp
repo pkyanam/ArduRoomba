@@ -88,6 +88,17 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->wheelRightOvercurrent = (oneByteParsedPacket >> 3) & 1;
       infos->wheelLeftOvercurrent = (oneByteParsedPacket >> 4) & 1;
       break;
+    case ARDUROOMBA_SENSOR_BUTTONS:
+      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->cleanButton = (oneByteParsedPacket >> 0) & 1;
+      infos->spotButton = (oneByteParsedPacket >> 1) & 1;
+      infos->dockButton = (oneByteParsedPacket >> 2) & 1;
+      infos->minuteButton = (oneByteParsedPacket >> 3) & 1;
+      infos->hourButton = (oneByteParsedPacket >> 4) & 1;
+      infos->dayButton = (oneByteParsedPacket >> 5) & 1;
+      infos->scheludeButton = (oneByteParsedPacket >> 6) & 1;
+      infos->clockButton = (oneByteParsedPacket >> 7) & 1;
+      break;
     default:
       Serial.print("ArduRoomba::_parseStreamBuffer error: Unhandled Packet ID (");
       Serial.print(packetID, DEC);

@@ -24,6 +24,7 @@
 #define ARDUROOMBA_SENSOR_WHEELOVERCURRENTS 14
 #define ARDUROOMBA_SENSOR_DIRTDETECT 15
 #define ARDUROOMBA_SENSOR_IROPCODE 17
+#define ARDUROOMBA_SENSOR_BUTTONS 18
 #define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
 #define ARDUROOMBA_SENSOR_VOLTAGE 22
 #define ARDUROOMBA_SENSOR_TEMPERATURE 24
@@ -73,6 +74,16 @@ public:
     bool cliffFrontLeft;
     bool cliffRight;
     bool cliffFrontRight;
+
+    // ARDUROOMBA_SENSOR_BUTTONS
+    bool cleanButton;
+    bool spotButton;
+    bool dockButton;
+    bool minuteButton;
+    bool hourButton;
+    bool dayButton;
+    bool scheludeButton;
+    bool clockButton;
 
     // ARDUROOMBA_SENSOR_WHEELOVERCURRENTS
     bool wheelRightOvercurrent;
