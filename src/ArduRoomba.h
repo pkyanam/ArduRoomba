@@ -32,6 +32,7 @@
 #define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
 #define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
 #define ARDUROOMBA_SENSOR_WALLSIGNAL 27
+#define ARDUROOMBA_SENSOR_CLIFFLEFTSIGNAL 28
 #define ARDUROOMBA_SENSOR_CHARGERAVAILABLE 34
 #define ARDUROOMBA_SENSOR_MODE 35
 
@@ -72,6 +73,7 @@ public:
     int chargerAvailable;
 
     unsigned int wallSignal;
+    unsigned int cliffLeftSignal;
 
     bool wall;
     bool virtualWall;
