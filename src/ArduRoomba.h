@@ -31,6 +31,7 @@
 #define ARDUROOMBA_SENSOR_TEMPERATURE 24
 #define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
 #define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
+#define ARDUROOMBA_SENSOR_WALLSIGNAL 27
 #define ARDUROOMBA_SENSOR_CHARGERAVAILABLE 34
 #define ARDUROOMBA_SENSOR_MODE 35
 
@@ -69,6 +70,8 @@ public:
     int dirtdetect;
     int irOpcode;
     int chargerAvailable;
+
+    unsigned int wallsignal;
 
     bool wall;
     bool virtualWall;
