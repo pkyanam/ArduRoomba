@@ -54,6 +54,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_VOLTAGE:
       infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_CURRENT:
+      infos->current = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_TEMPERATURE:
       infos->temperature = (unsigned int)_parseOneByteStreamBuffer(packets, i);
       break;

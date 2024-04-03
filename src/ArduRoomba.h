@@ -27,6 +27,7 @@
 #define ARDUROOMBA_SENSOR_BUTTONS 18
 #define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
 #define ARDUROOMBA_SENSOR_VOLTAGE 22
+#define ARDUROOMBA_SENSOR_CURRENT 23
 #define ARDUROOMBA_SENSOR_TEMPERATURE 24
 #define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
 #define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
@@ -61,6 +62,7 @@ public:
     int mode;
     int chargingState;
     int voltage;
+    int current;
     unsigned int temperature;
     int batteryCapacity;
     int batteryCharge;
