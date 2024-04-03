@@ -20,11 +20,19 @@ int ArduRoomba::_parseTwoByteStreamBuffer(uint8_t *packets, int &start)
   return v;
 }
 
+void ArduRoomba::_parseAndFillOneByteStreamBuffer(uint8_t *packets, int &start, bool *bytes) 
+{
+  uint8_t oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, start);
+  for(int i=0; i < 7; i++) {
+    bytes[i]=(oneByteParsedPacket >> i) & 1;
+  }
+}
+
 bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos) 
 {
   int i = 0;
   char packetID;
-  uint8_t oneByteParsedPacket;
+  bool oneByteParsedPacketBits[7]={false};
   while (i < len) {
     packetID = (char)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
@@ -74,30 +82,30 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
-      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->bumpRight = (oneByteParsedPacket >> 0) & 1;
-      infos->bumpLeft = (oneByteParsedPacket >> 1) & 1;
-      infos->wheelDropRight = (oneByteParsedPacket >> 2) & 1;
-      infos->wheelDropLeft = (oneByteParsedPacket >> 3) & 1;
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->bumpRight = oneByteParsedPacketBits[0];
+      infos->bumpLeft = oneByteParsedPacketBits[1];
+      infos->wheelDropRight =oneByteParsedPacketBits[2];
+      infos->wheelDropLeft = oneByteParsedPacketBits[3];
       break;
     case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
-      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->sideBrushOvercurrent = (oneByteParsedPacket >> 0) & 1;
-      infos->vacuumOvercurrent = (oneByteParsedPacket >> 1) & 1;
-      infos->mainBrushOvercurrent = (oneByteParsedPacket >> 2) & 1;
-      infos->wheelRightOvercurrent = (oneByteParsedPacket >> 3) & 1;
-      infos->wheelLeftOvercurrent = (oneByteParsedPacket >> 4) & 1;
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->sideBrushOvercurrent = oneByteParsedPacketBits[0];
+      infos->vacuumOvercurrent = oneByteParsedPacketBits[1];
+      infos->mainBrushOvercurrent = oneByteParsedPacketBits[2];
+      infos->wheelRightOvercurrent = oneByteParsedPacketBits[3];
+      infos->wheelLeftOvercurrent = oneByteParsedPacketBits[4];
       break;
     case ARDUROOMBA_SENSOR_BUTTONS:
-      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->cleanButton = (oneByteParsedPacket >> 0) & 1;
-      infos->spotButton = (oneByteParsedPacket >> 1) & 1;
-      infos->dockButton = (oneByteParsedPacket >> 2) & 1;
-      infos->minuteButton = (oneByteParsedPacket >> 3) & 1;
-      infos->hourButton = (oneByteParsedPacket >> 4) & 1;
-      infos->dayButton = (oneByteParsedPacket >> 5) & 1;
-      infos->scheludeButton = (oneByteParsedPacket >> 6) & 1;
-      infos->clockButton = (oneByteParsedPacket >> 7) & 1;
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->cleanButton = oneByteParsedPacketBits[0];
+      infos->spotButton = oneByteParsedPacketBits[1];
+      infos->dockButton = oneByteParsedPacketBits[2];
+      infos->minuteButton = oneByteParsedPacketBits[3];
+      infos->hourButton = oneByteParsedPacketBits[4];
+      infos->dayButton = oneByteParsedPacketBits[5];
+      infos->scheludeButton = oneByteParsedPacketBits[6];
+      infos->clockButton = oneByteParsedPacketBits[7];
       break;
     default:
       Serial.print("ArduRoomba::_parseStreamBuffer error: Unhandled Packet ID (");

@@ -174,6 +174,7 @@ private:
   bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos); // parse _streamBuffer and return checksum result
   uint8_t _parseOneByteStreamBuffer(uint8_t *packets, int &start);
   int _parseTwoByteStreamBuffer(uint8_t *packets, int &start);
+  void _parseAndFillOneByteStreamBuffer(uint8_t *packets, int &start, bool *bytes);
 };
 
 #endif
