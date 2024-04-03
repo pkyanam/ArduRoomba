@@ -71,7 +71,7 @@ public:
     int irOpcode;
     int chargerAvailable;
 
-    unsigned int wallsignal;
+    unsigned int wallSignal;
 
     bool wall;
     bool virtualWall;
