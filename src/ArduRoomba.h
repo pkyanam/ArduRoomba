@@ -39,6 +39,7 @@
 #define ARDUROOMBA_SENSOR_CHARGERAVAILABLE 34
 #define ARDUROOMBA_SENSOR_MODE 35
 #define ARDUROOMBA_SENSOR_SONGNUMBER 36
+#define ARDUROOMBA_SENSOR_SONGPLAYING 37
 
 class ArduRoomba
 {
@@ -89,6 +90,7 @@ public:
     bool cliffFrontLeft;
     bool cliffRight;
     bool cliffFrontRight;
+    bool songPlaying;
 
     // ARDUROOMBA_SENSOR_BUTTONS
     bool cleanButton;

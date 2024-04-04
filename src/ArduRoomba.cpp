@@ -87,6 +87,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_WALL:
       infos->wall = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_SONGPLAYING:
+      infos->songPlaying = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_VIRTUALWALL:
       infos->virtualWall = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
