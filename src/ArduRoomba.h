@@ -78,7 +78,6 @@ public:
     int batteryCharge;
     int dirtdetect;
     int irOpcode;
-    int chargerAvailable;
     int songNumber;
     unsigned int ioStreamNumPackets;
     int velocity;
@@ -96,6 +95,10 @@ public:
     bool cliffRight;
     bool cliffFrontRight;
     bool songPlaying;
+
+    // ARDUROOMBA_SENSOR_CHARGERAVAILABLE
+    bool internalChargerAvailable;
+    bool homeBaseChargerAvailable;
 
     // ARDUROOMBA_SENSOR_STASIS
     bool stasisDisabled;
