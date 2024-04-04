@@ -39,6 +39,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_MODE:
       infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_SONGNUMBER:
+      infos->songNumber = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_IROPCODE:
       infos->irOpcode = (int)_parseOneByteStreamBuffer(packets, i);
       break;

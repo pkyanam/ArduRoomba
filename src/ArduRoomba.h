@@ -38,6 +38,7 @@
 #define ARDUROOMBA_SENSOR_CLIFFRIGHTSIGNAL 31
 #define ARDUROOMBA_SENSOR_CHARGERAVAILABLE 34
 #define ARDUROOMBA_SENSOR_MODE 35
+#define ARDUROOMBA_SENSOR_SONGNUMBER 36
 
 class ArduRoomba
 {
@@ -74,6 +75,7 @@ public:
     int dirtdetect;
     int irOpcode;
     int chargerAvailable;
+    int songNumber;
 
     unsigned int wallSignal;
     unsigned int cliffLeftSignal;
