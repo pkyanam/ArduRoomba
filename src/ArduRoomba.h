@@ -41,6 +41,7 @@
 #define ARDUROOMBA_SENSOR_SONGNUMBER 36
 #define ARDUROOMBA_SENSOR_SONGPLAYING 37
 #define ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS 38
+#define ARDUROOMBA_SENSOR_VELOCITY 39
 
 class ArduRoomba
 {
@@ -78,7 +79,8 @@ public:
     int irOpcode;
     int chargerAvailable;
     int songNumber;
-    unsigned int ioStreamNumPackets; 
+    unsigned int ioStreamNumPackets;
+    int velocity;
 
     unsigned int wallSignal;
     unsigned int cliffLeftSignal;
