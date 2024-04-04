@@ -137,6 +137,11 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->scheludeButton = oneByteParsedPacketBits[6];
       infos->clockButton = oneByteParsedPacketBits[7];
       break;
+    case ARDUROOMBA_SENSOR_STASIS:
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->stasisToggling = oneByteParsedPacketBits[0];
+      infos->stasisDisabled = oneByteParsedPacketBits[1];
+      break;
     default:
       Serial.print("ArduRoomba::_parseStreamBuffer error: Unhandled Packet ID (");
       Serial.print(packetID, DEC);

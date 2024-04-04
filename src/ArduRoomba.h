@@ -42,6 +42,7 @@
 #define ARDUROOMBA_SENSOR_SONGPLAYING 37
 #define ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS 38
 #define ARDUROOMBA_SENSOR_VELOCITY 39
+#define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
 {
@@ -95,6 +96,10 @@ public:
     bool cliffRight;
     bool cliffFrontRight;
     bool songPlaying;
+
+    // ARDUROOMBA_SENSOR_STASIS
+    bool stasisDisabled;
+    bool stasisToggling;
 
     // ARDUROOMBA_SENSOR_BUTTONS
     bool cleanButton;
