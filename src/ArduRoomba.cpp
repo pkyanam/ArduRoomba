@@ -143,6 +143,15 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->scheludeButton = oneByteParsedPacketBits[6];
       infos->clockButton = oneByteParsedPacketBits[7];
       break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPER:
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->lightBumperLeft = oneByteParsedPacketBits[0];
+      infos->lightBumperFrontLeft = oneByteParsedPacketBits[1];
+      infos->lightBumperCenterLeft = oneByteParsedPacketBits[2];
+      infos->lightBumperCenterRight = oneByteParsedPacketBits[3];
+      infos->lightBumperFrontRight = oneByteParsedPacketBits[4];
+      infos->lightBumperRight = oneByteParsedPacketBits[5];
+      break;
     case ARDUROOMBA_SENSOR_CHARGERAVAILABLE:
       _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
       infos->internalChargerAvailable = oneByteParsedPacketBits[0];

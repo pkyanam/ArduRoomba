@@ -45,6 +45,7 @@
 #define ARDUROOMBA_SENSOR_RADIUS 40
 #define ARDUROOMBA_SENSOR_RIGHTVELOCITY 41
 #define ARDUROOMBA_SENSOR_LEFTVELOCITY 42
+#define ARDUROOMBA_SENSOR_LIGHTBUMPER 45
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -102,6 +103,15 @@ public:
     bool cliffFrontRight;
     bool songPlaying;
 
+
+    //ARDUROOMBA_SENSOR_LIGHTBUMPER
+    bool lightBumperLeft;
+    bool lightBumperFrontLeft;
+    bool lightBumperCenterLeft;
+    bool lightBumperCenterRight;
+    bool lightBumperFrontRight;
+    bool lightBumperRight;
+  
     // ARDUROOMBA_SENSOR_CHARGERAVAILABLE
     bool internalChargerAvailable;
     bool homeBaseChargerAvailable;
