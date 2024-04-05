@@ -44,6 +44,7 @@
 #define ARDUROOMBA_SENSOR_VELOCITY 39
 #define ARDUROOMBA_SENSOR_RADIUS 40
 #define ARDUROOMBA_SENSOR_RIGHTVELOCITY 41
+#define ARDUROOMBA_SENSOR_LEFTVELOCITY 42
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -84,6 +85,7 @@ public:
     unsigned int ioStreamNumPackets;
     int velocity;
     int rightVelocity;
+    int leftVelocity;
     int radius;
 
     unsigned int wallSignal;
