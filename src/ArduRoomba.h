@@ -212,7 +212,7 @@ private:
   uint8_t _streamBuffer[100] = {}; 
   int _nbSensorsStream = 0; // number of requested sensors stream
   int _streamBufferCursor = 0; 
-  int _sensorsStream[60]; // max 52 sensors in OpenInterface spec
+  char _sensorsStream[60]; // max 52 sensors in OpenInterface spec
 
   int _sensorsListLength(char sensorlist[]); // determines the size of the table
   bool _readStream(); // read stream data and fill _streamBuffer and return checksum result
