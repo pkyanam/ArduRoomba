@@ -43,6 +43,7 @@
 #define ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS 38
 #define ARDUROOMBA_SENSOR_VELOCITY 39
 #define ARDUROOMBA_SENSOR_RADIUS 40
+#define ARDUROOMBA_SENSOR_RIGHTVELOCITY 41
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -82,6 +83,7 @@ public:
     int songNumber;
     unsigned int ioStreamNumPackets;
     int velocity;
+    int rightVelocity;
     int radius;
 
     unsigned int wallSignal;
