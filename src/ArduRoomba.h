@@ -48,6 +48,7 @@
 #define ARDUROOMBA_SENSOR_LEFTENCODERCOUNTS 43
 #define ARDUROOMBA_SENSOR_RIGHTENCODERCOUNTS 44
 #define ARDUROOMBA_SENSOR_LIGHTBUMPER 45
+#define ARDUROOMBA_SENSOR_LIGHTBUMPLEFTSIGNAL 46
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -98,6 +99,7 @@ public:
     unsigned int cliffFrontLeftSignal;
     unsigned int cliffRightSignal;
     unsigned int cliffFrontRightSignal;
+    unsigned int lightBumpLeftSignal;
 
     bool wall;
     bool virtualWall;
