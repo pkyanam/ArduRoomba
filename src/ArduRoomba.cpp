@@ -93,6 +93,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_BATTERYCHARGE:
       infos->batteryCharge = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_LEFTENCODERCOUNTS:
+      infos->leftEncoderCounts = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_BATTERYCAPACITY:
       infos->batteryCapacity = (int)_parseTwoByteStreamBuffer(packets, i);
       break;

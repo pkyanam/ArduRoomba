@@ -45,6 +45,7 @@
 #define ARDUROOMBA_SENSOR_RADIUS 40
 #define ARDUROOMBA_SENSOR_RIGHTVELOCITY 41
 #define ARDUROOMBA_SENSOR_LEFTVELOCITY 42
+#define ARDUROOMBA_SENSOR_LEFTENCODERCOUNTS 43
 #define ARDUROOMBA_SENSOR_LIGHTBUMPER 45
 #define ARDUROOMBA_SENSOR_STASIS 58
 
@@ -88,6 +89,7 @@ public:
     int rightVelocity;
     int leftVelocity;
     int radius;
+    int leftEncoderCounts;
 
     unsigned int wallSignal;
     unsigned int cliffLeftSignal;
