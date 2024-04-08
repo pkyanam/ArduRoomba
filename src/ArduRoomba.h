@@ -51,6 +51,7 @@
 #define ARDUROOMBA_SENSOR_LIGHTBUMPLEFTSIGNAL 46
 #define ARDUROOMBA_SENSOR_LIGHTBUMPFRONTLEFTSIGNAL 47
 #define ARDUROOMBA_SENSOR_LIGHTBUMPCENTERLEFTSIGNAL 48
+#define ARDUROOMBA_SENSOR_LIGHTBUMPCENTERRIGHTSIGNAL 49
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -104,6 +105,7 @@ public:
     unsigned int lightBumpLeftSignal;
     unsigned int lightBumpFrontLeftSignal;
     unsigned int lightBumpCenterLeftSignal;
+    unsigned int lightBumpCenterRightSignal;
 
     bool wall;
     bool virtualWall;
