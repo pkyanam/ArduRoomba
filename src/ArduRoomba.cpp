@@ -102,6 +102,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_LIGHTBUMPFRONTRIGHTSIGNAL:
       infos->lightBumpFrontRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPRIGHTSIGNAL:
+      infos->lightBumpRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_TEMPERATURE:
       infos->temperature = (unsigned int)_parseOneByteStreamBuffer(packets, i);
       break;
