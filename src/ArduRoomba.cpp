@@ -72,6 +72,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_MAINBRUSHMOTORCURRENT:
       infos->mainBrushMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_SIDEBRUSHMOTORCURRENT:
+      infos->sideBrushMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_RIGHTVELOCITY:
       infos->rightVelocity = (int)_parseTwoByteStreamBuffer(packets, i);
       break;

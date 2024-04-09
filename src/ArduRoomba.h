@@ -57,6 +57,7 @@
 #define ARDUROOMBA_SENSOR_LEFTMOTORCURRENT 54
 #define ARDUROOMBA_SENSOR_RIGHTMOTORCURRENT 55
 #define ARDUROOMBA_SENSOR_MAINBRUSHMOTORCURRENT 56
+#define ARDUROOMBA_SENSOR_SIDEBRUSHMOTORCURRENT 57
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -104,6 +105,7 @@ public:
     int leftMotorCurrent;
     int rightMotorCurrent;
     int mainBrushMotorCurrent;
+    int sideBrushMotorCurrent;
 
     unsigned int wallSignal;
     unsigned int cliffLeftSignal;
