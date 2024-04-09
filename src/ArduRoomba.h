@@ -55,6 +55,7 @@
 #define ARDUROOMBA_SENSOR_LIGHTBUMPFRONTRIGHTSIGNAL 50
 #define ARDUROOMBA_SENSOR_LIGHTBUMPRIGHTSIGNAL 51
 #define ARDUROOMBA_SENSOR_LEFTMOTORCURRENT 54
+#define ARDUROOMBA_SENSOR_RIGHTMOTORCURRENT 55
 #define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
@@ -100,6 +101,7 @@ public:
     int leftEncoderCounts;
     int rightEncoderCounts;
     int leftMotorCurrent;
+    int rightMotorCurrent;
 
     unsigned int wallSignal;
     unsigned int cliffLeftSignal;
