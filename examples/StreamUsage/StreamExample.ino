@@ -86,7 +86,7 @@ void printDiffAndHydrate(ArduRoomba::RoombaInfos *a, ArduRoomba::RoombaInfos *b)
   if (b->temperature != a->temperature) {
     a->temperature = b->temperature;
     Serial.print("temperature = ");
-    Serial.println(a->temperature);
+    Serial.println(a->temperature, DEC); // print temperature as an ASCII-encoded decimal ( range -128 to 127)
   }
   if (a->bumpRight != b->bumpRight) {
     a->bumpRight = b->bumpRight;

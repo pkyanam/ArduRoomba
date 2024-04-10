@@ -31,28 +31,28 @@ void ArduRoomba::_parseAndFillOneByteStreamBuffer(uint8_t *packets, int &start, 
 bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos) 
 {
   int i = 0;
-  char packetID;
+  uint8_t packetID;
   bool oneByteParsedPacketBits[7]={false};
   while (i < len) {
-    packetID = (char)_parseOneByteStreamBuffer(packets, i);
+    packetID = (uint8_t)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
     case ARDUROOMBA_SENSOR_MODE:
-      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->mode = (uint8_t)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS:
-      infos->ioStreamNumPackets = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->ioStreamNumPackets = (uint8_t)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_SONGNUMBER:
-      infos->songNumber = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->songNumber = (uint8_t)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_IROPCODE:
-      infos->irOpcode = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->irOpcode = (uint8_t)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_DIRTDETECT:
       infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CHARGINGSTATE:
-      infos->chargingState = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->chargingState = (uint8_t)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_VOLTAGE:
       infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
@@ -118,7 +118,7 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->lightBumpRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_TEMPERATURE:
-      infos->temperature = (unsigned int)_parseOneByteStreamBuffer(packets, i);
+      infos->temperature = (char)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BATTERYCHARGE:
       infos->batteryCharge = (int)_parseTwoByteStreamBuffer(packets, i);

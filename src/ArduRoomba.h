@@ -85,17 +85,19 @@ public:
     long lastSuccedRefresh; // time of last successfull update
     int  attempt;           // number of failed attempts since last success
 
-    int mode;
-    int chargingState;
+    uint8_t irOpcode;
+    uint8_t songNumber;
+    uint8_t ioStreamNumPackets;
+    uint8_t mode;
+    uint8_t chargingState;
+    char temperature;
+    
     int voltage;
     int current;
-    unsigned int temperature;
+    
     int batteryCapacity;
     int batteryCharge;
     int dirtdetect;
-    int irOpcode;
-    int songNumber;
-    unsigned int ioStreamNumPackets;
     int velocity;
     int rightVelocity;
     int leftVelocity;
