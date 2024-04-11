@@ -87,13 +87,13 @@ public:
     long lastSuccedRefresh; // time of last successfull update
     int  attempt;           // number of failed attempts since last success
 
-    uint8_t irOpcode;
-    uint8_t songNumber;
-    uint8_t ioStreamNumPackets;
-    uint8_t mode;
-    uint8_t chargingState;
-    uint8_t infraredCharacterLeft;
-    uint8_t infraredCharacterRight;
+    byte irOpcode;
+    byte songNumber;
+    byte ioStreamNumPackets;
+    byte mode;
+    byte chargingState;
+    byte infraredCharacterLeft;
+    byte infraredCharacterRight;
     char temperature;
     
     int voltage;
@@ -239,17 +239,17 @@ private:
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
   
-  uint8_t _streamBuffer[100] = {}; 
+  byte _streamBuffer[100] = {}; 
   int _nbSensorsStream = 0; // number of requested sensors stream
   int _streamBufferCursor = 0; 
   char _sensorsStream[60]; // max 52 sensors in OpenInterface spec
 
   int _sensorsListLength(char sensorlist[]); // determines the size of the table
   bool _readStream(); // read stream data and fill _streamBuffer and return checksum result
-  bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos); // parse _streamBuffer and return checksum result
-  uint8_t _parseOneByteStreamBuffer(uint8_t *packets, int &start);
-  int _parseTwoByteStreamBuffer(uint8_t *packets, int &start);
-  void _parseAndFillOneByteStreamBuffer(uint8_t *packets, int &start, bool *bytes);
+  bool _parseStreamBuffer(byte *packets, int len, RoombaInfos *infos); // parse _streamBuffer and return checksum result
+  byte _parseOneByteStreamBuffer(byte *packets, int &start);
+  int _parseTwoByteStreamBuffer(byte *packets, int &start);
+  void _parseAndFillOneByteStreamBuffer(byte *packets, int &start, bool *bytes);
 };
 
 #endif

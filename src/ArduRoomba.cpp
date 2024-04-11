@@ -6,59 +6,59 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
   // Constructor implementation
 }
 
-uint8_t ArduRoomba::_parseOneByteStreamBuffer(uint8_t *packets, int &start) 
+byte ArduRoomba::_parseOneByteStreamBuffer(byte *packets, int &start) 
 {
-  uint8_t v = packets[start];
+  byte v = packets[start];
   start++;
   return v;
 }
 
-int ArduRoomba::_parseTwoByteStreamBuffer(uint8_t *packets, int &start) 
+int ArduRoomba::_parseTwoByteStreamBuffer(byte *packets, int &start) 
 {
   int v = (int)(packets[start] * 256 + packets[start + 1]);
   start += 2;
   return v;
 }
 
-void ArduRoomba::_parseAndFillOneByteStreamBuffer(uint8_t *packets, int &start, bool *bytes) 
+void ArduRoomba::_parseAndFillOneByteStreamBuffer(byte *packets, int &start, bool *bytes) 
 {
-  uint8_t oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, start);
+  byte oneByteParsedPacket = (byte)_parseOneByteStreamBuffer(packets, start);
   for(int i=0; i < 7; i++) {
     bytes[i]=(oneByteParsedPacket >> i) & 1;
   }
 }
 
-bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos) 
+bool ArduRoomba::_parseStreamBuffer(byte *packets, int len, RoombaInfos *infos) 
 {
   int i = 0;
-  uint8_t packetID;
+  byte packetID;
   bool oneByteParsedPacketBits[7]={false};
   while (i < len) {
-    packetID = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+    packetID = (byte)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
     case ARDUROOMBA_SENSOR_MODE:
-      infos->mode = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->mode = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS:
-      infos->ioStreamNumPackets = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->ioStreamNumPackets = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_SONGNUMBER:
-      infos->songNumber = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->songNumber = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_IROPCODE:
-      infos->irOpcode = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->irOpcode = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_INFRAREDCHARACTERLEFT:
-      infos->infraredCharacterLeft = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->infraredCharacterLeft = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_INFRAREDCHARACTERRIGHT:
-      infos->infraredCharacterRight = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->infraredCharacterRight = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_DIRTDETECT:
       infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CHARGINGSTATE:
-      infos->chargingState = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->chargingState = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_VOLTAGE:
       infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
@@ -228,11 +228,11 @@ bool ArduRoomba::_readStream()
 
   int state = ARDUROOMBA_STREAM_WAIT_HEADER;
   _streamBufferCursor = 0;
-  uint8_t streamSize;
-  uint8_t lastChunk;
-  uint8_t checksum = 0;
+  byte streamSize;
+  byte lastChunk;
+  byte checksum = 0;
   while (_irobot.available()) {
-    uint8_t chunk = _irobot.read();
+    byte chunk = _irobot.read();
     switch (state) {
     case ARDUROOMBA_STREAM_WAIT_HEADER:
       if (chunk == 19) {
