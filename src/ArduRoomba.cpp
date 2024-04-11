@@ -48,6 +48,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
     case ARDUROOMBA_SENSOR_IROPCODE:
       infos->irOpcode = (uint8_t)_parseOneByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_INFRAREDCHARACTERLEFT:
+      infos->infraredCharacterLeft = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_DIRTDETECT:
       infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
       break;
