@@ -13,23 +13,54 @@
 #define ARDUROOMBA_STREAM_WAIT_CHECKSUM 3
 #define ARDUROOMBA_STREAM_END 4
 
-#define ARDUROOMBA_SENSOR_MODE 35
-#define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
-#define ARDUROOMBA_SENSOR_VOLTAGE 22
-#define ARDUROOMBA_SENSOR_TEMPERATURE 24
-#define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
-#define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
+
 #define ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS 7
 #define ARDUROOMBA_SENSOR_WALL 8
 #define ARDUROOMBA_SENSOR_CLIFFLEFT 9
 #define ARDUROOMBA_SENSOR_CLIFFFRONTLEFT 10
-#define ARDUROOMBA_SENSOR_CLIFFRIGHT 12
 #define ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT 11
+#define ARDUROOMBA_SENSOR_CLIFFRIGHT 12
+#define ARDUROOMBA_SENSOR_VIRTUALWALL 13
 #define ARDUROOMBA_SENSOR_WHEELOVERCURRENTS 14
 #define ARDUROOMBA_SENSOR_DIRTDETECT 15
-#define ARDUROOMBA_SENSOR_VIRTUALWALL 13
 #define ARDUROOMBA_SENSOR_IROPCODE 17
+#define ARDUROOMBA_SENSOR_BUTTONS 18
+#define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
+#define ARDUROOMBA_SENSOR_VOLTAGE 22
+#define ARDUROOMBA_SENSOR_CURRENT 23
+#define ARDUROOMBA_SENSOR_TEMPERATURE 24
+#define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
+#define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
+#define ARDUROOMBA_SENSOR_WALLSIGNAL 27
+#define ARDUROOMBA_SENSOR_CLIFFLEFTSIGNAL 28
+#define ARDUROOMBA_SENSOR_CLIFFFRONTLEFTSIGNAL 29
+#define ARDUROOMBA_SENSOR_CLIFFFRONTRIGHTSIGNAL 30
+#define ARDUROOMBA_SENSOR_CLIFFRIGHTSIGNAL 31
 #define ARDUROOMBA_SENSOR_CHARGERAVAILABLE 34
+#define ARDUROOMBA_SENSOR_MODE 35
+#define ARDUROOMBA_SENSOR_SONGNUMBER 36
+#define ARDUROOMBA_SENSOR_SONGPLAYING 37
+#define ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS 38
+#define ARDUROOMBA_SENSOR_VELOCITY 39
+#define ARDUROOMBA_SENSOR_RADIUS 40
+#define ARDUROOMBA_SENSOR_RIGHTVELOCITY 41
+#define ARDUROOMBA_SENSOR_LEFTVELOCITY 42
+#define ARDUROOMBA_SENSOR_LEFTENCODERCOUNTS 43
+#define ARDUROOMBA_SENSOR_RIGHTENCODERCOUNTS 44
+#define ARDUROOMBA_SENSOR_LIGHTBUMPER 45
+#define ARDUROOMBA_SENSOR_LIGHTBUMPLEFTSIGNAL 46
+#define ARDUROOMBA_SENSOR_LIGHTBUMPFRONTLEFTSIGNAL 47
+#define ARDUROOMBA_SENSOR_LIGHTBUMPCENTERLEFTSIGNAL 48
+#define ARDUROOMBA_SENSOR_LIGHTBUMPCENTERRIGHTSIGNAL 49
+#define ARDUROOMBA_SENSOR_LIGHTBUMPFRONTRIGHTSIGNAL 50
+#define ARDUROOMBA_SENSOR_LIGHTBUMPRIGHTSIGNAL 51
+#define ARDUROOMBA_SENSOR_INFRAREDCHARACTERLEFT 52
+#define ARDUROOMBA_SENSOR_INFRAREDCHARACTERRIGHT 53
+#define ARDUROOMBA_SENSOR_LEFTMOTORCURRENT 54
+#define ARDUROOMBA_SENSOR_RIGHTMOTORCURRENT 55
+#define ARDUROOMBA_SENSOR_MAINBRUSHMOTORCURRENT 56
+#define ARDUROOMBA_SENSOR_SIDEBRUSHMOTORCURRENT 57
+#define ARDUROOMBA_SENSOR_STASIS 58
 
 class ArduRoomba
 {
@@ -56,15 +87,43 @@ public:
     long lastSuccedRefresh; // time of last successfull update
     int  attempt;           // number of failed attempts since last success
 
-    int mode;
-    int chargingState;
+    byte irOpcode;
+    byte songNumber;
+    byte ioStreamNumPackets;
+    byte mode;
+    byte chargingState;
+    byte infraredCharacterLeft;
+    byte infraredCharacterRight;
+    char temperature;
+    
     int voltage;
-    unsigned int temperature;
+    int current;
+    
     int batteryCapacity;
     int batteryCharge;
     int dirtdetect;
-    int irOpcode;
-    int chargerAvailable;
+    int velocity;
+    int rightVelocity;
+    int leftVelocity;
+    int radius;
+    int leftEncoderCounts;
+    int rightEncoderCounts;
+    int leftMotorCurrent;
+    int rightMotorCurrent;
+    int mainBrushMotorCurrent;
+    int sideBrushMotorCurrent;
+
+    unsigned int wallSignal;
+    unsigned int cliffLeftSignal;
+    unsigned int cliffFrontLeftSignal;
+    unsigned int cliffRightSignal;
+    unsigned int cliffFrontRightSignal;
+    unsigned int lightBumpLeftSignal;
+    unsigned int lightBumpFrontLeftSignal;
+    unsigned int lightBumpCenterLeftSignal;
+    unsigned int lightBumpCenterRightSignal;
+    unsigned int lightBumpFrontRightSignal;
+    unsigned int lightBumpRightSignal;
 
     bool wall;
     bool virtualWall;
@@ -72,6 +131,34 @@ public:
     bool cliffFrontLeft;
     bool cliffRight;
     bool cliffFrontRight;
+    bool songPlaying;
+
+
+    //ARDUROOMBA_SENSOR_LIGHTBUMPER
+    bool lightBumperLeft;
+    bool lightBumperFrontLeft;
+    bool lightBumperCenterLeft;
+    bool lightBumperCenterRight;
+    bool lightBumperFrontRight;
+    bool lightBumperRight;
+  
+    // ARDUROOMBA_SENSOR_CHARGERAVAILABLE
+    bool internalChargerAvailable;
+    bool homeBaseChargerAvailable;
+
+    // ARDUROOMBA_SENSOR_STASIS
+    bool stasisDisabled;
+    bool stasisToggling;
+
+    // ARDUROOMBA_SENSOR_BUTTONS
+    bool cleanButton;
+    bool spotButton;
+    bool dockButton;
+    bool minuteButton;
+    bool hourButton;
+    bool dayButton;
+    bool scheludeButton;
+    bool clockButton;
 
     // ARDUROOMBA_SENSOR_WHEELOVERCURRENTS
     bool wheelRightOvercurrent;
@@ -152,16 +239,17 @@ private:
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
   
-  uint8_t _streamBuffer[100] = {}; 
+  byte _streamBuffer[100] = {}; 
   int _nbSensorsStream = 0; // number of requested sensors stream
   int _streamBufferCursor = 0; 
-  int _sensorsStream[60]; // max 52 sensors in OpenInterface spec
+  char _sensorsStream[60]; // max 52 sensors in OpenInterface spec
 
   int _sensorsListLength(char sensorlist[]); // determines the size of the table
   bool _readStream(); // read stream data and fill _streamBuffer and return checksum result
-  bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos); // parse _streamBuffer and return checksum result
-  uint8_t _parseOneByteStreamBuffer(uint8_t *packets, int &start);
-  int _parseTwoByteStreamBuffer(uint8_t *packets, int &start);
+  bool _parseStreamBuffer(byte *packets, int len, RoombaInfos *infos); // parse _streamBuffer and return checksum result
+  byte _parseOneByteStreamBuffer(byte *packets, int &start);
+  int _parseTwoByteStreamBuffer(byte *packets, int &start);
+  void _parseAndFillOneByteStreamBuffer(byte *packets, int &start, bool *bytes);
 };
 
 #endif

@@ -6,57 +6,143 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
   // Constructor implementation
 }
 
-uint8_t ArduRoomba::_parseOneByteStreamBuffer(uint8_t *packets, int &start) 
+byte ArduRoomba::_parseOneByteStreamBuffer(byte *packets, int &start) 
 {
-  uint8_t v = packets[start];
+  byte v = packets[start];
   start++;
   return v;
 }
 
-int ArduRoomba::_parseTwoByteStreamBuffer(uint8_t *packets, int &start) 
+int ArduRoomba::_parseTwoByteStreamBuffer(byte *packets, int &start) 
 {
   int v = (int)(packets[start] * 256 + packets[start + 1]);
   start += 2;
   return v;
 }
 
-bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos) 
+void ArduRoomba::_parseAndFillOneByteStreamBuffer(byte *packets, int &start, bool *bytes) 
+{
+  byte oneByteParsedPacket = (byte)_parseOneByteStreamBuffer(packets, start);
+  for(int i=0; i < 7; i++) {
+    bytes[i]=(oneByteParsedPacket >> i) & 1;
+  }
+}
+
+bool ArduRoomba::_parseStreamBuffer(byte *packets, int len, RoombaInfos *infos) 
 {
   int i = 0;
-  char packetID;
-  uint8_t oneByteParsedPacket;
+  byte packetID;
+  bool oneByteParsedPacketBits[7]={false};
   while (i < len) {
-    packetID = (char)_parseOneByteStreamBuffer(packets, i);
+    packetID = (byte)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
     case ARDUROOMBA_SENSOR_MODE:
-      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->mode = (byte)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS:
+      infos->ioStreamNumPackets = (byte)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_SONGNUMBER:
+      infos->songNumber = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_IROPCODE:
-      infos->irOpcode = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->irOpcode = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
-    case ARDUROOMBA_SENSOR_CHARGERAVAILABLE:
-      infos->chargerAvailable = (int)_parseOneByteStreamBuffer(packets, i);
+    case ARDUROOMBA_SENSOR_INFRAREDCHARACTERLEFT:
+      infos->infraredCharacterLeft = (byte)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_INFRAREDCHARACTERRIGHT:
+      infos->infraredCharacterRight = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_DIRTDETECT:
       infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CHARGINGSTATE:
-      infos->chargingState = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->chargingState = (byte)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_VOLTAGE:
       infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_CURRENT:
+      infos->current = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_VELOCITY:
+      infos->velocity = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LEFTMOTORCURRENT:
+      infos->leftMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_RIGHTMOTORCURRENT:
+      infos->rightMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_MAINBRUSHMOTORCURRENT:
+      infos->mainBrushMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_SIDEBRUSHMOTORCURRENT:
+      infos->sideBrushMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_RIGHTVELOCITY:
+      infos->rightVelocity = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LEFTVELOCITY:
+      infos->leftVelocity = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_RADIUS:
+      infos->radius = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_WALLSIGNAL:
+      infos->wallSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFLEFTSIGNAL:
+      infos->cliffLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFFRONTLEFTSIGNAL:
+      infos->cliffFrontLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFRIGHTSIGNAL:
+      infos->cliffRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_CLIFFFRONTRIGHTSIGNAL:
+      infos->cliffFrontRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPLEFTSIGNAL:
+      infos->lightBumpLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPFRONTLEFTSIGNAL:
+      infos->lightBumpFrontLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPCENTERLEFTSIGNAL:
+      infos->lightBumpCenterLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPCENTERRIGHTSIGNAL:
+      infos->lightBumpCenterLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPFRONTRIGHTSIGNAL:
+      infos->lightBumpFrontRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPRIGHTSIGNAL:
+      infos->lightBumpRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_TEMPERATURE:
-      infos->temperature = (unsigned int)_parseOneByteStreamBuffer(packets, i);
+      infos->temperature = (char)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BATTERYCHARGE:
       infos->batteryCharge = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_LEFTENCODERCOUNTS:
+      infos->leftEncoderCounts = (int)_parseTwoByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_RIGHTENCODERCOUNTS:
+      infos->rightEncoderCounts = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BATTERYCAPACITY:
       infos->batteryCapacity = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_WALL:
       infos->wall = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_SONGPLAYING:
+      infos->songPlaying = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_VIRTUALWALL:
       infos->virtualWall = (bool)_parseOneByteStreamBuffer(packets, i);
@@ -74,19 +160,49 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *info
       infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
-      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->bumpRight = (oneByteParsedPacket >> 0) & 1;
-      infos->bumpLeft = (oneByteParsedPacket >> 1) & 1;
-      infos->wheelDropRight = (oneByteParsedPacket >> 2) & 1;
-      infos->wheelDropLeft = (oneByteParsedPacket >> 3) & 1;
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->bumpRight = oneByteParsedPacketBits[0];
+      infos->bumpLeft = oneByteParsedPacketBits[1];
+      infos->wheelDropRight =oneByteParsedPacketBits[2];
+      infos->wheelDropLeft = oneByteParsedPacketBits[3];
       break;
     case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
-      oneByteParsedPacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->sideBrushOvercurrent = (oneByteParsedPacket >> 0) & 1;
-      infos->vacuumOvercurrent = (oneByteParsedPacket >> 1) & 1;
-      infos->mainBrushOvercurrent = (oneByteParsedPacket >> 2) & 1;
-      infos->wheelRightOvercurrent = (oneByteParsedPacket >> 3) & 1;
-      infos->wheelLeftOvercurrent = (oneByteParsedPacket >> 4) & 1;
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->sideBrushOvercurrent = oneByteParsedPacketBits[0];
+      infos->vacuumOvercurrent = oneByteParsedPacketBits[1];
+      infos->mainBrushOvercurrent = oneByteParsedPacketBits[2];
+      infos->wheelRightOvercurrent = oneByteParsedPacketBits[3];
+      infos->wheelLeftOvercurrent = oneByteParsedPacketBits[4];
+      break;
+    case ARDUROOMBA_SENSOR_BUTTONS:
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->cleanButton = oneByteParsedPacketBits[0];
+      infos->spotButton = oneByteParsedPacketBits[1];
+      infos->dockButton = oneByteParsedPacketBits[2];
+      infos->minuteButton = oneByteParsedPacketBits[3];
+      infos->hourButton = oneByteParsedPacketBits[4];
+      infos->dayButton = oneByteParsedPacketBits[5];
+      infos->scheludeButton = oneByteParsedPacketBits[6];
+      infos->clockButton = oneByteParsedPacketBits[7];
+      break;
+    case ARDUROOMBA_SENSOR_LIGHTBUMPER:
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->lightBumperLeft = oneByteParsedPacketBits[0];
+      infos->lightBumperFrontLeft = oneByteParsedPacketBits[1];
+      infos->lightBumperCenterLeft = oneByteParsedPacketBits[2];
+      infos->lightBumperCenterRight = oneByteParsedPacketBits[3];
+      infos->lightBumperFrontRight = oneByteParsedPacketBits[4];
+      infos->lightBumperRight = oneByteParsedPacketBits[5];
+      break;
+    case ARDUROOMBA_SENSOR_CHARGERAVAILABLE:
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->internalChargerAvailable = oneByteParsedPacketBits[0];
+      infos->homeBaseChargerAvailable = oneByteParsedPacketBits[1];
+      break;
+    case ARDUROOMBA_SENSOR_STASIS:
+      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
+      infos->stasisToggling = oneByteParsedPacketBits[0];
+      infos->stasisDisabled = oneByteParsedPacketBits[1];
       break;
     default:
       Serial.print("ArduRoomba::_parseStreamBuffer error: Unhandled Packet ID (");
@@ -112,11 +228,11 @@ bool ArduRoomba::_readStream()
 
   int state = ARDUROOMBA_STREAM_WAIT_HEADER;
   _streamBufferCursor = 0;
-  uint8_t streamSize;
-  uint8_t lastChunk;
-  uint8_t checksum = 0;
+  byte streamSize;
+  byte lastChunk;
+  byte checksum = 0;
   while (_irobot.available()) {
-    uint8_t chunk = _irobot.read();
+    byte chunk = _irobot.read();
     switch (state) {
     case ARDUROOMBA_STREAM_WAIT_HEADER:
       if (chunk == 19) {
