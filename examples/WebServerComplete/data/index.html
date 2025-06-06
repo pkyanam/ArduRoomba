@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArduRoomba Control Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .status-card, .control-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .status-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .status-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .movement-controls {
+            text-align: center;
+        }
+        
+        .dpad {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 10px;
+            max-width: 200px;
+            margin: 20px auto;
+        }
+        
+        .dpad-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dpad-btn:hover {
+            background: #5a6fd8;
+            transform: scale(1.1);
+        }
+        
+        .dpad-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .dpad-btn.up { grid-column: 2; grid-row: 1; }
+        .dpad-btn.left { grid-column: 1; grid-row: 2; }
+        .dpad-btn.stop { grid-column: 2; grid-row: 2; background: #dc3545; }
+        .dpad-btn.right { grid-column: 3; grid-row: 2; }
+        .dpad-btn.down { grid-column: 2; grid-row: 3; }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn.primary {
+            background: #28a745;
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .action-btn.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .battery-indicator {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .battery-fill.low {
+            background: linear-gradient(90deg, #dc3545, #fd7e14);
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+        }
+        
+        .connection-status.connected {
+            background: #28a745;
+        }
+        
+        .connection-status.disconnected {
+            background: #dc3545;
+        }
+        
+        .sensor-alerts {
+            margin-top: 20px;
+        }
+        
+        .alert {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert.danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">Connecting...</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🤖 ArduRoomba Control Center</h1>
+            <p>Wireless Roomba Control Interface</p>
+        </div>
+        
+        <div class="status-card">
+            <h2>System Status</h2>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-value" id="batteryPercent">--</div>
+                    <div class="status-label">Battery %</div>
+                    <div class="battery-indicator">
+                        <div class="battery-fill" id="batteryFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="voltage">--</div>
+                    <div class="status-label">Voltage (mV)</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="mode">--</div>
+                    <div class="status-label">Mode</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="temperature">--</div>
+                    <div class="status-label">Temperature (°C)</div>
+                </div>
+            </div>
+            
+            <div class="sensor-alerts" id="sensorAlerts">
+                <!-- Dynamic alerts will appear here -->
+            </div>
+        </div>
+        
+        <div class="control-card">
+            <h2>Controls</h2>
+            <div class="controls">
+                <div class="movement-controls">
+                    <h3>Movement</h3>
+                    <div class="dpad">
+                        <button class="dpad-btn up" onclick="moveForward()">↑</button>
+                        <button class="dpad-btn left" onclick="turnLeft()">←</button>
+                        <button class="dpad-btn stop" onclick="stopMovement()">⏹</button>
+                        <button class="dpad-btn right" onclick="turnRight()">→</button>
+                        <button class="dpad-btn down" onclick="moveBackward()">↓</button>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <h3>Actions</h3>
+                    <button class="action-btn primary" onclick="startCleaning()">🏠 Start Cleaning</button>
+                    <button class="action-btn secondary" onclick="spotClean()">🎯 Spot Clean</button>
+                    <button class="action-btn warning" onclick="returnToDock()">🔌 Return to Dock</button>
+                    <button class="action-btn secondary" onclick="initializeRoomba()">🔄 Initialize</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let isConnected = false;
+        let updateInterval;
+        
+        // Initialize the interface
+        document.addEventListener('DOMContentLoaded', function() {
+            updateConnectionStatus();
+            startStatusUpdates();
+        });
+        
+        // Connection management
+        function updateConnectionStatus() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    isConnected = true;
+                    document.getElementById('connectionStatus').textContent = 'Connected';
+                    document.getElementById('connectionStatus').className = 'connection-status connected';
+                    updateStatusDisplay(data);
+                })
+                .catch(error => {
+                    isConnected = false;
+                    document.getElementById('connectionStatus').textContent = 'Disconnected';
+                    document.getElementById('connectionStatus').className = 'connection-status disconnected';
+                    console.error('Connection error:', error);
+                });
+        }
+        
+        // Start periodic status updates
+        function startStatusUpdates() {
+            updateInterval = setInterval(updateConnectionStatus, 2000); // Update every 2 seconds
+        }
+        
+        // Update status display
+        function updateStatusDisplay(data) {
+            if (data.roomba) {
+                // Update battery information
+                const battery = data.roomba.battery || 0;
+                const voltage = data.roomba.voltage || 0;
+                const mode = data.roomba.mode || 0;
+                
+                document.getElementById('batteryPercent').textContent = battery + '%';
+                document.getElementById('voltage').textContent = voltage;
+                document.getElementById('mode').textContent = getModeText(mode);
+                
+                // Update battery indicator
+                const batteryFill = document.getElementById('batteryFill');
+                batteryFill.style.width = battery + '%';
+                batteryFill.className = battery < 20 ? 'battery-fill low' : 'battery-fill';
+            }
+            
+            // Get detailed sensor data
+            updateSensorData();
+        }
+        
+        // Get detailed sensor information
+        function updateSensorData() {
+            fetch('/api/sensors/all')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.battery) {
+                        document.getElementById('temperature').textContent = data.battery.temperature || '--';
+                    }
+                    
+                    // Update alerts
+                    updateAlerts(data);
+                })
+                .catch(error => {
+                    console.error('Sensor data error:', error);
+                });
+        }
+        
+        // Update sensor alerts
+        function updateAlerts(data) {
+            const alertsContainer = document.getElementById('sensorAlerts');
+            alertsContainer.innerHTML = '';
+            
+            if (data.sensors) {
+                const alerts = [];
+                
+                if (data.sensors.cliff_left || data.sensors.cliff_front_left || 
+                    data.sensors.cliff_front_right || data.sensors.cliff_right) {
+                    alerts.push({type: 'danger', message: '⚠️ Cliff detected! Robot stopped for safety.'});
+                }
+                
+                if (data.sensors.bump_left || data.sensors.bump_right) {
+                    alerts.push({type: 'warning', message: '🚧 Obstacle detected by bumper sensors.'});
+                }
+                
+                if (data.sensors.wheel_drop_left || data.sensors.wheel_drop_right) {
+                    alerts.push({type: 'danger', message: '⚠️ Wheel drop detected! Check robot position.'});
+                }
+                
+                if (data.battery && data.battery.percentage < 20) {
+                    alerts.push({type: 'warning', message: '🔋 Low battery: ' + data.battery.percentage + '%'});
+                }
+                
+                // Display alerts
+                alerts.forEach(alert => {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert ' + alert.type;
+                    alertDiv.textContent = alert.message;
+                    alertsContainer.appendChild(alertDiv);
+                });
+            }
+        }
+        
+        // Movement functions
+        function moveForward() {
+            sendCommand('/api/movement/forward', 'POST');
+        }
+        
+        function moveBackward() {
+            sendCommand('/api/movement/backward', 'POST');
+        }
+        
+        function turnLeft() {
+            sendCommand('/api/movement/turn-left', 'POST');
+        }
+        
+        function turnRight() {
+            sendCommand('/api/movement/turn-right', 'POST');
+        }
+        
+        function stopMovement() {
+            sendCommand('/api/movement/stop', 'POST');
+        }
+        
+        // Action functions
+        function startCleaning() {
+            sendCommand('/api/cleaning/start', 'POST');
+        }
+        
+        function spotClean() {
+            sendCommand('/api/cleaning/spot', 'POST');
+        }
+        
+        function returnToDock() {
+            sendCommand('/api/cleaning/dock', 'POST');
+        }
+        
+        function initializeRoomba() {
+            sendCommand('/api/initialize', 'POST');
+        }
+        
+        // Generic command sender
+        function sendCommand(endpoint, method = 'POST', data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            fetch(endpoint, options)
+                .then(response => response.json())
+                .then(result => {
+                    console.log('Command result:', result);
+                    if (!result.success) {
+                        alert('Command failed: ' + (result.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Command error:', error);
+                    alert('Communication error: ' + error.message);
+                });
+        }
+        
+        // Utility functions
+        function getModeText(mode) {
+            switch(mode) {
+                case 0: return 'Off';
+                case 1: return 'Passive';
+                case 2: return 'Safe';
+                case 3: return 'Full';
+                default: return 'Unknown';
+            }
+        }
+        
+        // Touch event handling for mobile
+        document.addEventListener('touchstart', function(e) {
+            // Prevent default touch behavior on control buttons
+            if (e.target.classList.contains('dpad-btn') || e.target.classList.contains('action-btn')) {
+                e.preventDefault();
+            }
+        });
+        
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    moveForward();
+                    e.preventDefault();
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    moveBackward();
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    turnLeft();
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    turnRight();
+                    e.preventDefault();
+                    break;
+                case ' ':
+                case 'Escape':
+                    stopMovement();
+                    e.preventDefault();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
