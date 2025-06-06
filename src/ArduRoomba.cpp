@@ -1,599 +1,445 @@
+/**
+ * @file ArduRoomba.cpp
+ * @brief Implementation of the main ArduRoomba class
+ * 
+ * @author Preetham Kyanam <preetham@preetham.org>
+ * @version 2.3.0
+ * @date 2025-06-06
+ * 
+ * @copyright Copyright (c) 2025 Preetham Kyanam
+ * Licensed under GNU General Public License v3.0 (GPL-3.0)
+ */
+
 #include "ArduRoomba.h"
 
-ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
-    : _rxPin(rxPin), _txPin(txPin), _brcPin(brcPin), _irobot(rxPin, txPin)
-{
-  // Constructor implementation
+namespace ArduRoomba {
+
+// ============================================================================
+// CONSTRUCTOR AND DESTRUCTOR
+// ============================================================================
+
+ArduRoomba::ArduRoomba(uint8_t rxPin, uint8_t txPin, uint8_t brcPin)
+    : _core(rxPin, txPin, brcPin), _sensors(_core), _commands(_core),
+      _debugEnabled(false), _lastError(ErrorCode::SUCCESS) {
 }
 
-byte ArduRoomba::_parseOneByteStreamBuffer(byte *packets, int &start) 
-{
-  byte v = packets[start];
-  start++;
-  return v;
+ArduRoomba::~ArduRoomba() {
+    // Destructor - components handle their own cleanup
 }
 
-int ArduRoomba::_parseTwoByteStreamBuffer(byte *packets, int &start) 
-{
-  int v = (int)(packets[start] * 256 + packets[start + 1]);
-  start += 2;
-  return v;
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+ErrorCode ArduRoomba::initialize(uint32_t baudRate) {
+    ErrorCode result = _core.initialize(baudRate);
+    updateLastError(result);
+    return result;
 }
 
-void ArduRoomba::_parseAndFillOneByteStreamBuffer(byte *packets, int &start, bool *bytes) 
-{
-  byte oneByteParsedPacket = (byte)_parseOneByteStreamBuffer(packets, start);
-  for(int i=0; i < 7; i++) {
-    bytes[i]=(oneByteParsedPacket >> i) & 1;
-  }
+void ArduRoomba::roombaSetup() {
+    // Legacy method - calls new initialize method but ignores error code
+    initialize();
 }
 
-bool ArduRoomba::_parseStreamBuffer(byte *packets, int len, RoombaInfos *infos) 
-{
-  int i = 0;
-  byte packetID;
-  bool oneByteParsedPacketBits[7]={false};
-  while (i < len) {
-    packetID = (byte)_parseOneByteStreamBuffer(packets, i);
-    switch (packetID) {
-    case ARDUROOMBA_SENSOR_MODE:
-      infos->mode = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_IOSTREAMNUMPACKETS:
-      infos->ioStreamNumPackets = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_SONGNUMBER:
-      infos->songNumber = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_IROPCODE:
-      infos->irOpcode = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_INFRAREDCHARACTERLEFT:
-      infos->infraredCharacterLeft = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_INFRAREDCHARACTERRIGHT:
-      infos->infraredCharacterRight = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_DIRTDETECT:
-      infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CHARGINGSTATE:
-      infos->chargingState = (byte)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_VOLTAGE:
-      infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CURRENT:
-      infos->current = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_VELOCITY:
-      infos->velocity = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LEFTMOTORCURRENT:
-      infos->leftMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_RIGHTMOTORCURRENT:
-      infos->rightMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_MAINBRUSHMOTORCURRENT:
-      infos->mainBrushMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_SIDEBRUSHMOTORCURRENT:
-      infos->sideBrushMotorCurrent = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_RIGHTVELOCITY:
-      infos->rightVelocity = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LEFTVELOCITY:
-      infos->leftVelocity = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_RADIUS:
-      infos->radius = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_WALLSIGNAL:
-      infos->wallSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFLEFTSIGNAL:
-      infos->cliffLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFFRONTLEFTSIGNAL:
-      infos->cliffFrontLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFRIGHTSIGNAL:
-      infos->cliffRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFFRONTRIGHTSIGNAL:
-      infos->cliffFrontRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPLEFTSIGNAL:
-      infos->lightBumpLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPFRONTLEFTSIGNAL:
-      infos->lightBumpFrontLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPCENTERLEFTSIGNAL:
-      infos->lightBumpCenterLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPCENTERRIGHTSIGNAL:
-      infos->lightBumpCenterLeftSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPFRONTRIGHTSIGNAL:
-      infos->lightBumpFrontRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPRIGHTSIGNAL:
-      infos->lightBumpRightSignal = (unsigned int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_TEMPERATURE:
-      infos->temperature = (char)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_BATTERYCHARGE:
-      infos->batteryCharge = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_LEFTENCODERCOUNTS:
-      infos->leftEncoderCounts = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_RIGHTENCODERCOUNTS:
-      infos->rightEncoderCounts = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_BATTERYCAPACITY:
-      infos->batteryCapacity = (int)_parseTwoByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_WALL:
-      infos->wall = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_SONGPLAYING:
-      infos->songPlaying = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_VIRTUALWALL:
-      infos->virtualWall = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFLEFT:
-      infos->cliffLeft = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFFRONTLEFT:
-      infos->cliffFrontLeft = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFRIGHT:
-      infos->cliffRight = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT:
-      infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
-      break;
-    case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
-      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
-      infos->bumpRight = oneByteParsedPacketBits[0];
-      infos->bumpLeft = oneByteParsedPacketBits[1];
-      infos->wheelDropRight =oneByteParsedPacketBits[2];
-      infos->wheelDropLeft = oneByteParsedPacketBits[3];
-      break;
-    case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
-      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
-      infos->sideBrushOvercurrent = oneByteParsedPacketBits[0];
-      infos->vacuumOvercurrent = oneByteParsedPacketBits[1];
-      infos->mainBrushOvercurrent = oneByteParsedPacketBits[2];
-      infos->wheelRightOvercurrent = oneByteParsedPacketBits[3];
-      infos->wheelLeftOvercurrent = oneByteParsedPacketBits[4];
-      break;
-    case ARDUROOMBA_SENSOR_BUTTONS:
-      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
-      infos->cleanButton = oneByteParsedPacketBits[0];
-      infos->spotButton = oneByteParsedPacketBits[1];
-      infos->dockButton = oneByteParsedPacketBits[2];
-      infos->minuteButton = oneByteParsedPacketBits[3];
-      infos->hourButton = oneByteParsedPacketBits[4];
-      infos->dayButton = oneByteParsedPacketBits[5];
-      infos->scheludeButton = oneByteParsedPacketBits[6];
-      infos->clockButton = oneByteParsedPacketBits[7];
-      break;
-    case ARDUROOMBA_SENSOR_LIGHTBUMPER:
-      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
-      infos->lightBumperLeft = oneByteParsedPacketBits[0];
-      infos->lightBumperFrontLeft = oneByteParsedPacketBits[1];
-      infos->lightBumperCenterLeft = oneByteParsedPacketBits[2];
-      infos->lightBumperCenterRight = oneByteParsedPacketBits[3];
-      infos->lightBumperFrontRight = oneByteParsedPacketBits[4];
-      infos->lightBumperRight = oneByteParsedPacketBits[5];
-      break;
-    case ARDUROOMBA_SENSOR_CHARGERAVAILABLE:
-      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
-      infos->internalChargerAvailable = oneByteParsedPacketBits[0];
-      infos->homeBaseChargerAvailable = oneByteParsedPacketBits[1];
-      break;
-    case ARDUROOMBA_SENSOR_STASIS:
-      _parseAndFillOneByteStreamBuffer(packets, i, oneByteParsedPacketBits);
-      infos->stasisToggling = oneByteParsedPacketBits[0];
-      infos->stasisDisabled = oneByteParsedPacketBits[1];
-      break;
-    default:
-      Serial.print("ArduRoomba::_parseStreamBuffer error: Unhandled Packet ID (");
-      Serial.print(packetID, DEC);
-      Serial.print(")\n");
-      return false;
-      break;
+bool ArduRoomba::isInitialized() const {
+    return _core.isInitialized();
+}
+
+// ============================================================================
+// OPEN INTERFACE COMMANDS (Legacy compatibility)
+// ============================================================================
+
+void ArduRoomba::start() {
+    updateLastError(_commands.start());
+}
+
+void ArduRoomba::baud(char baudCode) {
+    // Convert legacy baud code to actual baud rate
+    uint32_t baudRate;
+    switch (baudCode) {
+        case 0: baudRate = 300; break;
+        case 1: baudRate = 600; break;
+        case 2: baudRate = 1200; break;
+        case 3: baudRate = 2400; break;
+        case 4: baudRate = 4800; break;
+        case 5: baudRate = 9600; break;
+        case 6: baudRate = 14400; break;
+        case 7: baudRate = 19200; break;
+        case 8: baudRate = 28800; break;
+        case 9: baudRate = 38400; break;
+        case 10: baudRate = 57600; break;
+        case 11: baudRate = 115200; break;
+        default: baudRate = 19200; break;
     }
-  }
-  return true;
+    updateLastError(_commands.changeBaudRate(baudRate));
 }
 
-bool ArduRoomba::_readStream() 
-{
-  unsigned long timeout =
-      millis() + ARDUROOMBA_STREAM_TIMEOUT; // stream start every 15ms
-  while (!_irobot.available()) {
-    if (millis() > timeout) {
-      Serial.print("ArduRoomba::_readStream enable to read stream (serial timeout)\n");
-      return false; // Timed out
+void ArduRoomba::safe() {
+    updateLastError(_commands.safeMode());
+}
+
+void ArduRoomba::full() {
+    updateLastError(_commands.fullMode());
+}
+
+void ArduRoomba::clean() {
+    updateLastError(_commands.startCleaning());
+}
+
+void ArduRoomba::maxClean() {
+    updateLastError(_commands.startMaxCleaning());
+}
+
+void ArduRoomba::spot() {
+    updateLastError(_commands.startSpotCleaning());
+}
+
+void ArduRoomba::seekDock() {
+    updateLastError(_commands.seekDock());
+}
+
+void ArduRoomba::schedule(ScheduleStore scheduleData) {
+    updateLastError(_commands.setSchedule(scheduleData));
+}
+
+void ArduRoomba::setDayTime(char day, char hour, char minute) {
+    updateLastError(_commands.setDayTime(day, hour, minute));
+}
+
+void ArduRoomba::power() {
+    updateLastError(_commands.powerDown());
+}
+
+// ============================================================================
+// ACTUATOR COMMANDS (Legacy compatibility)
+// ============================================================================
+
+void ArduRoomba::drive(int velocity, int radius) {
+    updateLastError(_commands.drive(velocity, radius));
+}
+
+void ArduRoomba::driveDirect(int rightVelocity, int leftVelocity) {
+    updateLastError(_commands.driveDirect(rightVelocity, leftVelocity));
+}
+
+void ArduRoomba::drivePWM(int rightPWM, int leftPWM) {
+    updateLastError(_commands.drivePWM(rightPWM, leftPWM));
+}
+
+void ArduRoomba::motors(byte data) {
+    bool sideBrush = (data & 0x01) != 0;
+    bool vacuum = (data & 0x02) != 0;
+    bool mainBrush = (data & 0x04) != 0;
+    bool sideBrushDirection = (data & 0x08) != 0;
+    bool mainBrushDirection = (data & 0x10) != 0;
+    
+    updateLastError(_commands.setMotors(sideBrush, vacuum, mainBrush, 
+                                       sideBrushDirection, mainBrushDirection));
+}
+
+void ArduRoomba::pwmMotors(char mainBrushPWM, char sideBrushPWM, char vacuumPWM) {
+    updateLastError(_commands.setMotorsPWM(mainBrushPWM, sideBrushPWM, vacuumPWM));
+}
+
+void ArduRoomba::leds(int ledBits, int powerColor, int powerIntensity) {
+    bool checkRobot = (ledBits & 0x08) != 0;
+    bool dock = (ledBits & 0x04) != 0;
+    bool spot = (ledBits & 0x02) != 0;
+    bool debris = (ledBits & 0x01) != 0;
+    
+    updateLastError(_commands.setLEDs(checkRobot, dock, spot, debris, 
+                                     powerColor, powerIntensity));
+}
+
+void ArduRoomba::schedulingLeds(int weekDayLedBits, int scheduleLedBits) {
+    updateLastError(_commands.setSchedulingLEDs(weekDayLedBits, scheduleLedBits));
+}
+
+void ArduRoomba::digitLedsRaw(int digitThree, int digitTwo, int digitOne, int digitZero) {
+    updateLastError(_commands.setDigitLEDs(digitThree, digitTwo, digitOne, digitZero));
+}
+
+void ArduRoomba::song(Song songData) {
+    updateLastError(_commands.defineSong(songData));
+}
+
+void ArduRoomba::play(int songNumber) {
+    updateLastError(_commands.playSong(songNumber));
+}
+
+// ============================================================================
+// INPUT COMMANDS (Legacy compatibility)
+// ============================================================================
+
+void ArduRoomba::sensors(char packetID) {
+    uint8_t buffer[64];
+    uint8_t bufferSize = sizeof(buffer);
+    
+    ErrorCode result = _sensors.requestSensor(static_cast<SensorPacket>(packetID), 
+                                             buffer, &bufferSize);
+    updateLastError(result);
+    
+    // Print data to Serial for legacy compatibility
+    if (result == ErrorCode::SUCCESS) {
+        Serial.print("Packet ID: ");
+        Serial.print(packetID, DEC);
+        Serial.print(", Data: ");
+        for (uint8_t i = 0; i < bufferSize; i++) {
+            Serial.print(buffer[i], DEC);
+            Serial.print(" ");
+        }
+        Serial.println();
     }
-  }
+}
 
-  int state = ARDUROOMBA_STREAM_WAIT_HEADER;
-  _streamBufferCursor = 0;
-  byte streamSize;
-  byte lastChunk;
-  byte checksum = 0;
-  while (_irobot.available()) {
-    byte chunk = _irobot.read();
-    switch (state) {
-    case ARDUROOMBA_STREAM_WAIT_HEADER:
-      if (chunk == 19) {
-        state = ARDUROOMBA_STREAM_WAIT_SIZE;
-      }
-      break;
-    case ARDUROOMBA_STREAM_WAIT_SIZE:
-      streamSize = chunk;
-      state = ARDUROOMBA_STREAM_WAIT_CONTENT;
-      break;
-    case ARDUROOMBA_STREAM_WAIT_CONTENT:
-      if (_streamBufferCursor < streamSize) {
-        _streamBuffer[_streamBufferCursor] = chunk;
-        _streamBufferCursor++;
-      } else {
-        state = ARDUROOMBA_STREAM_WAIT_CHECKSUM;
-      }
-      break;
-    case ARDUROOMBA_STREAM_WAIT_CHECKSUM:
-      lastChunk = chunk;
-      state = ARDUROOMBA_STREAM_END;
-      break;
+void ArduRoomba::queryList(byte numPackets, byte *packetIDs) {
+    if (packetIDs == nullptr || numPackets == 0) {
+        updateLastError(ErrorCode::INVALID_PARAMETER);
+        return;
     }
-    checksum += chunk;
-  }
-
-  bool isChecksum = (checksum & 0xFF) == 0;
-  bool isStreamEnd = state == ARDUROOMBA_STREAM_END;
-  return isStreamEnd && isChecksum;
-}
-
-int ArduRoomba::_sensorsListLength(char sensorlist[]) 
-{
-  int i;
-  int count = 0;
-  for (i = 0; sensorlist[i] != '\0'; i++) {
-    count++;
-  }
-  return count;
-}
-
-void ArduRoomba::queryStream(char sensorlist[]) 
-{
-  Serial.print("ArduRoomba::queryStream:\n");
-  _nbSensorsStream = _sensorsListLength(sensorlist);
-  _irobot.write(148);
-  _irobot.write(_nbSensorsStream);
-  for (int i = 0; i < _nbSensorsStream; i++) {
-    _sensorsStream[i] = sensorlist[i];
-    Serial.print(" ");
-    Serial.print(_sensorsStream[i], DEC);
-    Serial.print("\n");
-    _irobot.write(_sensorsStream[i]);
-  }
-}
-
-void ArduRoomba::resetStream()
-{
-  Serial.print("ArduRoomba::resetStream\n");
-  _irobot.write(148);
-  _irobot.write(_zero);
-}
-
-bool ArduRoomba::refreshData(RoombaInfos *stateInfos) 
-{
-  long now = millis();
-  if (now > stateInfos->nextRefresh) {
-    stateInfos->nextRefresh = now + ARDUROOMBA_REFRESH_DELAY;
-    stateInfos->attempt++;
-    if (_readStream() &&
-        _parseStreamBuffer(_streamBuffer, _streamBufferCursor, stateInfos)) {
-      stateInfos->lastSuccedRefresh = now;
-      stateInfos->attempt=0;
-      return true;
+    
+    // Convert byte array to SensorPacket array
+    SensorPacket packets[numPackets];
+    for (byte i = 0; i < numPackets; i++) {
+        packets[i] = static_cast<SensorPacket>(packetIDs[i]);
     }
-    return false;
-  }
-  return false;
-}
-// OI commands
-void ArduRoomba::start()
-{
-  _irobot.write(128);
-}
-
-void ArduRoomba::baud(char baudCode)
-{
-  _irobot.write(129);
-  _irobot.write(baudCode);
-}
-
-void ArduRoomba::safe()
-{
-  _irobot.write(131);
-}
-
-void ArduRoomba::full()
-{
-  _irobot.write(132);
-}
-
-void ArduRoomba::clean()
-{
-  _irobot.write(135);
-}
-
-void ArduRoomba::maxClean()
-{
-  _irobot.write(136);
-}
-
-void ArduRoomba::spot()
-{
-  _irobot.write(134);
-}
-
-void ArduRoomba::seekDock()
-{
-  _irobot.write(143);
-}
-
-void ArduRoomba::schedule(ScheduleStore scheduleData)
-{
-  _irobot.write(167);
-  _irobot.write(scheduleData.sunHour);
-  _irobot.write(scheduleData.sunMinute);
-  _irobot.write(scheduleData.monHour);
-  _irobot.write(scheduleData.monMinute);
-  _irobot.write(scheduleData.tueHour);
-  _irobot.write(scheduleData.tueMinute);
-  _irobot.write(scheduleData.wedHour);
-  _irobot.write(scheduleData.wedMinute);
-  _irobot.write(scheduleData.thuHour);
-  _irobot.write(scheduleData.thuMinute);
-  _irobot.write(scheduleData.friHour);
-  _irobot.write(scheduleData.friMinute);
-  _irobot.write(scheduleData.satHour);
-  _irobot.write(scheduleData.satMinute);
-}
-
-void ArduRoomba::setDayTime(char day, char hour, char minute)
-{
-  _irobot.write(168);
-  _irobot.write(day);
-  _irobot.write(hour);
-  _irobot.write(minute);
-}
-
-void ArduRoomba::power()
-{
-  _irobot.write(133);
-}
-
-// Actuator commands
-void ArduRoomba::drive(int velocity, int radius)
-{
-  _irobot.write(137);
-  _irobot.write((velocity >> 8) & 0xFF);
-  _irobot.write(velocity & 0xFF);
-  _irobot.write((radius >> 8) & 0xFF);
-  _irobot.write(radius & 0xFF);
-}
-
-void ArduRoomba::driveDirect(int rightVelocity, int leftVelocity)
-{
-  _irobot.write(145);
-  _irobot.write((rightVelocity >> 8) & 0xFF);
-  _irobot.write(rightVelocity & 0xFF);
-  _irobot.write((leftVelocity >> 8) & 0xFF);
-  _irobot.write(leftVelocity & 0xFF);
-}
-
-void ArduRoomba::drivePWM(int rightPWM, int leftPWM)
-{
-  _irobot.write(146);
-  _irobot.write((rightPWM >> 8) & 0xFF);
-  _irobot.write(rightPWM & 0xFF);
-  _irobot.write((leftPWM >> 8) & 0xFF);
-  _irobot.write(leftPWM & 0xFF);
-}
-
-void ArduRoomba::motors(byte data)
-{
-  _irobot.write(138);
-  _irobot.write(data);
-}
-
-void ArduRoomba::pwmMotors(char mainBrushPWM, char sideBrushPWM, char vacuumPWM)
-{
-  _irobot.write(144);
-  _irobot.write(mainBrushPWM);
-  _irobot.write(sideBrushPWM);
-  _irobot.write(vacuumPWM);
-}
-
-void ArduRoomba::leds(int ledBits, int powerColor, int powerIntensity)
-{
-  _irobot.write(139);
-  _irobot.write(ledBits);
-  _irobot.write(powerColor);
-  _irobot.write(powerIntensity);
-}
-
-void ArduRoomba::schedulingLeds(int weekDayLedBits, int scheduleLedBits)
-{
-  _irobot.write(162);
-  _irobot.write(weekDayLedBits);
-  _irobot.write(scheduleLedBits);
-}
-
-void ArduRoomba::digitLedsRaw(int digitThree, int digitTwo, int digitOne, int digitZero)
-{
-  _irobot.write(163);
-  _irobot.write(digitThree);
-  _irobot.write(digitTwo);
-  _irobot.write(digitOne);
-  _irobot.write(digitZero);
-}
-
-void ArduRoomba::song(Song songData)
-{
-  _irobot.write(140);
-  _irobot.write(songData.songNumber);
-  _irobot.write(songData.songLength);
-  for (int i = 0; i < songData.songLength; i++)
-  {
-    _irobot.write(songData.notes[i].noteNumber);
-    _irobot.write(songData.notes[i].noteDuration);
-  }
-}
-
-void ArduRoomba::play(int songNumber)
-{
-  _irobot.write(141);
-  _irobot.write(songNumber);
-}
-
-// Input commands
-void ArduRoomba::sensors(char packetID)
-{
-  // Read the data and print it to the serial console
-  Serial.print("Packet ID: ");
-  Serial.print(packetID, DEC);
-  Serial.print(", Data: ");
-
-  _irobot.write(142);
-  _irobot.write(packetID);
-
-  delay(15);
-
-  // Read the data in chunks
-  while (_irobot.available() > 0)
-  {
-    byte buffer[64];
-    size_t len = _irobot.readBytes(buffer, sizeof(buffer));
-    for (size_t i = 0; i < len; i++)
-    {
-      Serial.print(buffer[i], DEC);
-      Serial.print(" ");
+    
+    uint8_t buffer[64];
+    uint8_t bufferSize = sizeof(buffer);
+    
+    ErrorCode result = _sensors.requestSensors(packets, numPackets, buffer, &bufferSize);
+    updateLastError(result);
+    
+    // Print data to Serial for legacy compatibility
+    if (result == ErrorCode::SUCCESS) {
+        for (byte i = 0; i < numPackets; i++) {
+            Serial.print("Packet ID: ");
+            Serial.print(packetIDs[i], DEC);
+            Serial.print(", Data: ");
+            // Note: This is simplified - actual parsing would be more complex
+            Serial.println();
+        }
     }
-  }
-  Serial.println();
 }
 
-void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
-{
-  _irobot.write(149);
-  _irobot.write(numPackets);
-  for (int i = 0; i < numPackets; i++)
-  {
-    _irobot.write(packetIDs[i]);
-  }
-
-  // Read the data and print it to the serial console
-  for (int i = 0; i < numPackets; i++)
-  {
-    Serial.print("Packet ID: ");
-    Serial.print(packetIDs[i], DEC);
-    Serial.print(", Data: ");
-    while (_irobot.available() > 0)
-    {
-      Serial.print(_irobot.read(), DEC);
-      Serial.print(" ");
+void ArduRoomba::queryStream(char sensorlist[]) {
+    if (sensorlist == nullptr) {
+        updateLastError(ErrorCode::INVALID_PARAMETER);
+        return;
     }
-    Serial.println();
-  }
+    
+    SensorPacket newSensorList[BufferSize::SENSOR_LIST];
+    uint8_t sensorCount = convertLegacySensorList(sensorlist, newSensorList, BufferSize::SENSOR_LIST);
+    
+    if (sensorCount > 0) {
+        updateLastError(_sensors.startStreaming(newSensorList, sensorCount));
+    } else {
+        updateLastError(ErrorCode::INVALID_PARAMETER);
+    }
 }
 
-// Custom commands
-void ArduRoomba::roombaSetup()
-{
-  pinMode(_brcPin, OUTPUT);
-  digitalWrite(_brcPin, HIGH); // Ensure it starts HIGH
-  delay(2000);                 // Wait 2 seconds after power on
-  for (int i = 0; i < 3; i++)
-  {                              // Pulse the BRC pin low three times
-    digitalWrite(_brcPin, LOW);  // Bring BRC pin LOW
-    delay(100);                  // Wait 100ms
-    digitalWrite(_brcPin, HIGH); // Bring BRC pin back HIGH
-    delay(100);                  // Wait 100ms before next pulse
-  }
-  Serial.println("Attempting connection to iRobot OI");
-  delay(150);
-  _irobot.begin(19200);
-
-  Serial.println("Sending Start to OI");
-  delay(150);
-  start();
-
-  Serial.println("Sending Safe to OI");
-  delay(150);
-  safe();
-
-  Serial.println("Connection to iRobot OI SHOULD BE established");
-  Serial.println("Verify if CLEAN light has stopped illuminating");
-  delay(150);
+void ArduRoomba::resetStream() {
+    updateLastError(_sensors.stopStreaming());
 }
 
-void ArduRoomba::goForward()
-{
-  _irobot.write(137);   // Opcode for Drive
-  _irobot.write(0x01);  // High byte for 500 mm/s
-  _irobot.write(0xF4);  // Low byte for 500 mm/s
-  _irobot.write(0x80);  // High byte for radius (straight)
-  _irobot.write(_zero); // Low byte for radius (straight)
+bool ArduRoomba::refreshData(RoombaInfos *infos) {
+    if (infos == nullptr) {
+        updateLastError(ErrorCode::INVALID_PARAMETER);
+        return false;
+    }
+    
+    ErrorCode result = _sensors.updateFromStream(*infos);
+    updateLastError(result);
+    return result == ErrorCode::SUCCESS;
 }
 
-void ArduRoomba::goBackward()
-{
-  _irobot.write(137);   // Opcode for Drive
-  _irobot.write(0xFE);  // High byte for -500 mm/s
-  _irobot.write(0x0C);  // Low byte for -500 mm/s
-  _irobot.write(0x80);  // High byte for radius (straight)
-  _irobot.write(_zero); // Low byte for radius (straight)
+// ============================================================================
+// CUSTOM MOVEMENT COMMANDS (Legacy compatibility)
+// ============================================================================
+
+void ArduRoomba::goForward() {
+    updateLastError(_commands.moveForward(500));
 }
 
-void ArduRoomba::turnLeft()
-{
-  // Drive command [137], velocity 200 mm/s, radius 1 (turn in place counterclockwise)
-  _irobot.write(137);   // Opcode for Drive
-  _irobot.write(_zero); // Velocity high byte (200 mm/s)
-  _irobot.write(0xC8);  // Velocity low byte (200 mm/s)
-  _irobot.write(_zero); // Radius high byte (1)
-  _irobot.write(0x01);  // Radius low byte (1)
+void ArduRoomba::goBackward() {
+    updateLastError(_commands.moveBackward(500));
 }
 
-void ArduRoomba::turnRight()
-{
-  // Drive command [137], velocity 200 mm/s, radius -1 (turn in place clockwise)
-  _irobot.write(137);   // Opcode for Drive
-  _irobot.write(_zero); // Velocity high byte (200 mm/s)
-  _irobot.write(0xC8);  // Velocity low byte (200 mm/s)
-  _irobot.write(0xFF);  // Radius high byte (-1)
-  _irobot.write(0xFF);  // Radius low byte (-1)
+void ArduRoomba::turnLeft() {
+    updateLastError(_commands.turnLeft(200));
 }
 
-void ArduRoomba::halt()
-{
-  _irobot.write(137);
-  _irobot.write(_zero);
-  _irobot.write(_zero);
-  _irobot.write(_zero);
-  _irobot.write(_zero);
+void ArduRoomba::turnRight() {
+    updateLastError(_commands.turnRight(200));
 }
+
+void ArduRoomba::halt() {
+    updateLastError(_commands.stop());
+}
+
+// ============================================================================
+// ENHANCED MOVEMENT METHODS
+// ============================================================================
+
+ErrorCode ArduRoomba::moveForward(int16_t velocity) {
+    ErrorCode result = _commands.moveForward(velocity);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::moveBackward(int16_t velocity) {
+    ErrorCode result = _commands.moveBackward(velocity);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::turnLeftInPlace(int16_t velocity) {
+    ErrorCode result = _commands.turnLeft(velocity);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::turnRightInPlace(int16_t velocity) {
+    ErrorCode result = _commands.turnRight(velocity);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::stopMovement() {
+    ErrorCode result = _commands.stop();
+    updateLastError(result);
+    return result;
+}
+
+// ============================================================================
+// ENHANCED SENSOR METHODS
+// ============================================================================
+
+ErrorCode ArduRoomba::getAllSensorData(SensorData& sensorData) {
+    ErrorCode result = _sensors.getAllSensorData(sensorData);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::getBasicSensorData(SensorData& sensorData) {
+    ErrorCode result = _sensors.getBasicSensorData(sensorData);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::startSensorStream(RoombaSensors::SensorPreset preset) {
+    ErrorCode result = _sensors.startStreaming(preset);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::updateSensorData(SensorData& sensorData) {
+    ErrorCode result = _sensors.updateFromStream(sensorData);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::stopSensorStream() {
+    ErrorCode result = _sensors.stopStreaming();
+    updateLastError(result);
+    return result;
+}
+
+// ============================================================================
+// ENHANCED LED AND SOUND METHODS
+// ============================================================================
+
+ErrorCode ArduRoomba::setPowerLED(uint8_t color, uint8_t intensity) {
+    ErrorCode result = _commands.setPowerLED(color, intensity);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::beep(uint8_t frequency, uint8_t duration) {
+    ErrorCode result = _commands.beep(frequency, duration);
+    updateLastError(result);
+    return result;
+}
+
+ErrorCode ArduRoomba::beepSequence(uint8_t count, uint8_t frequency, uint8_t duration) {
+    ErrorCode result = _commands.beepSequence(count, frequency, duration);
+    updateLastError(result);
+    return result;
+}
+
+// ============================================================================
+// UTILITY AND DIAGNOSTIC METHODS
+// ============================================================================
+
+void ArduRoomba::setDebugEnabled(bool enabled) {
+    _debugEnabled = enabled;
+    _core.setDebugEnabled(enabled);
+    _sensors.setDebugEnabled(enabled);
+    _commands.setDebugEnabled(enabled);
+}
+
+bool ArduRoomba::isDebugEnabled() const {
+    return _debugEnabled;
+}
+
+ErrorCode ArduRoomba::getLastError() const {
+    return _lastError;
+}
+
+void ArduRoomba::getStatistics(uint32_t& bytesSent, uint32_t& bytesReceived, 
+                              uint32_t& commandsSent, uint16_t& errors) const {
+    uint16_t coreErrors, commandErrors;
+    _core.getStatistics(bytesSent, bytesReceived, coreErrors);
+    _commands.getStatistics(commandsSent, commandErrors);
+    errors = coreErrors + commandErrors;
+}
+
+void ArduRoomba::resetStatistics() {
+    _core.resetStatistics();
+    _commands.resetStatistics();
+}
+
+void ArduRoomba::printSensorData(const SensorData& sensorData) {
+    _sensors.printSensorData(sensorData);
+}
+
+// ============================================================================
+// INTERNAL HELPER METHODS
+// ============================================================================
+
+void ArduRoomba::updateLastError(ErrorCode error) {
+    if (error != ErrorCode::SUCCESS) {
+        _lastError = error;
+    }
+}
+
+uint8_t ArduRoomba::convertLegacySensorList(char legacySensorList[], SensorPacket* newSensorList, uint8_t maxSensors) {
+    if (legacySensorList == nullptr || newSensorList == nullptr || maxSensors == 0) {
+        return 0;
+    }
+    
+    uint8_t count = 0;
+    int length = getLegacySensorListLength(legacySensorList);
+    
+    for (int i = 0; i < length && count < maxSensors; i++) {
+        newSensorList[count] = static_cast<SensorPacket>(legacySensorList[i]);
+        count++;
+    }
+    
+    return count;
+}
+
+int ArduRoomba::getLegacySensorListLength(char sensorList[]) {
+    if (sensorList == nullptr) {
+        return 0;
+    }
+    
+    int count = 0;
+    for (int i = 0; sensorList[i] != '\0'; i++) {
+        count++;
+    }
+    return count;
+}
+
+} // namespace ArduRoomba
