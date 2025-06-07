@@ -3,45 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArduRoomba - Wireless Robotics Platform</title>
-    <meta name="description" content="ArduRoomba is a comprehensive Arduino library and wireless robotics platform for iRobot Create 2 and compatible Roomba models. Features REST API, web interface, and extensible plugin system.">
-    <meta name="keywords" content="Arduino, Roomba, iRobot, robotics, wireless, IoT, automation, ESP32, ESP8266">
+    <title>ArduRoomba - Arduino Library for iRobot Create 2 & Roomba</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Arduino library for interfacing with iRobot Create 2 and compatible Roomba models. Features modular architecture, WiFi support, REST API, and comprehensive documentation.">
+    <meta name="keywords" content="Arduino, Roomba, iRobot, Create 2, robotics, WiFi, ESP32, ESP8266, library, OI, Open Interface">
     <meta name="author" content="Preetham Kyanam">
+    <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pkyanam.github.io/ArduRoomba/">
-    <meta property="og:title" content="ArduRoomba - Wireless Robotics Platform">
-    <meta property="og:description" content="Transform your Roomba into a smart, wireless-controlled robot with REST API, web interface, and IoT integration.">
-    <meta property="og:image" content="https://pkyanam.github.io/ArduRoomba/assets/og-image.png">
+    <meta property="og:title" content="ArduRoomba - Arduino Library for iRobot Create 2 & Roomba">
+    <meta property="og:description" content="Arduino library for interfacing with iRobot Create 2 and compatible Roomba models with WiFi support and REST API">
+    <meta property="og:image" content="https://pkyanam.github.io/ArduRoomba/WiringDiagram.png">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://pkyanam.github.io/ArduRoomba/">
-    <meta property="twitter:title" content="ArduRoomba - Wireless Robotics Platform">
-    <meta property="twitter:description" content="Transform your Roomba into a smart, wireless-controlled robot with REST API, web interface, and IoT integration.">
-    <meta property="twitter:image" content="https://pkyanam.github.io/ArduRoomba/assets/og-image.png">
+    <meta property="twitter:title" content="ArduRoomba - Arduino Library for iRobot Create 2 & Roomba">
+    <meta property="twitter:description" content="Arduino library for interfacing with iRobot Create 2 and compatible Roomba models with WiFi support and REST API">
+    <meta property="twitter:image" content="https://pkyanam.github.io/ArduRoomba/WiringDiagram.png">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Styles -->
     <link rel="stylesheet" href="assets/style.css">
-    
-    <!-- Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
-    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -49,22 +42,19 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="nav-logo">🤖</span>
-                <span class="nav-title">ArduRoomba</span>
+                <span>ArduRoomba</span>
             </div>
             <div class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link">Home</a>
                 <a href="#features" class="nav-link">Features</a>
-                <a href="#getting-started" class="nav-link">Get Started</a>
-                <a href="#documentation" class="nav-link">Docs</a>
+                <a href="#platforms" class="nav-link">Platforms</a>
+                <a href="#getting-started" class="nav-link">Getting Started</a>
                 <a href="#examples" class="nav-link">Examples</a>
-                <a href="#community" class="nav-link">Community</a>
-                <a href="https://github.com/pkyanam/ArduRoomba" class="nav-link nav-github" target="_blank">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    GitHub
-                </a>
+                <a href="#documentation" class="nav-link">Documentation</a>
             </div>
+            <a href="https://github.com/pkyanam/ArduRoomba" class="nav-github" target="_blank" rel="noopener">
+                <span>⭐</span>
+                <span>GitHub</span>
+            </a>
             <div class="nav-toggle" id="navToggle">
                 <span></span>
                 <span></span>
@@ -74,50 +64,48 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
+    <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <span class="badge-text">v2.5.0 • Production Ready</span>
+                    <span class="badge-text">v2.5.0 • GPL-3.0 License • Production Ready</span>
                 </div>
+                
                 <h1 class="hero-title">
-                    Transform Your Roomba into a
-                    <span class="gradient-text">Smart Wireless Robot</span>
+                    Arduino Library for<br>
+                    <span class="gradient-text">iRobot Create 2 & Roomba</span>
                 </h1>
+                
                 <p class="hero-description">
-                    ArduRoomba is a comprehensive Arduino library and wireless robotics platform that enables 
-                    complete control over iRobot Create 2 and compatible Roomba models through REST API, 
-                    web interface, and IoT integration.
+                    A comprehensive Arduino library for interfacing with iRobot Create 2 and compatible Roomba models. 
+                    Features modular architecture, WiFi support for wireless-enabled boards, REST API, and extensive documentation.
                 </p>
+                
                 <div class="hero-actions">
-                    <a href="#getting-started" class="btn btn-primary">
-                        <span>Get Started</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
+                    <a href="https://github.com/pkyanam/ArduRoomba/archive/refs/heads/main.zip" class="btn btn-primary">
+                        📦 Download Library
                     </a>
-                    <a href="https://github.com/pkyanam/ArduRoomba" class="btn btn-secondary" target="_blank">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        View on GitHub
+                    <a href="#getting-started" class="btn btn-secondary">
+                        📚 Get Started
                     </a>
                 </div>
+                
                 <div class="hero-stats">
                     <div class="stat">
-                        <div class="stat-number" data-target="2500">0</div>
-                        <div class="stat-label">GitHub Stars</div>
+                        <span class="stat-number" id="github-stars">33</span>
+                        <span class="stat-label">GitHub Stars</span>
                     </div>
                     <div class="stat">
-                        <div class="stat-number" data-target="150">0</div>
-                        <div class="stat-label">Contributors</div>
+                        <span class="stat-number" id="github-forks">7</span>
+                        <span class="stat-label">Forks</span>
                     </div>
                     <div class="stat">
-                        <div class="stat-number" data-target="50">0</div>
-                        <div class="stat-label">Projects Built</div>
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Examples</span>
                     </div>
                 </div>
             </div>
+            
             <div class="hero-visual">
                 <div class="hero-device">
                     <div class="device-screen">
@@ -134,49 +122,32 @@
                                 <div class="status-bar">
                                     <div class="status-item">
                                         <span class="status-icon">🔋</span>
-                                        <span class="status-text">85%</span>
+                                        <span>85%</span>
                                     </div>
                                     <div class="status-item">
                                         <span class="status-icon">📶</span>
-                                        <span class="status-text">WiFi</span>
+                                        <span>WiFi</span>
                                     </div>
                                     <div class="status-item">
-                                        <span class="status-icon">🤖</span>
-                                        <span class="status-text">Ready</span>
+                                        <span class="status-icon">✅</span>
+                                        <span>Ready</span>
                                     </div>
                                 </div>
+                                
                                 <div class="d-pad">
-                                    <div class="d-pad-btn d-pad-up">↑</div>
-                                    <div class="d-pad-btn d-pad-left">←</div>
-                                    <div class="d-pad-btn d-pad-center">⏹</div>
-                                    <div class="d-pad-btn d-pad-right">→</div>
-                                    <div class="d-pad-btn d-pad-down">↓</div>
+                                    <button class="d-pad-btn d-pad-up">↑</button>
+                                    <button class="d-pad-btn d-pad-left">←</button>
+                                    <button class="d-pad-btn d-pad-center">⏹</button>
+                                    <button class="d-pad-btn d-pad-right">→</button>
+                                    <button class="d-pad-btn d-pad-down">↓</button>
                                 </div>
+                                
                                 <div class="action-buttons">
-                                    <button class="action-btn">🏠 Clean</button>
-                                    <button class="action-btn">🎯 Spot</button>
-                                    <button class="action-btn">🔌 Dock</button>
+                                    <button class="action-btn">🏠 Dock</button>
+                                    <button class="action-btn">🧹 Clean</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="floating-elements">
-                    <div class="floating-element" style="--delay: 0s; --duration: 3s;">
-                        <span class="element-icon">📡</span>
-                        <span class="element-text">WiFi</span>
-                    </div>
-                    <div class="floating-element" style="--delay: 1s; --duration: 4s;">
-                        <span class="element-icon">🌐</span>
-                        <span class="element-text">REST API</span>
-                    </div>
-                    <div class="floating-element" style="--delay: 2s; --duration: 3.5s;">
-                        <span class="element-icon">📱</span>
-                        <span class="element-text">Mobile</span>
-                    </div>
-                    <div class="floating-element" style="--delay: 0.5s; --duration: 4.5s;">
-                        <span class="element-icon">🏠</span>
-                        <span class="element-text">IoT</span>
                     </div>
                 </div>
             </div>
@@ -187,100 +158,74 @@
     <section id="features" class="features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Powerful Features</h2>
+                <h2 class="section-title">Library Features</h2>
                 <p class="section-description">
-                    Everything you need to build sophisticated robotics applications
+                    Comprehensive Arduino library with modular architecture and extensive platform support
                 </p>
             </div>
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3 class="feature-title">Wireless Control</h3>
-                    <p class="feature-description">
-                        Complete WiFi management with REST API, WebSocket real-time communication, 
-                        and responsive web interface for all devices.
-                    </p>
-                    <ul class="feature-list">
-                        <li>REST API with JSON responses</li>
-                        <li>Real-time WebSocket communication</li>
-                        <li>Mobile-optimized web interface</li>
-                        <li>Cross-platform compatibility</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
-                    <h3 class="feature-title">Complete Robot Control</h3>
-                    <p class="feature-description">
-                        Full control over movement, cleaning modes, sensors, actuators, 
-                        and LEDs with advanced safety features.
-                    </p>
-                    <ul class="feature-list">
-                        <li>Precision movement control</li>
-                        <li>Real-time sensor monitoring</li>
-                        <li>Safety systems & cliff detection</li>
-                        <li>Battery management & alerts</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
                     <div class="feature-icon">🔧</div>
-                    <h3 class="feature-title">Developer Experience</h3>
+                    <h3 class="feature-title">Core Functionality</h3>
                     <p class="feature-description">
-                        Modular architecture with comprehensive documentation, 
-                        testing framework, and plugin system for extensibility.
+                        Complete implementation of iRobot Open Interface (OI) specification with movement commands, 
+                        sensor data reading, and cleaning mode controls.
                     </p>
                     <ul class="feature-list">
-                        <li>Event-driven architecture</li>
+                        <li>Movement control (forward, backward, turn, drive)</li>
+                        <li>Sensor data reading (battery, bumpers, cliff sensors)</li>
+                        <li>Cleaning modes (clean, spot, dock)</li>
+                        <li>Safe and full control modes</li>
                         <li>Comprehensive error handling</li>
-                        <li>Plugin system for extensions</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h3 class="feature-title">WiFi Support</h3>
+                    <p class="feature-description">
+                        Wireless connectivity for ESP32, ESP8266, and Arduino Uno R4 WiFi boards with 
+                        REST API and web interface capabilities.
+                    </p>
+                    <ul class="feature-list">
+                        <li>WiFi connection management</li>
+                        <li>REST API endpoints</li>
+                        <li>Web-based control interface</li>
+                        <li>Real-time sensor monitoring</li>
+                        <li>Cross-Origin Resource Sharing (CORS)</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3 class="feature-title">Configuration Management</h3>
+                    <p class="feature-description">
+                        Persistent configuration system with web-based setup, eliminating the need for 
+                        hardcoded values and enabling runtime configuration changes.
+                    </p>
+                    <ul class="feature-list">
+                        <li>Persistent storage (EEPROM/Flash/Preferences)</li>
+                        <li>Web-based configuration interface</li>
+                        <li>JSON API for configuration management</li>
+                        <li>Factory reset capabilities</li>
+                        <li>Configuration validation and migration</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3 class="feature-title">Modular Architecture</h3>
+                    <p class="feature-description">
+                        Clean, modular design with separate components for core functionality, sensors, 
+                        commands, and wireless features. Easy to extend and maintain.
+                    </p>
+                    <ul class="feature-list">
+                        <li>Separated core and wireless components</li>
+                        <li>Comprehensive error codes and validation</li>
+                        <li>Memory-optimized for embedded systems</li>
                         <li>100% backward compatibility</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3 class="feature-title">Security & Reliability</h3>
-                    <p class="feature-description">
-                        Multi-user authentication, rate limiting, secure storage, 
-                        and automatic recovery from failures.
-                    </p>
-                    <ul class="feature-list">
-                        <li>Multi-user authentication</li>
-                        <li>Rate limiting & DDoS protection</li>
-                        <li>Secure credential storage</li>
-                        <li>Automatic error recovery</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔌</div>
-                    <h3 class="feature-title">IoT Integration</h3>
-                    <p class="feature-description">
-                        Seamless integration with home automation systems, 
-                        cloud platforms, and IoT ecosystems.
-                    </p>
-                    <ul class="feature-list">
-                        <li>MQTT & Home Assistant support</li>
-                        <li>Cloud platform integration</li>
-                        <li>Webhook notifications</li>
-                        <li>Custom API endpoints</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3 class="feature-title">Analytics & Insights</h3>
-                    <p class="feature-description">
-                        Comprehensive logging, performance monitoring, 
-                        and data export for analysis and optimization.
-                    </p>
-                    <ul class="feature-list">
-                        <li>Usage analytics & patterns</li>
-                        <li>Performance monitoring</li>
-                        <li>Predictive maintenance</li>
-                        <li>Data export capabilities</li>
+                        <li>Extensive documentation and examples</li>
                     </ul>
                 </div>
             </div>
@@ -288,12 +233,12 @@
     </section>
 
     <!-- Platform Support Section -->
-    <section class="platforms">
+    <section id="platforms" class="platforms">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Platform Support</h2>
                 <p class="section-description">
-                    Works seamlessly across multiple Arduino-compatible platforms
+                    Compatible with multiple Arduino platforms with varying feature support
                 </p>
             </div>
             
@@ -303,12 +248,15 @@
                         <img src="assets/esp32-icon.svg" alt="ESP32" width="48" height="48">
                     </div>
                     <h3 class="platform-name">ESP32</h3>
-                    <p class="platform-description">Full feature support with WiFi, Bluetooth, and extensive memory</p>
+                    <p class="platform-description">
+                        Full feature support with WiFi, web server, and persistent configuration storage
+                    </p>
                     <div class="platform-features">
-                        <span class="platform-feature">✅ WiFi</span>
-                        <span class="platform-feature">✅ WebSocket</span>
-                        <span class="platform-feature">✅ File System</span>
-                        <span class="platform-feature">✅ HTTPS</span>
+                        <span class="platform-feature">✅ Core Library</span>
+                        <span class="platform-feature">✅ WiFi Support</span>
+                        <span class="platform-feature">✅ Web Server</span>
+                        <span class="platform-feature">✅ Configuration Storage</span>
+                        <span class="platform-feature">✅ mDNS</span>
                     </div>
                 </div>
                 
@@ -317,12 +265,15 @@
                         <img src="assets/esp8266-icon.svg" alt="ESP8266" width="48" height="48">
                     </div>
                     <h3 class="platform-name">ESP8266</h3>
-                    <p class="platform-description">Compact and cost-effective with core wireless features</p>
+                    <p class="platform-description">
+                        Complete functionality with WiFi and web server capabilities
+                    </p>
                     <div class="platform-features">
-                        <span class="platform-feature">✅ WiFi</span>
-                        <span class="platform-feature">⚠️ WebSocket</span>
-                        <span class="platform-feature">✅ File System</span>
-                        <span class="platform-feature">⚠️ HTTPS</span>
+                        <span class="platform-feature">✅ Core Library</span>
+                        <span class="platform-feature">✅ WiFi Support</span>
+                        <span class="platform-feature">✅ Web Server</span>
+                        <span class="platform-feature">✅ Configuration Storage</span>
+                        <span class="platform-feature">✅ mDNS</span>
                     </div>
                 </div>
                 
@@ -331,12 +282,15 @@
                         <img src="assets/arduino-icon.svg" alt="Arduino Uno R4 WiFi" width="48" height="48">
                     </div>
                     <h3 class="platform-name">Arduino Uno R4 WiFi</h3>
-                    <p class="platform-description">Official Arduino board with built-in WiFi connectivity</p>
+                    <p class="platform-description">
+                        Core functionality with basic WiFi support and configuration storage
+                    </p>
                     <div class="platform-features">
-                        <span class="platform-feature">✅ WiFi</span>
-                        <span class="platform-feature">⚠️ WebSocket</span>
-                        <span class="platform-feature">❌ File System</span>
-                        <span class="platform-feature">❌ HTTPS</span>
+                        <span class="platform-feature">✅ Core Library</span>
+                        <span class="platform-feature">✅ WiFi Support</span>
+                        <span class="platform-feature">⚠️ Basic Web Server</span>
+                        <span class="platform-feature">✅ Configuration Storage</span>
+                        <span class="platform-feature">❌ mDNS</span>
                     </div>
                 </div>
                 
@@ -345,12 +299,15 @@
                         <img src="assets/arduino-icon.svg" alt="Arduino Uno R3" width="48" height="48">
                     </div>
                     <h3 class="platform-name">Arduino Uno R3</h3>
-                    <p class="platform-description">Classic Arduino with serial communication support</p>
+                    <p class="platform-description">
+                        Core library functionality for basic Roomba control via serial interface
+                    </p>
                     <div class="platform-features">
-                        <span class="platform-feature">❌ WiFi</span>
-                        <span class="platform-feature">✅ Serial Control</span>
-                        <span class="platform-feature">✅ All Robot Features</span>
-                        <span class="platform-feature">✅ Legacy Support</span>
+                        <span class="platform-feature">✅ Core Library</span>
+                        <span class="platform-feature">❌ WiFi Support</span>
+                        <span class="platform-feature">❌ Web Server</span>
+                        <span class="platform-feature">❌ Configuration Storage</span>
+                        <span class="platform-feature">❌ mDNS</span>
                     </div>
                 </div>
             </div>
@@ -361,9 +318,9 @@
     <section id="getting-started" class="getting-started">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Get Started in Minutes</h2>
+                <h2 class="section-title">Getting Started</h2>
                 <p class="section-description">
-                    Follow these simple steps to transform your Roomba into a smart wireless robot
+                    Follow these steps to set up ArduRoomba with your hardware
                 </p>
             </div>
             
@@ -371,14 +328,18 @@
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h3 class="step-title">Install Library</h3>
+                        <h3 class="step-title">Install the Library</h3>
                         <p class="step-description">
-                            Install ArduRoomba through Arduino IDE Library Manager or download from GitHub
+                            Download and install the ArduRoomba library in your Arduino IDE
                         </p>
                         <div class="code-block">
                             <code>
-                                // Arduino IDE: Sketch → Include Library → Manage Libraries<br>
-                                // Search for "ArduRoomba" and click Install
+// Option 1: Arduino Library Manager
+// Search for "ArduRoomba" and click Install
+
+// Option 2: Manual Installation
+// Download ZIP from GitHub and add to Arduino IDE
+// Sketch → Include Library → Add .ZIP Library
                             </code>
                         </div>
                     </div>
@@ -389,48 +350,73 @@
                     <div class="step-content">
                         <h3 class="step-title">Wire Your Hardware</h3>
                         <p class="step-description">
-                            Connect your Arduino board to the Roomba using the provided wiring diagram
+                            Connect your Arduino to the Roomba's Open Interface connector
                         </p>
                         <div class="wiring-diagram">
                             <div class="wire-connection">
-                                <span class="pin">Pin 2</span>
+                                <span class="pin">Arduino Pin 2</span>
                                 <span class="arrow">→</span>
                                 <span class="roomba-pin">Roomba TX</span>
                             </div>
                             <div class="wire-connection">
-                                <span class="pin">Pin 3</span>
+                                <span class="pin">Arduino Pin 3</span>
                                 <span class="arrow">→</span>
                                 <span class="roomba-pin">Roomba RX</span>
                             </div>
                             <div class="wire-connection">
-                                <span class="pin">Pin 4</span>
+                                <span class="pin">Arduino Pin 4</span>
                                 <span class="arrow">→</span>
                                 <span class="roomba-pin">Roomba BRC</span>
                             </div>
+                            <div class="wire-connection">
+                                <span class="pin">Arduino GND</span>
+                                <span class="arrow">→</span>
+                                <span class="roomba-pin">Roomba GND</span>
+                            </div>
+                            <div class="wire-connection">
+                                <span class="pin">Arduino VCC</span>
+                                <span class="arrow">→</span>
+                                <span class="roomba-pin">Roomba VCC</span>
+                            </div>
                         </div>
+                        <p><strong>Note:</strong> Use appropriate voltage levels and consider using a voltage divider for 5V boards.</p>
                     </div>
                 </div>
                 
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3 class="step-title">Upload Code</h3>
+                        <h3 class="step-title">Basic Usage</h3>
                         <p class="step-description">
-                            Use one of our examples or create your own sketch with just a few lines of code
+                            Start with a simple example to test your connection
                         </p>
                         <div class="code-block">
                             <code>
-                                #include "ArduRoomba.h"<br>
-                                #include "wireless/ArduRoombaWiFi.h"<br><br>
-                                
-                                ArduRoomba roomba(2, 3, 4);<br>
-                                ArduRoombaWiFi wifi(roomba);<br><br>
-                                
-                                void setup() {<br>
-                                &nbsp;&nbsp;roomba.initialize();<br>
-                                &nbsp;&nbsp;wifi.begin("YourWiFi", "password");<br>
-                                &nbsp;&nbsp;wifi.startWebServer();<br>
-                                }
+#include "ArduRoomba.h"
+
+// Create ArduRoomba instance
+ArduRoomba roomba(2, 3, 4); // rxPin, txPin, brcPin
+
+void setup() {
+    Serial.begin(19200);
+    
+    // Initialize Roomba
+    ArduRoomba::ErrorCode result = roomba.initialize();
+    if (result == ArduRoomba::ErrorCode::SUCCESS) {
+        Serial.println("Roomba connected!");
+        roomba.safe(); // Enter safe mode
+    }
+}
+
+void loop() {
+    // Move forward for 2 seconds
+    roomba.drive(200, 0);
+    delay(2000);
+    
+    // Stop
+    roomba.drive(0, 0);
+    delay(1000);
+}
                             </code>
                         </div>
                     </div>
@@ -439,33 +425,172 @@
                 <div class="step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h3 class="step-title">Control Wirelessly</h3>
+                        <h3 class="step-title">WiFi Control (Optional)</h3>
                         <p class="step-description">
-                            Access the web interface from any device and start controlling your Roomba
+                            For WiFi-enabled boards, add wireless control capabilities
                         </p>
-                        <div class="control-preview">
-                            <div class="browser-mockup">
-                                <div class="browser-header">
-                                    <div class="browser-dots">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <div class="browser-url">http://192.168.1.100</div>
-                                </div>
-                                <div class="browser-content">
-                                    <div class="control-interface">
-                                        <div class="interface-title">🤖 ArduRoomba Control</div>
-                                        <div class="interface-status">Connected • Battery: 85%</div>
-                                        <div class="interface-controls">
-                                            <button class="control-btn">🏠 Clean</button>
-                                            <button class="control-btn">🎯 Spot</button>
-                                            <button class="control-btn">🔌 Dock</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="code-block">
+                            <code>
+#include "ArduRoomba.h"
+#include "wireless/ArduRoombaWiFi.h"
+
+ArduRoomba roomba(2, 3, 4);
+ArduRoombaWiFi wifi(roomba);
+
+void setup() {
+    Serial.begin(115200);
+    
+    // Initialize Roomba
+    roomba.initialize();
+    
+    // Connect to WiFi
+    wifi.begin("YourWiFiNetwork", "YourPassword");
+    
+    // Start web server
+    wifi.startWebServer(80);
+    
+    Serial.println("Access control at: " + wifi.getServerURL());
+}
+
+void loop() {
+    wifi.handleClient();
+}
+                            </code>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section id="examples" class="examples">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Examples</h2>
+                <p class="section-description">
+                    Explore real examples demonstrating different library capabilities
+                </p>
+            </div>
+            
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-image">
+                        <div class="example-placeholder">🔧</div>
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">Basic Usage</h3>
+                        <p class="example-description">
+                            Demonstrates basic movement commands and sensor reading using the core library functionality.
+                        </p>
+                        <div class="example-tags">
+                            <span class="tag">Core Library</span>
+                            <span class="tag">Movement</span>
+                            <span class="tag">Sensors</span>
+                        </div>
+                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/BasicUsage" class="example-link" target="_blank">
+                            View Example →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-image">
+                        <div class="example-placeholder">📡</div>
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">WiFi Basic Control</h3>
+                        <p class="example-description">
+                            Shows how to set up WiFi connectivity and basic web server for remote Roomba control.
+                        </p>
+                        <div class="example-tags">
+                            <span class="tag">WiFi</span>
+                            <span class="tag">Web Server</span>
+                            <span class="tag">REST API</span>
+                        </div>
+                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/WiFiBasicControl" class="example-link" target="_blank">
+                            View Example →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-image">
+                        <div class="example-placeholder">🌐</div>
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">Complete Web Server</h3>
+                        <p class="example-description">
+                            Full-featured web interface with real-time sensor monitoring and comprehensive control options.
+                        </p>
+                        <div class="example-tags">
+                            <span class="tag">Web Interface</span>
+                            <span class="tag">Real-time</span>
+                            <span class="tag">Complete</span>
+                        </div>
+                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/WebServerComplete" class="example-link" target="_blank">
+                            View Example →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-image">
+                        <div class="example-placeholder">⚙️</div>
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">Configuration Management</h3>
+                        <p class="example-description">
+                            Demonstrates the persistent configuration system with web-based setup and runtime changes.
+                        </p>
+                        <div class="example-tags">
+                            <span class="tag">Configuration</span>
+                            <span class="tag">Persistent Storage</span>
+                            <span class="tag">Web Setup</span>
+                        </div>
+                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/ConfigurationExample" class="example-link" target="_blank">
+                            View Example →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-image">
+                        <div class="example-placeholder">📊</div>
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">Sensor Data</h3>
+                        <p class="example-description">
+                            Comprehensive sensor data reading example showing battery status, bumpers, cliff sensors, and more.
+                        </p>
+                        <div class="example-tags">
+                            <span class="tag">Sensors</span>
+                            <span class="tag">Data Reading</span>
+                            <span class="tag">Monitoring</span>
+                        </div>
+                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/SensorDataExample" class="example-link" target="_blank">
+                            View Example →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-image">
+                        <div class="example-placeholder">🎮</div>
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">Remote Control</h3>
+                        <p class="example-description">
+                            Interactive remote control example with directional movement and cleaning mode controls.
+                        </p>
+                        <div class="example-tags">
+                            <span class="tag">Remote Control</span>
+                            <span class="tag">Interactive</span>
+                            <span class="tag">Movement</span>
+                        </div>
+                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/RemoteControl" class="example-link" target="_blank">
+                            View Example →
+                        </a>
                     </div>
                 </div>
             </div>
@@ -478,22 +603,19 @@
             <div class="section-header">
                 <h2 class="section-title">Documentation</h2>
                 <p class="section-description">
-                    Comprehensive guides, API reference, and examples to get you started
+                    Comprehensive guides and references for the ArduRoomba library
                 </p>
             </div>
             
             <div class="docs-grid">
                 <div class="doc-card">
-                    <div class="doc-icon">📚</div>
+                    <div class="doc-icon">📖</div>
                     <h3 class="doc-title">API Reference</h3>
                     <p class="doc-description">
-                        Complete API documentation with examples and code snippets
+                        Complete API documentation with all classes, methods, and parameters
                     </p>
                     <a href="https://github.com/pkyanam/ArduRoomba/blob/main/README.md" class="doc-link" target="_blank">
-                        View Documentation
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
+                        Read Documentation →
                     </a>
                 </div>
                 
@@ -501,265 +623,54 @@
                     <div class="doc-icon">🏗️</div>
                     <h3 class="doc-title">Architecture Guide</h3>
                     <p class="doc-description">
-                        Deep dive into the modular architecture and design patterns
+                        Detailed explanation of the library's modular architecture and design patterns
                     </p>
                     <a href="https://github.com/pkyanam/ArduRoomba/blob/main/ARCHITECTURE.md" class="doc-link" target="_blank">
-                        View Architecture
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
+                        View Architecture →
+                    </a>
+                </div>
+                
+                <div class="doc-card">
+                    <div class="doc-icon">🔌</div>
+                    <h3 class="doc-title">Wiring Diagrams</h3>
+                    <p class="doc-description">
+                        Hardware connection diagrams for different Arduino boards and configurations
+                    </p>
+                    <a href="WiringDiagram.png" class="doc-link" target="_blank">
+                        View Diagrams →
+                    </a>
+                </div>
+                
+                <div class="doc-card">
+                    <div class="doc-icon">📋</div>
+                    <h3 class="doc-title">iRobot OI Specs</h3>
+                    <p class="doc-description">
+                        Official iRobot Open Interface specifications for Create 2 and Roomba models
+                    </p>
+                    <a href="irobot-create2-oi-spec.pdf" class="doc-link" target="_blank">
+                        Download Specs →
                     </a>
                 </div>
                 
                 <div class="doc-card">
                     <div class="doc-icon">🚀</div>
-                    <h3 class="doc-title">Getting Started</h3>
+                    <h3 class="doc-title">Development Roadmap</h3>
                     <p class="doc-description">
-                        Step-by-step tutorials for beginners and advanced users
-                    </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples" class="doc-link" target="_blank">
-                        View Tutorials
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </div>
-                
-                <div class="doc-card">
-                    <div class="doc-icon">💡</div>
-                    <h3 class="doc-title">Examples</h3>
-                    <p class="doc-description">
-                        Ready-to-use examples for common use cases and integrations
-                    </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples" class="doc-link" target="_blank">
-                        Browse Examples
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </div>
-                
-                <div class="doc-card">
-                    <div class="doc-icon">🔧</div>
-                    <h3 class="doc-title">Troubleshooting</h3>
-                    <p class="doc-description">
-                        Common issues, solutions, and debugging techniques
-                    </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba/issues" class="doc-link" target="_blank">
-                        Get Help
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </div>
-                
-                <div class="doc-card">
-                    <div class="doc-icon">🎯</div>
-                    <h3 class="doc-title">Roadmap</h3>
-                    <p class="doc-description">
-                        Future features, development plans, and contribution opportunities
+                        Future development plans and foundational primitives implementation
                     </p>
                     <a href="https://github.com/pkyanam/ArduRoomba/blob/main/DEVELOPMENT_ROADMAP.md" class="doc-link" target="_blank">
-                        View Roadmap
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
+                        View Roadmap →
                     </a>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Examples Section -->
-    <section id="examples" class="examples">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Example Projects</h2>
-                <p class="section-description">
-                    Real-world examples to inspire your next robotics project
-                </p>
-            </div>
-            
-            <div class="examples-grid">
-                <div class="example-card">
-                    <div class="example-image">
-                        <div class="example-placeholder">
-                            <span class="example-icon">🌐</span>
-                        </div>
-                    </div>
-                    <div class="example-content">
-                        <h3 class="example-title">Web Control Interface</h3>
-                        <p class="example-description">
-                            Complete web-based control panel with real-time sensor monitoring, 
-                            touch controls, and mobile optimization.
-                        </p>
-                        <div class="example-tags">
-                            <span class="tag">WiFi</span>
-                            <span class="tag">WebSocket</span>
-                            <span class="tag">Mobile</span>
-                        </div>
-                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/WebServerComplete" class="example-link" target="_blank">
-                            View Example
-                        </a>
-                    </div>
-                </div>
                 
-                <div class="example-card">
-                    <div class="example-image">
-                        <div class="example-placeholder">
-                            <span class="example-icon">🏠</span>
-                        </div>
-                    </div>
-                    <div class="example-content">
-                        <h3 class="example-title">Home Assistant Integration</h3>
-                        <p class="example-description">
-                            Integrate your Roomba with Home Assistant for automated cleaning 
-                            schedules and smart home routines.
-                        </p>
-                        <div class="example-tags">
-                            <span class="tag">MQTT</span>
-                            <span class="tag">Home Assistant</span>
-                            <span class="tag">Automation</span>
-                        </div>
-                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/HomeAutomation" class="example-link" target="_blank">
-                            View Example
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="example-card">
-                    <div class="example-image">
-                        <div class="example-placeholder">
-                            <span class="example-icon">📱</span>
-                        </div>
-                    </div>
-                    <div class="example-content">
-                        <h3 class="example-title">Mobile App Control</h3>
-                        <p class="example-description">
-                            Progressive Web App with offline capabilities, push notifications, 
-                            and native app-like experience.
-                        </p>
-                        <div class="example-tags">
-                            <span class="tag">PWA</span>
-                            <span class="tag">Offline</span>
-                            <span class="tag">Notifications</span>
-                        </div>
-                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/MobileInterface" class="example-link" target="_blank">
-                            View Example
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="example-card">
-                    <div class="example-image">
-                        <div class="example-placeholder">
-                            <span class="example-icon">🎮</span>
-                        </div>
-                    </div>
-                    <div class="example-content">
-                        <h3 class="example-title">Remote Control</h3>
-                        <p class="example-description">
-                            Manual remote control with gamepad support, custom movement patterns, 
-                            and real-time video streaming.
-                        </p>
-                        <div class="example-tags">
-                            <span class="tag">Gamepad</span>
-                            <span class="tag">Real-time</span>
-                            <span class="tag">Manual Control</span>
-                        </div>
-                        <a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples/RemoteControl" class="example-link" target="_blank">
-                            View Example
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Community Section -->
-    <section id="community" class="community">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Join the Community</h2>
-                <p class="section-description">
-                    Connect with developers, share projects, and contribute to the future of robotics
-                </p>
-            </div>
-            
-            <div class="community-grid">
-                <div class="community-card">
-                    <div class="community-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                    </div>
-                    <h3 class="community-title">GitHub</h3>
-                    <p class="community-description">
-                        Contribute code, report issues, and collaborate on new features
+                <div class="doc-card">
+                    <div class="doc-icon">🤝</div>
+                    <h3 class="doc-title">Contributing</h3>
+                    <p class="doc-description">
+                        Guidelines for contributing to the ArduRoomba project and community
                     </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba" class="community-link" target="_blank">
-                        Visit Repository
-                    </a>
-                </div>
-                
-                <div class="community-card">
-                    <div class="community-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                        </svg>
-                    </div>
-                    <h3 class="community-title">Discord</h3>
-                    <p class="community-description">
-                        Join our Discord server for real-time discussions and support
-                    </p>
-                    <a href="#" class="community-link">
-                        Join Server
-                    </a>
-                </div>
-                
-                <div class="community-card">
-                    <div class="community-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
-                    <h3 class="community-title">Forum</h3>
-                    <p class="community-description">
-                        Ask questions, share projects, and get help from the community
-                    </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba/discussions" class="community-link" target="_blank">
-                        Visit Forum
-                    </a>
-                </div>
-                
-                <div class="community-card">
-                    <div class="community-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                        </svg>
-                    </div>
-                    <h3 class="community-title">Twitter</h3>
-                    <p class="community-description">
-                        Follow us for updates, announcements, and community highlights
-                    </p>
-                    <a href="#" class="community-link">
-                        Follow @ArduRoomba
-                    </a>
-                </div>
-            </div>
-            
-            <div class="contribution-cta">
-                <h3 class="cta-title">Ready to Contribute?</h3>
-                <p class="cta-description">
-                    Help us build the future of wireless robotics. Whether you're fixing bugs, 
-                    adding features, or improving documentation, every contribution matters.
-                </p>
-                <div class="cta-actions">
-                    <a href="https://github.com/pkyanam/ArduRoomba/blob/main/CONTRIBUTING.md" class="btn btn-primary" target="_blank">
-                        Contribution Guide
-                    </a>
-                    <a href="https://github.com/pkyanam/ArduRoomba/issues" class="btn btn-secondary" target="_blank">
-                        View Issues
+                    <a href="https://github.com/pkyanam/ArduRoomba/issues" class="doc-link" target="_blank">
+                        Get Involved →
                     </a>
                 </div>
             </div>
@@ -776,71 +687,71 @@
                         <span class="footer-title">ArduRoomba</span>
                     </div>
                     <p class="footer-description">
-                        Transform your Roomba into a smart wireless robot with comprehensive 
-                        Arduino library and IoT platform.
+                        Arduino library for interfacing with iRobot Create 2 and compatible Roomba models. 
+                        Open source, well-documented, and actively maintained.
                     </p>
                     <div class="footer-social">
-                        <a href="https://github.com/pkyanam/ArduRoomba" class="social-link" target="_blank" aria-label="GitHub">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Twitter">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Discord">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                            </svg>
+                        <a href="https://github.com/pkyanam/ArduRoomba" class="social-link" aria-label="GitHub">
+                            <span>⭐</span>
                         </a>
                     </div>
                 </div>
                 
                 <div class="footer-section">
-                    <h4 class="footer-heading">Documentation</h4>
+                    <h4 class="footer-heading">Library</h4>
                     <ul class="footer-links">
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/README.md" target="_blank">Getting Started</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/ARCHITECTURE.md" target="_blank">API Reference</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples" target="_blank">Examples</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/DEVELOPMENT_ROADMAP.md" target="_blank">Roadmap</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4 class="footer-heading">Community</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://github.com/pkyanam/ArduRoomba" target="_blank">GitHub</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/discussions" target="_blank">Discussions</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/issues" target="_blank">Issues</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/archive/refs/heads/main.zip">Download</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples">Examples</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/README.md">Documentation</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/releases">Releases</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
                     <h4 class="footer-heading">Resources</h4>
                     <ul class="footer-links">
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/releases" target="_blank">Downloads</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/LICENSE" target="_blank">License</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
-                        <li><a href="mailto:preetham@preetham.org">Contact</a></li>
+                        <li><a href="irobot-create2-oi-spec.pdf">iRobot OI Spec</a></li>
+                        <li><a href="WiringDiagram.png">Wiring Diagrams</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/ARCHITECTURE.md">Architecture</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/LICENSE">License</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-heading">Community</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/issues">Issues</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/discussions">Discussions</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/pulls">Pull Requests</a></li>
+                        <li><a href="https://github.com/pkyanam">Author</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
                 <div class="footer-copyright">
-                    <p>&copy; 2025 ArduRoomba. Licensed under <a href="https://github.com/pkyanam/ArduRoomba/blob/main/LICENSE" target="_blank">GPL-3.0</a>.</p>
+                    <p>&copy; 2025 <a href="https://github.com/pkyanam">Preetham Kyanam</a>. Licensed under <a href="https://github.com/pkyanam/ArduRoomba/blob/main/LICENSE">GPL-3.0</a>.</p>
                 </div>
-                <div class="footer-version">
-                    <span class="version-badge">v2.5.0</span>
-                </div>
+                <div class="version-badge">v2.5.0</div>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- JavaScript -->
     <script src="assets/script.js"></script>
+    
+    <!-- GitHub API Integration for Real Stats -->
+    <script>
+        // Fetch real GitHub statistics
+        fetch('https://api.github.com/repos/pkyanam/ArduRoomba')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('github-stars').textContent = data.stargazers_count || '33';
+                document.getElementById('github-forks').textContent = data.forks_count || '7';
+            })
+            .catch(error => {
+                console.log('GitHub API not available, using fallback values');
+            });
+    </script>
 </body>
 </html>

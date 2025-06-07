@@ -1,0 +1,61 @@
+# GitHub Pages Configuration for ArduRoomba
+# This file configures GitHub Pages to serve the website from the /docs directory
+
+# Basic site settings
+title: "ArduRoomba - Wireless Robotics Platform"
+description: "Transform your Roomba into a smart wireless robot with comprehensive Arduino library and IoT platform"
+url: "https://pkyanam.github.io"
+baseurl: "/ArduRoomba"
+
+# GitHub Pages settings
+source: docs
+destination: _site
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+  - .jekyll-metadata
+
+# Include files that start with underscore
+include:
+  - _pages
+  - .htaccess
+
+# SEO and social
+author: "Preetham Kyanam"
+twitter:
+  username: arduroomba
+  card: summary_large_image
+
+social:
+  name: "ArduRoomba"
+  links:
+    - "https://github.com/pkyanam/ArduRoomba"
+
+# GitHub repository
+repository: "pkyanam/ArduRoomba"
+
+# Analytics (optional)
+google_analytics: # Add your GA tracking ID here if needed
+
+# Theme (using default GitHub Pages theme)
+theme: minima
+
+# Custom variables
+version: "2.5.0"
+release_date: "2025-06-06"

@@ -284,7 +284,7 @@
             const heroDevice = document.querySelector('.hero-device');
             if (!heroDevice) return;
 
-            // Add mouse move effect
+            // Add mouse move effect for visual appeal
             heroDevice.addEventListener('mousemove', (e) => {
                 const rect = heroDevice.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -302,10 +302,11 @@
                 heroDevice.style.transform = 'perspective(1000px) rotateY(-15deg) rotateX(10deg)';
             });
 
-            // Animate D-pad buttons
+            // Add visual feedback to demo buttons (non-functional, just for show)
             const dpadButtons = document.querySelectorAll('.d-pad-btn');
             dpadButtons.forEach(button => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
                     button.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         button.style.transform = 'scale(1.05)';
@@ -313,6 +314,18 @@
                             button.style.transform = 'scale(1)';
                         }, 100);
                     }, 100);
+                });
+            });
+
+            // Add visual feedback to action buttons
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    button.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1)';
+                    }, 150);
                 });
             });
         }
