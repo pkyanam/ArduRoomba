@@ -7,7 +7,7 @@
  * enhanced interface with error handling.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * Hardware connections:

@@ -1,35 +1,83 @@
 /**
  * @file ArduRoombaCore.h
- * @brief Core communication and low-level functionality for the ArduRoomba library
+ * @brief Hardware abstraction layer for iRobot Open Interface communication
  * 
- * This file contains the core communication layer that handles the low-level
- * serial communication with the iRobot Open Interface. It manages the hardware
- * setup, data streaming, and basic protocol handling.
+ * This file implements the core communication layer that provides a hardware
+ * abstraction for the iRobot Open Interface protocol. It manages low-level
+ * serial communication, baud rate negotiation, protocol state management,
+ * and data streaming functionality. This layer serves as the foundation
+ * for all higher-level robot operations.
+ * 
+ * Architecture Context for AI Agents:
+ * - **Hardware Abstraction Layer**: Isolates protocol details from application logic
+ * - **State Machine Management**: Handles OI mode transitions and protocol states
+ * - **Communication Protocol**: Implements iRobot OI specification compliance
+ * - **Error Detection**: Provides robust error detection and recovery mechanisms
+ * - **Resource Management**: Manages serial port resources and timing constraints
+ * 
+ * Protocol Implementation:
+ * - Supports iRobot Create 2 and Roomba 500/600/700 series
+ * - Handles baud rate changes and protocol initialization
+ * - Manages command/response cycles and timing requirements
+ * - Provides streaming data acquisition capabilities
+ * - Implements checksum validation and error detection
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_CORE_H
-#define ARDUROOMBA_CORE_H
+#ifndef ARDUROOMBACORE_H
+#define ARDUROOMBACORE_H
 
+// ============================================================================
+// SYSTEM INCLUDES
+// ============================================================================
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "ArduRoombaConstants.h"
-#include "ArduRoombaTypes.h"
+
+// ============================================================================
+// LIBRARY INCLUDES
+// ============================================================================
+#include "ArduRoombaConstants.h"  // Protocol constants and command definitions
+#include "ArduRoombaTypes.h"      // Type definitions and error codes
 
 namespace ArduRoomba {
 
 /**
- * @brief Core communication class for iRobot Open Interface
+ * @brief Hardware abstraction layer implementing iRobot Open Interface protocol
  * 
- * This class handles all low-level communication with the iRobot device,
- * including hardware initialization, serial communication, and data streaming.
- * It provides the foundation for higher-level sensor and command classes.
+ * This class provides the foundational communication layer for all ArduRoomba
+ * operations. It implements the complete iRobot Open Interface specification,
+ * managing hardware connections, protocol state machines, and data streaming.
+ * All higher-level components (Sensors, Commands) depend on this core layer.
+ * 
+ * Architecture Design for AI Agents:
+ * - **Protocol State Machine**: Manages OI modes (Passive, Safe, Full)
+ * - **Hardware Abstraction**: Isolates pin management and serial communication
+ * - **Error Recovery**: Implements robust error detection and recovery strategies
+ * - **Resource Management**: Handles serial port lifecycle and timing constraints
+ * - **Data Validation**: Provides checksum validation and protocol compliance
+ * 
+ * Communication Flow:
+ * 1. Hardware initialization and pin configuration
+ * 2. Baud rate negotiation and protocol handshake
+ * 3. Mode transition to enable robot control
+ * 4. Command transmission with response validation
+ * 5. Continuous sensor data streaming (optional)
+ * 6. Error detection and recovery procedures
+ * 
+ * Protocol Compliance:
+ * - iRobot Create 2 Open Interface Specification
+ * - Roomba 500/600/700 series compatibility
+ * - Timing requirements and command sequencing
+ * - Checksum validation for data integrity
+ * 
+ * Thread Safety: This class is NOT thread-safe. External synchronization
+ * is required if accessed from multiple contexts.
  */
 class RoombaCore {
 public:
@@ -320,4 +368,4 @@ private:
 
 } // namespace ArduRoomba
 
-#endif // ARDUROOMBA_CORE_H
+#endif // ARDUROOMBACORE_H

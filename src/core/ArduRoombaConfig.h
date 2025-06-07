@@ -14,8 +14,8 @@
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_CONFIG_H
-#define ARDUROOMBA_CONFIG_H
+#ifndef ARDUROOMBACONFIG_H
+#define ARDUROOMBACONFIG_H
 
 #include <Arduino.h>
 #include "../ArduRoombaConstants.h"
@@ -516,9 +516,7 @@ private:
     
 #if defined(ESP32)
     Preferences _preferences;   ///< ESP32 preferences storage
-#endif
-    
-    // ========================================================================
+#endif // ARDUROOMBACONFIG_H
     // PRIVATE METHODS
     // ========================================================================
     
@@ -588,4 +586,4 @@ private:
 
 } // namespace ArduRoomba
 
-#endif // ARDUROOMBA_CONFIG_H
+#endif // ARDUROOMBACONFIG_H

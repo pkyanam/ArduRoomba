@@ -7,15 +7,15 @@
  * location for all protocol-specific values and configuration parameters.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_CONSTANTS_H
-#define ARDUROOMBA_CONSTANTS_H
+#ifndef ARDUROOMBACONSTANTS_H
+#define ARDUROOMBACONSTANTS_H
 
 #include <Arduino.h>
 
@@ -292,7 +292,7 @@ enum class ErrorCode : uint8_t {
 #define ARDUROOMBA_REFRESH_DELAY ArduRoomba::REFRESH_DELAY
 #define ARDUROOMBA_STREAM_TIMEOUT ArduRoomba::STREAM_TIMEOUT
 
-#define ARDUROOMBA_STREAM_WAIT_HEADER static_cast<uint8_t>(ArduRoomba::StreamState::WAIT_HEADER)
+#define ARDUROOMBACONSTANTS_HEADER static_cast<uint8_t>(ArduRoomba::StreamState::WAIT_HEADER)
 #define ARDUROOMBA_STREAM_WAIT_SIZE static_cast<uint8_t>(ArduRoomba::StreamState::WAIT_SIZE)
 #define ARDUROOMBA_STREAM_WAIT_CONTENT static_cast<uint8_t>(ArduRoomba::StreamState::WAIT_CONTENT)
 #define ARDUROOMBA_STREAM_WAIT_CHECKSUM static_cast<uint8_t>(ArduRoomba::StreamState::WAIT_CHECKSUM)
@@ -346,4 +346,4 @@ enum class ErrorCode : uint8_t {
 #define ARDUROOMBA_SENSOR_SIDEBRUSHMOTORCURRENT static_cast<uint8_t>(ArduRoomba::SensorPacket::SIDE_BRUSH_CURRENT)
 #define ARDUROOMBA_SENSOR_STASIS static_cast<uint8_t>(ArduRoomba::SensorPacket::STASIS)
 
-#endif // ARDUROOMBA_CONSTANTS_H
+#endif // ARDUROOMBACONSTANTS_H

@@ -1,14 +1,27 @@
 /**
  * @file ArduRoomba.h
- * @brief Main header file for the ArduRoomba library
+ * @brief Main unified interface for the ArduRoomba library
  * 
- * This is the main header file that provides a unified interface to the
- * ArduRoomba library. It includes all necessary components and provides
- * both the new modular interface and backward compatibility with the
- * original API.
+ * This is the primary header file that provides a comprehensive, unified interface
+ * to the ArduRoomba library ecosystem. It orchestrates all modular components
+ * (Core, Sensors, Commands, Configuration, WiFi) into a single, easy-to-use API
+ * while maintaining backward compatibility with legacy code.
+ * 
+ * Architecture Context for AI Agents:
+ * - This class serves as the main facade pattern implementation
+ * - It aggregates specialized components rather than implementing functionality directly
+ * - Provides both modern error-handling interface and legacy boolean interface
+ * - Acts as the primary entry point for all Roomba operations
+ * - Manages component lifecycle and inter-component communication
+ * 
+ * Usage Patterns:
+ * - Instantiate once per Roomba device
+ * - Call initialize() before any operations
+ * - Use error codes for robust error handling
+ * - Enable debug mode for troubleshooting
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
@@ -18,26 +31,75 @@
 #ifndef ARDUROOMBA_H
 #define ARDUROOMBA_H
 
-// Include all modular components
+// ============================================================================
+// SYSTEM INCLUDES
+// ============================================================================
+#include <Arduino.h>
+
+// ============================================================================
+// LIBRARY INCLUDES - MODULAR COMPONENTS
+// ============================================================================
+// Core type definitions and constants (foundation layer)
 #include "ArduRoombaConstants.h"
 #include "ArduRoombaTypes.h"
+
+// Core communication layer (hardware abstraction)
 #include "ArduRoombaCore.h"
-#include "ArduRoombaSensors.h"
-#include "ArduRoombaCommands.h"
+
+// Specialized functionality layers
+#include "ArduRoombaSensors.h"    // Sensor data acquisition and processing
+#include "ArduRoombaCommands.h"   // Movement and control commands
+
+// Optional modular components (conditionally included)
+#include "core/ArduRoombaConfig.h"    // Configuration management system
+
+// Platform-specific wireless support (conditionally compiled)
+#if defined(ESP32) || defined(ESP8266) || defined(ARDUINO_UNOWIFIR4)
+    #include "wireless/ArduRoombaWiFi.h"  // WiFi connectivity and web interface
+#endif
 
 namespace ArduRoomba {
 
 /**
- * @brief Main ArduRoomba class providing unified interface
+ * @brief Main ArduRoomba facade class providing unified interface to all library functionality
  * 
- * This class provides a unified interface to all ArduRoomba functionality
- * while maintaining backward compatibility with the original API. It
- * combines the modular components (Core, Sensors, Commands) into a
- * single easy-to-use interface.
+ * This class implements the Facade design pattern, providing a simplified, unified interface
+ * to the complex subsystem of modular ArduRoomba components. It orchestrates interactions
+ * between Core (communication), Sensors (data acquisition), Commands (control), Configuration
+ * (settings management), and optionally WiFi (wireless connectivity) components.
  * 
- * @example BasicUsage.ino
- * @example SensorDataExample.ino
- * @example StreamUsage.ino
+ * Architecture Design for AI Agents:
+ * - **Facade Pattern**: Simplifies complex subsystem interactions
+ * - **Component Aggregation**: Contains instances of specialized components
+ * - **Error Propagation**: Translates component errors to unified error codes
+ * - **State Management**: Maintains overall system state and component coordination
+ * - **Legacy Compatibility**: Provides backward-compatible API alongside modern interface
+ * 
+ * Component Relationships:
+ * - RoombaCore: Hardware communication and protocol management
+ * - RoombaSensors: Sensor data acquisition and processing
+ * - RoombaCommands: Movement and control command execution
+ * - RoombaConfig: Persistent configuration and settings management
+ * - RoombaWiFi: Wireless connectivity and web interface (platform-dependent)
+ * 
+ * Usage Lifecycle:
+ * 1. Construction: Initialize with hardware pin configuration
+ * 2. Initialization: Call initialize() to establish communication
+ * 3. Operation: Use sensor/command methods for robot control
+ * 4. Configuration: Optionally manage persistent settings
+ * 5. Cleanup: Automatic resource cleanup in destructor
+ * 
+ * Error Handling Strategy:
+ * - Modern API: Returns ErrorCode enum for detailed error information
+ * - Legacy API: Returns boolean for backward compatibility
+ * - Debug Mode: Provides detailed logging for troubleshooting
+ * - Error State: Maintains last error for diagnostic purposes
+ * 
+ * @example BasicUsage.ino Basic movement and sensor reading
+ * @example SensorDataExample.ino Comprehensive sensor data acquisition
+ * @example StreamUsage.ino Real-time sensor data streaming
+ * @example ConfigurationExample.ino Persistent settings management
+ * @example WiFiBasicControl.ino Wireless control interface
  */
 class ArduRoomba {
 public:
@@ -319,40 +381,82 @@ public:
     
 private:
     // ========================================================================
-    // MEMBER VARIABLES
+    // CORE COMPONENT INSTANCES
     // ========================================================================
+    // These are the fundamental building blocks of the ArduRoomba system.
+    // Each component handles a specific aspect of robot functionality.
     
-    RoombaCore _core;           ///< Core communication component
-    RoombaSensors _sensors;     ///< Sensor management component
-    RoombaCommands _commands;   ///< Command interface component
+    RoombaCore _core;           ///< Hardware communication layer - manages serial protocol, baud rate, and low-level I/O
+    RoombaSensors _sensors;     ///< Sensor data acquisition system - handles all sensor reading and data processing
+    RoombaCommands _commands;   ///< Command execution engine - translates high-level commands to OI protocol
     
-    bool _debugEnabled;         ///< Global debug flag
-    ErrorCode _lastError;       ///< Last error from any component
+    // ========================================================================
+    // SYSTEM STATE MANAGEMENT
+    // ========================================================================
+    // These members track the overall state of the ArduRoomba system for
+    // debugging, error handling, and operational status monitoring.
     
-    // Legacy compatibility members
-    const byte _zero = 0x00;    ///< Zero byte constant for legacy methods
+    bool _debugEnabled;         ///< Global debug output flag - controls verbose logging across all components
+    ErrorCode _lastError;       ///< Most recent error code - maintained for diagnostic and error recovery purposes
+    
+    // ========================================================================
+    // LEGACY COMPATIBILITY SUPPORT
+    // ========================================================================
+    // These members support backward compatibility with the original ArduRoomba API.
+    // They enable existing code to work without modification while providing
+    // a migration path to the new modular architecture.
+    
+    const byte _zero = 0x00;    ///< Zero byte constant used by legacy protocol methods
     
     // ========================================================================
     // INTERNAL HELPER METHODS
     // ========================================================================
+    // These private methods provide internal functionality for error management,
+    // legacy API support, and component coordination. They are not exposed to
+    // users but are critical for maintaining system integrity and compatibility.
     
     /**
-     * @brief Update last error from component operations
-     * @param error Error code to set
+     * @brief Updates the global error state from component operations
+     * 
+     * This method centralizes error state management across all components.
+     * It ensures that the most recent error is always available for diagnostic
+     * purposes and maintains consistency in error reporting.
+     * 
+     * AI Context: This is the central error aggregation point. All component
+     * errors flow through here to maintain a unified error state.
+     * 
+     * @param error Error code from component operation
      */
     void updateLastError(ErrorCode error);
     
     /**
-     * @brief Convert legacy sensor list to new format
-     * @param legacySensorList Legacy char array sensor list
-     * @return Number of sensors converted
+     * @brief Converts legacy char array sensor lists to modern SensorPacket format
+     * 
+     * This method bridges the gap between the original ArduRoomba API and the
+     * new type-safe sensor system. It translates legacy sensor specifications
+     * into the modern enum-based sensor packet system.
+     * 
+     * AI Context: This is a compatibility layer that enables legacy code to
+     * work with the new sensor architecture without modification.
+     * 
+     * @param legacySensorList Legacy char array sensor specification
+     * @param newSensorList Output array for converted sensor packets
+     * @param maxSensors Maximum number of sensors to convert
+     * @return Number of sensors successfully converted
      */
     uint8_t convertLegacySensorList(char legacySensorList[], SensorPacket* newSensorList, uint8_t maxSensors);
     
     /**
-     * @brief Get length of legacy sensor list
-     * @param sensorList Legacy sensor list
-     * @return Length of the list
+     * @brief Calculates the length of a legacy null-terminated sensor list
+     * 
+     * Legacy sensor lists use char arrays with specific termination patterns.
+     * This method safely determines the length for conversion and processing.
+     * 
+     * AI Context: Helper method for legacy compatibility - handles the quirks
+     * of the original sensor list format.
+     * 
+     * @param sensorList Legacy sensor list to measure
+     * @return Length of the sensor list
      */
     int getLegacySensorListLength(char sensorList[]);
 };
