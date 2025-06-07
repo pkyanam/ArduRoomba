@@ -3,7 +3,7 @@
  * @brief Implementation of the main ArduRoomba class
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam

@@ -3,7 +3,7 @@
  * @brief Implementation of WiFi management and web server functionality
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.4.0
+ * @version 2.5.0
  * @date 2025-06-06
  */
 

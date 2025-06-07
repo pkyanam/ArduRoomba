@@ -7,7 +7,7 @@
  * from web browsers, mobile apps, or other networked devices.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.4.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * Hardware Requirements:

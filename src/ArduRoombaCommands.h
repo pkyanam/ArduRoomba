@@ -7,15 +7,15 @@
  * control, LED control, song management, and scheduling functionality.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_COMMANDS_H
-#define ARDUROOMBA_COMMANDS_H
+#ifndef ARDUROOMBACOMMANDS_H
+#define ARDUROOMBACOMMANDS_H
 
 #include <Arduino.h>
 #include "ArduRoombaConstants.h"
@@ -448,4 +448,4 @@ private:
 
 } // namespace ArduRoomba
 
-#endif // ARDUROOMBA_COMMANDS_H
+#endif // ARDUROOMBACOMMANDS_H

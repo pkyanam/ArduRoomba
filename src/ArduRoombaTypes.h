@@ -7,15 +7,15 @@
  * for all data types and ensures consistency across the library.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_TYPES_H
-#define ARDUROOMBA_TYPES_H
+#ifndef ARDUROOMBATYPES_H
+#define ARDUROOMBATYPES_H
 
 #include <Arduino.h>
 #include "ArduRoombaConstants.h"
@@ -502,4 +502,4 @@ typedef ScheduleData ScheduleStore;
 
 } // namespace ArduRoomba
 
-#endif // ARDUROOMBA_TYPES_H
+#endif // ARDUROOMBATYPES_H

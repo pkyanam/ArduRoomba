@@ -7,15 +7,15 @@
  * It enables remote control of Roomba through REST API and web interface.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.4.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_WIFI_H
-#define ARDUROOMBA_WIFI_H
+#ifndef ARDUROOMBAWIFI_H
+#define ARDUROOMBAWIFI_H
 
 #include <Arduino.h>
 #include "../ArduRoomba.h"
@@ -394,4 +394,4 @@ private:
 
 } // namespace ArduRoomba
 
-#endif // ARDUROOMBA_WIFI_H
+#endif // ARDUROOMBAWIFI_H

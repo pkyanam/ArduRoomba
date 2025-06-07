@@ -7,15 +7,15 @@
  * high-level interface for accessing Roomba sensor information.
  * 
  * @author Preetham Kyanam <preetham@preetham.org>
- * @version 2.3.0
+ * @version 2.5.0
  * @date 2025-06-06
  * 
  * @copyright Copyright (c) 2025 Preetham Kyanam
  * Licensed under GNU General Public License v3.0 (GPL-3.0)
  */
 
-#ifndef ARDUROOMBA_SENSORS_H
-#define ARDUROOMBA_SENSORS_H
+#ifndef ARDUROOMBASENSORS_H
+#define ARDUROOMBASENSORS_H
 
 #include <Arduino.h>
 #include "ArduRoombaConstants.h"
@@ -338,4 +338,4 @@ private:
 
 } // namespace ArduRoomba
 
-#endif // ARDUROOMBA_SENSORS_H
+#endif // ARDUROOMBASENSORS_H
