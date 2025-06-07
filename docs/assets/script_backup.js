@@ -714,19 +714,322 @@
     // ========================================================================
 
     // ========================================================================
-    // EXPORTS
+    // BLUETOOTH CONTROL FUNCTIONALITY
     // ========================================================================
 
-    // Export for debugging (development only)
-    if (typeof window !== 'undefined') {
-        window.ArduRoombaWebsite = {
-            smoothScrollTo,
-            animateNumber,
-            debounce,
-            throttle,
-            isInViewport
-        };
+    class BluetoothController {
+        constructor() {
+            this.device = null;
+            this.server = null;
+            this.service = null;
+            this.characteristic = null;
+            this.isConnected = false;
+            this.statusUpdateInterval = null;
+            
+            // ArduRoomba Bluetooth service UUID (custom UUID for ArduRoomba)
+            this.serviceUUID = '12345678-1234-1234-1234-123456789abc';
+            this.characteristicUUID = '87654321-4321-4321-4321-cba987654321';
+            
+            this.initializeEventListeners();
+        }
+
+        initializeEventListeners() {
+            const scanButton = document.getElementById('scanButton');
+            const disconnectButton = document.getElementById('disconnectButton');
+            
+            if (scanButton) {
+                scanButton.addEventListener('click', () => this.scanForDevices());
+            }
+            
+            if (disconnectButton) {
+                disconnectButton.addEventListener('click', () => this.disconnect());
+            }
+
+            // Movement controls
+            const moveForward = document.getElementById('moveForward');
+            const moveBackward = document.getElementById('moveBackward');
+            const turnLeft = document.getElementById('turnLeft');
+            const turnRight = document.getElementById('turnRight');
+            const stopMovement = document.getElementById('stopMovement');
+
+            if (moveForward) moveForward.addEventListener('click', () => this.sendCommand('FORWARD'));
+            if (moveBackward) moveBackward.addEventListener('click', () => this.sendCommand('BACKWARD'));
+            if (turnLeft) turnLeft.addEventListener('click', () => this.sendCommand('LEFT'));
+            if (turnRight) turnRight.addEventListener('click', () => this.sendCommand('RIGHT'));
+            if (stopMovement) stopMovement.addEventListener('click', () => this.sendCommand('STOP'));
+
+            // Action controls
+            const startCleaning = document.getElementById('startCleaning');
+            const spotClean = document.getElementById('spotClean');
+            const returnToDock = document.getElementById('returnToDock');
+            const initializeRobot = document.getElementById('initializeRobot');
+
+            if (startCleaning) startCleaning.addEventListener('click', () => this.sendCommand('CLEAN'));
+            if (spotClean) spotClean.addEventListener('click', () => this.sendCommand('SPOT'));
+            if (returnToDock) returnToDock.addEventListener('click', () => this.sendCommand('DOCK'));
+            if (initializeRobot) initializeRobot.addEventListener('click', () => this.sendCommand('INIT'));
+        }
+
+        async scanForDevices() {
+            if (!navigator.bluetooth) {
+                this.showAlert('Web Bluetooth is not supported in this browser. Please use Chrome, Edge, or Opera.', 'error');
+                return;
+            }
+
+            try {
+                this.updateConnectionStatus('connecting', 'Scanning...');
+                
+                // Request device with ArduRoomba service or generic service
+                this.device = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { namePrefix: 'ArduRoomba' },
+                        { namePrefix: 'ESP32' },
+                        { namePrefix: 'Roomba' }
+                    ],
+                    optionalServices: [this.serviceUUID, 'generic_access', 'device_information']
+                });
+
+                this.device.addEventListener('gattserverdisconnected', () => {
+                    this.onDisconnected();
+                });
+
+                await this.connect();
+            } catch (error) {
+                console.error('Bluetooth scan error:', error);
+                this.updateConnectionStatus('disconnected', 'Disconnected');
+                
+                if (error.name === 'NotFoundError') {
+                    this.showAlert('No ArduRoomba devices found. Make sure your device is powered on and in pairing mode.', 'warning');
+                } else {
+                    this.showAlert('Failed to scan for devices: ' + error.message, 'error');
+                }
+            }
+        }
+
+        async connect() {
+            try {
+                this.updateConnectionStatus('connecting', 'Connecting...');
+                
+                this.server = await this.device.gatt.connect();
+                
+                // Try to connect to ArduRoomba service
+                try {
+                    this.service = await this.server.getPrimaryService(this.serviceUUID);
+                    this.characteristic = await this.service.getCharacteristic(this.characteristicUUID);
+                } catch (serviceError) {
+                    console.warn('ArduRoomba service not found, using generic service');
+                    // Fallback to generic service for demonstration
+                    this.service = await this.server.getPrimaryService('generic_access');
+                }
+
+                this.isConnected = true;
+                this.updateConnectionStatus('connected', 'Connected');
+                this.showDeviceInfo();
+                this.showRobotControl();
+                this.startStatusUpdates();
+                
+                this.showAlert('Successfully connected to ' + this.device.name, 'success');
+            } catch (error) {
+                console.error('Connection error:', error);
+                this.updateConnectionStatus('disconnected', 'Connection Failed');
+                this.showAlert('Failed to connect: ' + error.message, 'error');
+            }
+        }
+
+        disconnect() {
+            if (this.device && this.device.gatt.connected) {
+                this.device.gatt.disconnect();
+            }
+            this.onDisconnected();
+        }
+
+        onDisconnected() {
+            this.isConnected = false;
+            this.device = null;
+            this.server = null;
+            this.service = null;
+            this.characteristic = null;
+            
+            this.updateConnectionStatus('disconnected', 'Disconnected');
+            this.hideDeviceInfo();
+            this.hideRobotControl();
+            this.stopStatusUpdates();
+            
+            this.showAlert('Device disconnected', 'warning');
+        }
+
+        async sendCommand(command) {
+            if (!this.isConnected || !this.characteristic) {
+                this.showAlert('Not connected to device', 'error');
+                return;
+            }
+
+            try {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(command);
+                await this.characteristic.writeValue(data);
+                console.log('Command sent:', command);
+                
+                // Provide visual feedback
+                this.showAlert('Command sent: ' + command, 'success');
+            } catch (error) {
+                console.error('Command send error:', error);
+                this.showAlert('Failed to send command: ' + error.message, 'error');
+            }
+        }
+
+        updateConnectionStatus(status, text) {
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.status-text');
+            const scanButton = document.getElementById('scanButton');
+            const disconnectButton = document.getElementById('disconnectButton');
+
+            if (statusIndicator) {
+                statusIndicator.className = 'status-indicator ' + status;
+            }
+            
+            if (statusText) {
+                statusText.textContent = text;
+            }
+
+            if (scanButton && disconnectButton) {
+                if (status === 'connected') {
+                    scanButton.disabled = true;
+                    disconnectButton.disabled = false;
+                } else {
+                    scanButton.disabled = false;
+                    disconnectButton.disabled = true;
+                }
+            }
+        }
+
+        showDeviceInfo() {
+            const deviceInfo = document.getElementById('deviceInfo');
+            const deviceName = document.getElementById('deviceName');
+            const deviceId = document.getElementById('deviceId');
+            const deviceSignal = document.getElementById('deviceSignal');
+
+            if (deviceInfo) {
+                deviceInfo.style.display = 'block';
+            }
+
+            if (deviceName && this.device) {
+                deviceName.textContent = this.device.name || 'Unknown Device';
+            }
+
+            if (deviceId && this.device) {
+                deviceId.textContent = this.device.id || 'N/A';
+            }
+
+            if (deviceSignal) {
+                deviceSignal.textContent = 'Strong'; // Placeholder
+            }
+        }
+
+        hideDeviceInfo() {
+            const deviceInfo = document.getElementById('deviceInfo');
+            if (deviceInfo) {
+                deviceInfo.style.display = 'none';
+            }
+        }
+
+        showRobotControl() {
+            const robotControl = document.getElementById('robotControl');
+            if (robotControl) {
+                robotControl.style.display = 'block';
+            }
+        }
+
+        hideRobotControl() {
+            const robotControl = document.getElementById('robotControl');
+            if (robotControl) {
+                robotControl.style.display = 'none';
+            }
+        }
+
+        startStatusUpdates() {
+            this.statusUpdateInterval = setInterval(() => {
+                this.updateRobotStatus();
+            }, 2000);
+        }
+
+        stopStatusUpdates() {
+            if (this.statusUpdateInterval) {
+                clearInterval(this.statusUpdateInterval);
+                this.statusUpdateInterval = null;
+            }
+        }
+
+        updateRobotStatus() {
+            // Simulate robot status updates
+            const batteryLevel = document.getElementById('batteryLevel');
+            const voltageLevel = document.getElementById('voltageLevel');
+            const robotMode = document.getElementById('robotMode');
+            const temperature = document.getElementById('temperature');
+
+            if (batteryLevel) {
+                const battery = Math.floor(Math.random() * 100);
+                batteryLevel.textContent = battery + '%';
+            }
+
+            if (voltageLevel) {
+                const voltage = (14000 + Math.random() * 2000).toFixed(0);
+                voltageLevel.textContent = voltage + 'mV';
+            }
+
+            if (robotMode) {
+                const modes = ['Safe', 'Full', 'Passive'];
+                robotMode.textContent = modes[Math.floor(Math.random() * modes.length)];
+            }
+
+            if (temperature) {
+                const temp = (20 + Math.random() * 10).toFixed(1);
+                temperature.textContent = temp + '°C';
+            }
+        }
+
+        showAlert(message, type = 'info') {
+            const alertsContainer = document.getElementById('sensorAlerts');
+            if (!alertsContainer) return;
+
+            const alert = document.createElement('div');
+            alert.className = 'alert ' + type;
+            alert.textContent = message;
+
+            alertsContainer.appendChild(alert);
+
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
     }
 
-})();
+    // Initialize Bluetooth controller when DOM is loaded
+    let bluetoothController = null;
+    
+    function initializeBluetoothControl() {
+        if (document.getElementById('scanButton')) {
+            bluetoothController = new BluetoothController();
+        }
+    }
 
+    // Add to existing DOMContentLoaded event or create new one
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeBluetoothControl);
+    } else {
+        initializeBluetoothControl();
+    }
+
+    window.ArduRoombaWebsite = {
+        smoothScrollTo,
+        animateNumber,
+        debounce,
+        throttle,
+        isInViewport,
+        BluetoothController
+    };
+
+})();
