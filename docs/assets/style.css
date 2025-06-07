@@ -790,14 +790,15 @@ code {
 }
 
 .code-block {
-    background: var(--gray-900);
-    color: var(--gray-100);
+    background: #1f2937;
+    color: #f3f4f6;
     padding: var(--space-4);
     border-radius: var(--radius-lg);
     font-family: var(--font-family-mono);
     font-size: var(--text-sm);
     overflow-x: auto;
     margin-bottom: var(--space-4);
+    border: 1px solid #374151;
 }
 
 .wiring-diagram {

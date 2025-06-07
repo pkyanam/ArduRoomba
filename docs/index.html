@@ -55,7 +55,6 @@
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#getting-started" class="nav-link">Get Started</a>
-                <a href="#bluetooth-control" class="nav-link">🔗 Control</a>
                 <a href="#documentation" class="nav-link">Docs</a>
                 <a href="#examples" class="nav-link">Examples</a>
                 <a href="#community" class="nav-link">Community</a>
@@ -82,13 +81,13 @@
                     <span class="badge-text">v2.5.0 • Production Ready</span>
                 </div>
                 <h1 class="hero-title">
-                    Transform Your Roomba into a
-                    <span class="gradient-text">Smart Wireless Robot</span>
+                    Arduino Library for
+                    <span class="gradient-text">iRobot Roomba Control</span>
                 </h1>
                 <p class="hero-description">
-                    ArduRoomba is a comprehensive Arduino library and wireless robotics platform that enables 
-                    complete control over iRobot Create 2 and compatible Roomba models through REST API, 
-                    web interface, and IoT integration.
+                    ArduRoomba is a comprehensive Arduino library that enables complete control over iRobot Create 2 
+                    and compatible Roomba models. Features serial communication, wireless capabilities for ESP boards, 
+                    REST API, and web interface for remote control.
                 </p>
                 <div class="hero-actions">
                     <a href="#getting-started" class="btn btn-primary">
@@ -104,20 +103,7 @@
                         View on GitHub
                     </a>
                 </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number" data-target="2500">0</div>
-                        <div class="stat-label">GitHub Stars</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" data-target="150">0</div>
-                        <div class="stat-label">Contributors</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" data-target="50">0</div>
-                        <div class="stat-label">Projects Built</div>
-                    </div>
-                </div>
+
             </div>
             <div class="hero-visual">
                 <div class="hero-device">
@@ -270,20 +256,7 @@
                     </ul>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3 class="feature-title">Analytics & Insights</h3>
-                    <p class="feature-description">
-                        Comprehensive logging, performance monitoring, 
-                        and data export for analysis and optimization.
-                    </p>
-                    <ul class="feature-list">
-                        <li>Usage analytics & patterns</li>
-                        <li>Performance monitoring</li>
-                        <li>Predictive maintenance</li>
-                        <li>Data export capabilities</li>
-                    </ul>
-                </div>
+
             </div>
         </div>
     </section>
@@ -504,7 +477,7 @@
                     <p class="doc-description">
                         Deep dive into the modular architecture and design patterns
                     </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba/blob/main/ARCHITECTURE.md" class="doc-link" target="_blank">
+                    <a href="https://github.com/pkyanam/ArduRoomba/blob/main/README.md#architecture-overview" class="doc-link" target="_blank">
                         View Architecture
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -560,7 +533,7 @@
                     <p class="doc-description">
                         Future features, development plans, and contribution opportunities
                     </p>
-                    <a href="https://github.com/pkyanam/ArduRoomba/blob/main/DEVELOPMENT_ROADMAP.md" class="doc-link" target="_blank">
+                    <a href="https://github.com/pkyanam/ArduRoomba/issues" class="doc-link" target="_blank">
                         View Roadmap
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -767,189 +740,6 @@
         </div>
     </section>
 
-    <!-- Bluetooth Control Section -->
-    <section id="bluetooth-control" class="bluetooth-control">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">🔗 Bluetooth Control Center</h2>
-                <p class="section-description">
-                    Connect and control your ArduRoomba directly from your browser using Web Bluetooth API
-                </p>
-            </div>
-            
-            <div class="bluetooth-interface">
-                <div class="bluetooth-connection">
-                    <div class="connection-card">
-                        <div class="connection-header">
-                            <h3>Device Connection</h3>
-                            <div class="connection-status" id="bluetoothStatus">
-                                <span class="status-indicator disconnected"></span>
-                                <span class="status-text">Disconnected</span>
-                            </div>
-                        </div>
-                        
-                        <div class="connection-controls">
-                            <button id="scanButton" class="btn btn-primary">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <path d="m21 21-4.35-4.35"/>
-                                </svg>
-                                Scan for Devices
-                            </button>
-                            <button id="disconnectButton" class="btn btn-secondary" disabled>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 6L6 18M6 6l12 12"/>
-                                </svg>
-                                Disconnect
-                            </button>
-                        </div>
-                        
-                        <div class="device-info" id="deviceInfo" style="display: none;">
-                            <h4>Connected Device</h4>
-                            <div class="device-details">
-                                <div class="device-detail">
-                                    <span class="detail-label">Name:</span>
-                                    <span class="detail-value" id="deviceName">-</span>
-                                </div>
-                                <div class="device-detail">
-                                    <span class="detail-label">ID:</span>
-                                    <span class="detail-value" id="deviceId">-</span>
-                                </div>
-                                <div class="device-detail">
-                                    <span class="detail-label">Signal:</span>
-                                    <span class="detail-value" id="deviceSignal">-</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="robot-control" id="robotControl" style="display: none;">
-                    <div class="control-grid">
-                        <!-- Status Panel -->
-                        <div class="status-panel">
-                            <h3>Robot Status</h3>
-                            <div class="status-grid">
-                                <div class="status-item">
-                                    <div class="status-icon">🔋</div>
-                                    <div class="status-content">
-                                        <div class="status-value" id="batteryLevel">--</div>
-                                        <div class="status-label">Battery</div>
-                                    </div>
-                                </div>
-                                <div class="status-item">
-                                    <div class="status-icon">⚡</div>
-                                    <div class="status-content">
-                                        <div class="status-value" id="voltageLevel">--</div>
-                                        <div class="status-label">Voltage</div>
-                                    </div>
-                                </div>
-                                <div class="status-item">
-                                    <div class="status-icon">🤖</div>
-                                    <div class="status-content">
-                                        <div class="status-value" id="robotMode">--</div>
-                                        <div class="status-label">Mode</div>
-                                    </div>
-                                </div>
-                                <div class="status-item">
-                                    <div class="status-icon">🌡️</div>
-                                    <div class="status-content">
-                                        <div class="status-value" id="temperature">--</div>
-                                        <div class="status-label">Temp</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Movement Controls -->
-                        <div class="movement-panel">
-                            <h3>Movement Control</h3>
-                            <div class="dpad-container">
-                                <div class="dpad">
-                                    <button class="dpad-btn dpad-up" id="moveForward">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M18 15l-6-6-6 6"/>
-                                        </svg>
-                                    </button>
-                                    <button class="dpad-btn dpad-left" id="turnLeft">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M15 18l-6-6 6-6"/>
-                                        </svg>
-                                    </button>
-                                    <button class="dpad-btn dpad-center" id="stopMovement">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="6" y="6" width="12" height="12"/>
-                                        </svg>
-                                    </button>
-                                    <button class="dpad-btn dpad-right" id="turnRight">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M9 18l6-6-6-6"/>
-                                        </svg>
-                                    </button>
-                                    <button class="dpad-btn dpad-down" id="moveBackward">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M6 9l6 6 6-6"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Action Controls -->
-                        <div class="action-panel">
-                            <h3>Robot Actions</h3>
-                            <div class="action-buttons">
-                                <button class="action-btn clean-btn" id="startCleaning">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M3 12h18m-9-9v18"/>
-                                    </svg>
-                                    Start Cleaning
-                                </button>
-                                <button class="action-btn spot-btn" id="spotClean">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="3"/>
-                                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
-                                    </svg>
-                                    Spot Clean
-                                </button>
-                                <button class="action-btn dock-btn" id="returnToDock">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                                        <polyline points="9,22 9,12 15,12 15,22"/>
-                                    </svg>
-                                    Return to Dock
-                                </button>
-                                <button class="action-btn init-btn" id="initializeRobot">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="23,4 23,10 17,10"/>
-                                        <polyline points="1,20 1,14 7,14"/>
-                                        <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/>
-                                    </svg>
-                                    Initialize
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Sensor Alerts -->
-                    <div class="sensor-alerts" id="sensorAlerts">
-                        <!-- Dynamic alerts will appear here -->
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Browser Compatibility Notice -->
-            <div class="compatibility-notice">
-                <div class="notice-content">
-                    <div class="notice-icon">ℹ️</div>
-                    <div class="notice-text">
-                        <strong>Browser Compatibility:</strong> Web Bluetooth requires a compatible browser (Chrome, Edge, Opera) and HTTPS connection. 
-                        Make sure your ArduRoomba device is configured with Bluetooth Low Energy (BLE) support.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -987,9 +777,9 @@
                     <h4 class="footer-heading">Documentation</h4>
                     <ul class="footer-links">
                         <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/README.md" target="_blank">Getting Started</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/ARCHITECTURE.md" target="_blank">API Reference</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/README.md#api-reference" target="_blank">API Reference</a></li>
                         <li><a href="https://github.com/pkyanam/ArduRoomba/tree/main/examples" target="_blank">Examples</a></li>
-                        <li><a href="https://github.com/pkyanam/ArduRoomba/blob/main/DEVELOPMENT_ROADMAP.md" target="_blank">Roadmap</a></li>
+                        <li><a href="https://github.com/pkyanam/ArduRoomba/issues" target="_blank">Issues & Roadmap</a></li>
                     </ul>
                 </div>
                 

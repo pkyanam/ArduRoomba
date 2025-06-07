@@ -655,7 +655,7 @@ This context enables AI agents to understand the project's current state, develo
 
 - **Project Repository**: [https://github.com/pkyanam/ArduRoomba](https://github.com/pkyanam/ArduRoomba)
 - **Arduino Library Manager**: Search for "ArduRoomba"
-- **Documentation**: [API Reference](docs/) | [Architecture](FOUNDATIONAL_PRIMITIVES_ANALYSIS.md) | [Roadmap](DEVELOPMENT_ROADMAP.md)
+- **Documentation**: [API Reference](#api-reference) | [Architecture](#architecture-overview) | [Examples](examples/)
 - **Issues & Support**: [GitHub Issues](https://github.com/pkyanam/ArduRoomba/issues)
 - **iRobot OI Specification**: [docs/irobot-create2-oi-spec.pdf](docs/irobot-create2-oi-spec.pdf)
 
