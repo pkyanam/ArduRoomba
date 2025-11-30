@@ -223,6 +223,126 @@ Future extensions should follow this pattern:
 3. Provide consistent API across platforms where possible
 4. Include examples demonstrating usage
 
+## Smart Home Adapters Architecture
+
+The `src/adapters/` directory contains smart home platform integrations. Adapters are separate from wireless extensions - they provide integration with external smart home ecosystems.
+
+### Layer 4: Smart Home Adapters
+
+#### ArduRoombaSmartHome (Base Class)
+`src/adapters/ArduRoombaSmartHome.h` - Abstract base class for smart home integrations
+
+- Defines common interface for all smart home adapters
+- Composes with ArduRoomba (same pattern as extensions)
+- Provides standard command enum (`SmartHomeCommand`)
+- State tracking and reporting (`RoombaState` struct)
+- Command execution with callback support
+- Debug logging
+
+**Key Methods:**
+```cpp
+virtual bool begin() = 0;          // Initialize adapter
+virtual void end() = 0;            // Shutdown adapter
+virtual void handle() = 0;         // Process events (call in loop)
+virtual bool isConnected() const = 0;
+RoombaState getState();            // Get current Roomba state
+void enableRemoteControl(bool);    // Enable/disable commands
+void setCommandCallback(void (*)(SmartHomeCommand));
+```
+
+#### ArduRoombaHomeAssistant
+`src/adapters/ArduRoombaHomeAssistant.h/.cpp` - Home Assistant MQTT integration
+
+- MQTT protocol with PubSubClient library
+- Auto-discovery for automatic entity creation in Home Assistant
+- Vacuum entity with start/stop/dock/locate commands
+- Sensor entities: battery percentage, wall detection, bumper state
+- Real-time state updates at configurable intervals
+- Supports ESP32, ESP8266, Arduino Uno R4 WiFi
+
+**Required Library:** PubSubClient (by Nick O'Leary)
+
+**MQTT Topics:**
+- `{device_id}/state` - JSON state payload
+- `{device_id}/command` - Command input (start, stop, return_to_base, locate)
+- `{device_id}/availability` - Online/offline status
+- `{device_id}/battery` - Battery percentage
+
+**Discovery Topics (auto-configured):**
+- `homeassistant/vacuum/{device_id}/config`
+- `homeassistant/sensor/{device_id}_battery/config`
+- `homeassistant/binary_sensor/{device_id}_wall/config`
+- `homeassistant/binary_sensor/{device_id}_bumper/config`
+
+#### ArduRoombaAlexa
+`src/adapters/ArduRoombaAlexa.h/.cpp` - Amazon Alexa voice control
+
+- Uses fauxmoESP library (Belkin WeMo emulation)
+- Local network control (no cloud services required)
+- Multiple virtual devices for different commands
+- Zero configuration on Alexa side
+- Supports ESP32 and ESP8266 only (fauxmoESP requirement)
+
+**Required Library:** fauxmoESP (by Xose Pérez)
+
+**Default Voice Commands:**
+- "Alexa, turn on Roomba" - Start cleaning
+- "Alexa, turn off Roomba" - Stop
+- "Alexa, turn on Roomba Dock" - Return to base
+- "Alexa, turn on Roomba Spot" - Spot clean
+- "Alexa, turn on Roomba Locate" - Beep
+
+**Customization:**
+```cpp
+alexa.setMainDeviceName("Living Room Vacuum");
+alexa.setDockDeviceName("Dock Vacuum");
+alexa.enableExtraDevices(false);  // Main device only
+alexa.addDevice("Custom", onCallback, offCallback);  // Custom device
+```
+
+### Using Smart Home Adapters
+
+```cpp
+// Home Assistant example
+ArduRoomba roomba(16, 17, 5);
+ArduRoombaHomeAssistant ha(roomba);
+
+void setup() {
+  WiFi.begin("SSID", "password");
+  roomba.begin();
+  ha.setDeviceId("my_roomba");
+  ha.begin("mqtt.local", 1883, "user", "pass");
+}
+
+void loop() {
+  ha.handle();
+}
+
+// Alexa example
+ArduRoomba roomba(16, 17, 5);
+ArduRoombaAlexa alexa(roomba);
+
+void setup() {
+  WiFi.begin("SSID", "password");
+  roomba.begin();
+  alexa.begin("Roomba");
+}
+
+void loop() {
+  alexa.handle();
+}
+```
+
+### Adding New Adapters
+
+New smart home adapters should:
+1. Inherit from `ArduRoombaSmartHome` base class
+2. Implement all pure virtual methods
+3. Use platform defines for platform-specific code
+4. Call `executeCommand()` to process received commands
+5. Use `getState()` for status reporting
+6. Include example sketch demonstrating usage
+
 ## Supported Architectures
 
 Defined in library.properties:

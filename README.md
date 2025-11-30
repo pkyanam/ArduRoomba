@@ -57,6 +57,34 @@ Control your Roomba from mobile apps:
 - Status format: `voltage:connected:wall:bumper:remote`
 - Service UUID: `4fafc201-1fb5-459e-8fcc-c5c9c331914b`
 
+### Smart Home Integration (v3.2.0+)
+Integrate your Roomba with popular smart home platforms:
+
+| Platform | ESP32 | ESP8266 | Uno R4 WiFi |
+|----------|-------|---------|-------------|
+| Home Assistant | ✓ | ✓ | ✓ |
+| Amazon Alexa | ✓ | ✓ | - |
+
+**Home Assistant Features:**
+- MQTT auto-discovery (vacuum appears automatically)
+- Vacuum entity with start/stop/dock commands
+- Battery, wall sensor, and bumper sensor entities
+- Real-time state updates
+- Requires: MQTT broker (Mosquitto) + PubSubClient library
+
+**Amazon Alexa Features:**
+- Local voice control (no cloud required)
+- Multiple virtual devices for different commands
+- Works with any Alexa-enabled device
+- Zero configuration on Alexa side
+- Requires: fauxmoESP library
+
+**Voice Commands:**
+- "Alexa, turn on Roomba" - Start cleaning
+- "Alexa, turn off Roomba" - Stop
+- "Alexa, turn on Roomba Dock" - Return to dock
+- "Alexa, turn on Roomba Locate" - Beep to find
+
 ## Architecture
 
 ```
@@ -64,18 +92,24 @@ ArduRoomba/
 ├── src/
 │   ├── ArduRoomba.h/.cpp          # High-level interface
 │   ├── RoombaOI.h/.cpp            # Low-level OI protocol
-│   └── extensions/                # Wireless modules
-│       ├── ArduRoombaWiFi.*       # WiFi base class
-│       ├── ArduRoombaWiFiS3.*     # Arduino Uno R4 WiFi
-│       ├── ArduRoombaESP32WiFi.*  # ESP32 WiFi
-│       └── ArduRoombaBLE.*        # ESP32 Bluetooth LE
+│   ├── extensions/                # Wireless modules
+│   │   ├── ArduRoombaWiFi.*       # WiFi base class
+│   │   ├── ArduRoombaWiFiS3.*     # Arduino Uno R4 WiFi
+│   │   ├── ArduRoombaESP32WiFi.*  # ESP32 WiFi
+│   │   └── ArduRoombaBLE.*        # ESP32 Bluetooth LE
+│   └── adapters/                  # Smart home integrations
+│       ├── ArduRoombaSmartHome.*  # Base adapter class
+│       ├── ArduRoombaHomeAssistant.* # Home Assistant MQTT
+│       └── ArduRoombaAlexa.*      # Amazon Alexa (Fauxmo)
 └── examples/
     ├── BasicMovement/             # Getting started
     ├── SensorReading/             # Reading sensors
     ├── SimpleControl/             # Serial control
     ├── WiFiControl_UnoR4/         # WiFi (Uno R4)
     ├── WiFiControl_ESP32/         # WiFi (ESP32)
-    └── BLEControl_ESP32/          # Bluetooth (ESP32)
+    ├── BLEControl_ESP32/          # Bluetooth (ESP32)
+    ├── HomeAssistant_ESP32/       # Home Assistant (ESP32)
+    └── AlexaControl_ESP32/        # Alexa voice (ESP32)
 ```
 
 **Two-Layer Design:**
@@ -197,6 +231,57 @@ void loop() {
 }
 ```
 
+### Home Assistant (ESP32)
+
+```cpp
+#include <WiFi.h>
+#include "ArduRoomba.h"
+#include "adapters/ArduRoombaHomeAssistant.h"
+
+ArduRoomba roomba(16, 17, 5);
+ArduRoombaHomeAssistant ha(roomba);
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin("YourSSID", "YourPassword");
+  while (!WiFi.isConnected()) delay(500);
+
+  roomba.begin();
+  ha.setDeviceId("living_room_roomba");
+  ha.setDeviceName("Living Room Roomba");
+  ha.begin("192.168.1.100", 1883);  // MQTT broker IP
+}
+
+void loop() {
+  ha.handle();
+}
+```
+
+### Alexa Voice Control (ESP32)
+
+```cpp
+#include <WiFi.h>
+#include "ArduRoomba.h"
+#include "adapters/ArduRoombaAlexa.h"
+
+ArduRoomba roomba(16, 17, 5);
+ArduRoombaAlexa alexa(roomba);
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin("YourSSID", "YourPassword");
+  while (!WiFi.isConnected()) delay(500);
+
+  roomba.begin();
+  alexa.begin("Roomba");  // Device name for Alexa
+  // Say "Alexa, discover devices" to find it
+}
+
+void loop() {
+  alexa.handle();
+}
+```
+
 ## HTTP API Reference
 
 All WiFi implementations expose these endpoints:
@@ -271,4 +356,4 @@ Free for commercial and non-commercial use. Build cool things!
 
 ---
 
-**Version 3.1.0** - WiFi & Bluetooth wireless control
+**Version 3.2.0** - Smart Home Integration (Home Assistant & Alexa)
