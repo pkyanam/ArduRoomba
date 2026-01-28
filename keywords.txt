@@ -1,0 +1,186 @@
+# ArduRoomba V4 Keywords
+
+# Main Classes
+ArduRoomba	KEYWORD1
+RoombaConfig	KEYWORD1
+RoombaSequence	KEYWORD1
+RoombaMovement	KEYWORD1
+RoombaSensors	KEYWORD1
+RoombaActuators	KEYWORD1
+RoombaSerial	KEYWORD1
+BumperData	KEYWORD1
+CliffData	KEYWORD1
+WallData	KEYWORD1
+ButtonData	KEYWORD1
+MovementData	KEYWORD1
+BatteryData	KEYWORD1
+MovementCommand	KEYWORD1
+
+# WiFi Extensions
+ArduRoombaWiFi	KEYWORD1
+ArduRoombaWiFiS3	KEYWORD1
+ArduRoombaESP32WiFi	KEYWORD1
+ArduRoombaESP8266WiFi	KEYWORD1
+
+# BLE Extensions
+ArduRoombaBLE	KEYWORD1
+
+# Core Methods
+begin	KEYWORD2
+end	KEYWORD2
+isConnected	KEYWORD2
+setDebug	KEYWORD2
+updateSafety	KEYWORD2
+enableSafety	KEYWORD2
+sensors	KEYWORD2
+movement	KEYWORD2
+actuators	KEYWORD2
+serial	KEYWORD2
+getConfig	KEYWORD2
+
+# Movement Methods
+moveForward	KEYWORD2
+moveBackward	KEYWORD2
+turnLeft	KEYWORD2
+turnRight	KEYWORD2
+spinLeft	KEYWORD2
+spinRight	KEYWORD2
+stop	KEYWORD2
+drive	KEYWORD2
+driveDirect	KEYWORD2
+execute	KEYWORD2
+clear	KEYWORD2
+length	KEYWORD2
+
+# Sensor Methods
+readBumpers	KEYWORD2
+readCliffs	KEYWORD2
+readWalls	KEYWORD2
+readButtons	KEYWORD2
+readMovement	KEYWORD2
+readBattery	KEYWORD2
+readAll	KEYWORD2
+getBatteryVoltage	KEYWORD2
+getBatteryCurrent	KEYWORD2
+getBatteryPercent	KEYWORD2
+isBatteryLow	KEYWORD2
+isBatteryCritical	KEYWORD2
+isBumperPressed	KEYWORD2
+isWallDetected	KEYWORD2
+isCliffDetected	KEYWORD2
+printSensorData	KEYWORD2
+
+# Actuator Methods
+setLED	KEYWORD2
+setPowerLED	KEYWORD2
+setMotors	KEYWORD2
+setMainBrush	KEYWORD2
+setSideBrush	KEYWORD2
+setVacuum	KEYWORD2
+stopAllMotors	KEYWORD2
+beep	KEYWORD2
+playTone	KEYWORD2
+playSong	KEYWORD2
+defineSong	KEYWORD2
+startCleaning	KEYWORD2
+spotClean	KEYWORD2
+startMaxClean	KEYWORD2
+seekDock	KEYWORD2
+powerOff	KEYWORD2
+setSafeMode	KEYWORD2
+setFullMode	KEYWORD2
+
+# WiFi Methods
+beginAP	KEYWORD2
+beginClient	KEYWORD2
+startWebServer	KEYWORD2
+handleClient	KEYWORD2
+getIPAddress	KEYWORD2
+getMACAddress	KEYWORD2
+getRSSI	KEYWORD2
+getModeString	KEYWORD2
+processCommand	KEYWORD2
+setCommandCallback	KEYWORD2
+enableRemoteControl	KEYWORD2
+
+# BLE Methods
+begin	KEYWORD2
+updateStatus	KEYWORD2
+isConnected	KEYWORD2
+isAvailable	KEYWORD2
+getConnectionCount	KEYWORD2
+setCommandCallback	KEYWORD2
+enableRemoteControl	KEYWORD2
+
+# Struct Fields
+leftBumper	LITERAL1
+rightBumper	LITERAL1
+leftWheelDrop	LITERAL1
+rightWheelDrop	LITERAL1
+anyBumper	LITERAL1
+anyWheelDrop	LITERAL1
+left	LITERAL1
+frontLeft	LITERAL1
+frontRight	LITERAL1
+right	LITERAL1
+anyCliff	LITERAL1
+voltage	LITERAL1
+current	LITERAL1
+charge	LITERAL1
+capacity	LITERAL1
+temperature	LITERAL1
+chargingState	LITERAL1
+getPercent	LITERAL1
+isLow	LITERAL1
+isCritical	LITERAL1
+distance	LITERAL1
+angle	LITERAL1
+
+# Enum Values
+Direction	LITERAL1
+FORWARD	LITERAL1
+BACKWARD	LITERAL1
+LEFT	LITERAL1
+RIGHT	LITERAL1
+SPIN_LEFT	LITERAL1
+SPIN_RIGHT	LITERAL1
+STOP	LITERAL1
+
+LedMask	LITERAL1
+DEBRIS	LITERAL1
+SPOT	LITERAL1
+DOCK	LITERAL1
+CHECK_ROBOT	LITERAL1
+
+PowerColor	LITERAL1
+RED	LITERAL1
+ORANGE	LITERAL1
+YELLOW	LITERAL1
+LIME	LITERAL1
+GREEN	LITERAL1
+
+Note	LITERAL1
+NOTE_REST	LITERAL1
+
+WiFiMode	LITERAL1
+AP	LITERAL1
+CLIENT	LITERAL1
+
+CommandResult	LITERAL1
+SUCCESS	LITERAL1
+UNKNOWN_ACTION	LITERAL1
+INVALID_SPEED	LITERAL1
+LOW_BATTERY	LITERAL1
+BLOCKED	LITERAL1
+ERROR	LITERAL1
+
+# Legacy Support
+getOI	KEYWORD2
+RoombaOI_Legacy	KEYWORD1
+
+# Constants
+DRIVE_STRAIGHT	LITERAL1
+DRIVE_TURN_CCW	LITERAL1
+DRIVE_TURN_CW	LITERAL1
+MAX_VELOCITY	LITERAL1
+MIN_VELOCITY	LITERAL1
