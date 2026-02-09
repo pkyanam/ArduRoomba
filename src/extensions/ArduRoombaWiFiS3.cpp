@@ -8,7 +8,7 @@
 #if defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI)
 
 ArduRoombaWiFiS3::ArduRoombaWiFiS3(ArduRoomba& roomba)
-  : ArduRoombaWiFi(roomba), _server(nullptr), _mode(WIFI_MODE_AP), _connected(false) {
+  : ArduRoombaWiFi(roomba), _server(nullptr), _mode(WiFiMode::AP), _connected(false) {
 }
 
 ArduRoombaWiFiS3::~ArduRoombaWiFiS3() {
@@ -19,7 +19,7 @@ bool ArduRoombaWiFiS3::beginAP(const char* ssid, const char* password) {
   Serial.print("Creating WiFi AP: ");
   Serial.println(ssid);
 
-  _mode = WIFI_MODE_AP;
+  _mode = WiFiMode::AP;
 
   // Create access point
   int status;
@@ -48,7 +48,7 @@ bool ArduRoombaWiFiS3::beginClient(const char* ssid, const char* password) {
   Serial.print("Connecting to WiFi: ");
   Serial.println(ssid);
 
-  _mode = WIFI_MODE_CLIENT;
+  _mode = WiFiMode::CLIENT;
 
   // Attempt to connect
   int status = WiFi.begin(ssid, password);
@@ -85,14 +85,14 @@ void ArduRoombaWiFiS3::end() {
 }
 
 bool ArduRoombaWiFiS3::isConnected() const {
-  if (_mode == WIFI_MODE_CLIENT) {
+  if (_mode == WiFiMode::CLIENT) {
     return WiFi.status() == WL_CONNECTED;
   }
   return _connected;
 }
 
 String ArduRoombaWiFiS3::getModeString() const {
-  return _mode == WIFI_MODE_AP ? "AP" : "Client";
+  return _mode == WiFiMode::AP ? "AP" : "Client";
 }
 
 String ArduRoombaWiFiS3::getIPAddress() const {
@@ -105,7 +105,7 @@ String ArduRoombaWiFiS3::getMACAddress() const {
 }
 
 int ArduRoombaWiFiS3::getRSSI() const {
-  if (_mode == WIFI_MODE_CLIENT && WiFi.status() == WL_CONNECTED) {
+  if (_mode == WiFiMode::CLIENT && WiFi.status() == WL_CONNECTED) {
     return WiFi.RSSI();
   }
   return 0;

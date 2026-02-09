@@ -111,7 +111,7 @@ void sequenceDemo() {
 
   // Create a movement sequence
   // This builds a chain of movements that execute in order
-  RoombaSequence seq(roomba.movement());
+  RoombaSequence seq(&roomba.movement());
 
   // Chain movements together
   seq.forward(200, 2000)    // Forward 200mm/s for 2 seconds

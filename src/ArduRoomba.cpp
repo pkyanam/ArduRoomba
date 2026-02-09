@@ -168,22 +168,51 @@ bool ArduRoomba::initSerial() {
     delete _serial;
   }
 
-  if (_config.useHardwareSerial && _config.hwSerial) {
-    // Use hardware serial
-    _serial = new HardwareSerialAdapter(_config.hwSerial);
+  // Platform-specific serial initialization
+  #if defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI)
+    // Uno R4 WiFi: Always use Serial1 (hardware serial)
     if (_debug) {
-      Serial.println("ArduRoomba: Using HardwareSerial");
+      Serial.println("ArduRoomba: Using Serial1 (Uno R4 WiFi)");
+      Serial.println("ArduRoomba: Note - RX/TX pins must match Serial1 (default RX=0, TX=1)");
     }
-  } else {
-    // Use software serial
-    _serial = new SoftwareSerialAdapter(_config.rxPin, _config.txPin);
-    if (_debug) {
-      Serial.print("ArduRoomba: Using SoftwareSerial on pins ");
-      Serial.print(_config.rxPin);
-      Serial.print(", ");
-      Serial.println(_config.txPin);
+    _serial = new HardwareSerialAdapter(&Serial1);
+  #elif defined(ESP32) || defined(ESP8266)
+    // ESP32/ESP8266: Use hardware serial if specified, default to Serial2 on ESP32
+    if (_config.useHardwareSerial && _config.hwSerial) {
+      _serial = new HardwareSerialAdapter(_config.hwSerial);
+      if (_debug) {
+        Serial.println("ArduRoomba: Using specified HardwareSerial");
+      }
+    } else {
+      #ifdef ESP32
+        _serial = new HardwareSerialAdapter(&Serial2);
+        if (_debug) {
+          Serial.println("ArduRoomba: Using Serial2 (default for ESP32)");
+        }
+      #else
+        _serial = new HardwareSerialAdapter(&Serial);
+        if (_debug) {
+          Serial.println("ArduRoomba: Using Serial (ESP8266)");
+        }
+      #endif
     }
-  }
+  #else
+    // AVR and other boards: Use SoftwareSerial or HardwareSerial if specified
+    if (_config.useHardwareSerial && _config.hwSerial) {
+      _serial = new HardwareSerialAdapter(_config.hwSerial);
+      if (_debug) {
+        Serial.println("ArduRoomba: Using HardwareSerial");
+      }
+    } else {
+      _serial = new SoftwareSerialAdapter(_config.rxPin, _config.txPin);
+      if (_debug) {
+        Serial.print("ArduRoomba: Using SoftwareSerial on pins ");
+        Serial.print(_config.rxPin);
+        Serial.print(", ");
+        Serial.println(_config.txPin);
+      }
+    }
+  #endif
 
   _serial->begin(_config.baudRate);
 

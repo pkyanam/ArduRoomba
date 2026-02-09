@@ -112,6 +112,11 @@ private:
   void onCentralConnected(BLEDevice central);
   void onCentralDisconnected(BLEDevice central);
   void onCommandWritten(BLEDevice central, BLECharacteristic characteristic);
+
+  // Friend declarations for global callbacks
+  friend void bleConnected(BLEDevice);
+  friend void bleDisconnected(BLEDevice);
+  friend void bleWritten(BLEDevice, BLECharacteristic);
 #endif
 };
 

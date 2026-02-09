@@ -5,11 +5,12 @@
 
 #include "RoombaSerial.h"
 
-#if !defined(ESP32) && !defined(ESP8266)
+#if !defined(ESP32) && !defined(ESP8266) && !defined(ARDUINO_UNOWIFIR4) && !defined(ARDUINO_UNOR4_WIFI)
   #include <SoftwareSerial.h>
 #endif
 
 // SoftwareSerialAdapter implementation
+#if !defined(ESP32) && !defined(ESP8266) && !defined(ARDUINO_UNOWIFIR4) && !defined(ARDUINO_UNOR4_WIFI)
 SoftwareSerialAdapter::SoftwareSerialAdapter(uint8_t rxPin, uint8_t txPin)
   : _serial(nullptr), _rxPin(rxPin), _txPin(txPin) {
 }
@@ -59,6 +60,11 @@ void SoftwareSerialAdapter::flush() {
     _serial->flush();
   }
 }
+
+bool SoftwareSerialAdapter::isActive() const {
+  return _serial != nullptr;
+}
+#endif
 
 // HardwareSerialAdapter implementation
 HardwareSerialAdapter::HardwareSerialAdapter(::HardwareSerial* serial)

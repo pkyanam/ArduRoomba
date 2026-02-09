@@ -13,6 +13,11 @@
 
 #include <Arduino.h>
 
+// Include SoftwareSerial on platforms that support it
+#if !defined(ESP32) && !defined(ESP8266) && !defined(ARDUINO_UNOWIFIR4) && !defined(ARDUINO_UNOR4_WIFI)
+  #include <SoftwareSerial.h>
+#endif
+
 // OI Command opcodes - moved here for shared access
 #define OI_START        128
 #define OI_BAUD         129
@@ -85,7 +90,9 @@ public:
 
 /**
  * SoftwareSerial adapter for boards without extra hardware serial
+ * Note: Not available on ESP32, ESP8266, or Uno R4 WiFi
  */
+#if !defined(ESP32) && !defined(ESP8266) && !defined(ARDUINO_UNOWIFIR4) && !defined(ARDUINO_UNOR4_WIFI)
 class SoftwareSerialAdapter : public RoombaSerial {
 public:
   SoftwareSerialAdapter(uint8_t rxPin, uint8_t txPin);
@@ -98,12 +105,13 @@ public:
   int available() override;
   int read() override;
   void flush() override;
-  bool isActive() const override { return _serial != nullptr; }
+  bool isActive() const override;
 
 private:
   ::SoftwareSerial* _serial;
   uint8_t _rxPin, _txPin;
 };
+#endif
 
 /**
  * HardwareSerial adapter for boards with multiple serial ports (ESP32, ESP8266, Mega)

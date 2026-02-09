@@ -252,3 +252,12 @@ void RoombaActuators::debugPrint(const char* msg) {
     Serial.println(msg);
   }
 }
+
+void RoombaActuators::debugPrint(const char* msg, int value) {
+  if (_debug && msg) {
+    Serial.print("RoombaActuators: ");
+    Serial.print(msg);
+    Serial.print(" = ");
+    Serial.println(value);
+  }
+}

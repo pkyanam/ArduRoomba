@@ -121,11 +121,11 @@ String ArduRoombaBLE::generateStatus() {
 
   // Format: "voltage:connected:wall:bumper:cliff:remote"
   String status = String(voltage) + ":";
-  status += (connected ? "1" : "0") + ":";
-  status += (wall ? "1" : "0") + ":";
-  status += (bumper ? "1" : "0") + ":";
-  status += (cliff ? "1" : "0") + ":";
-  status += (_remoteEnabled ? "1" : "0");
+  status += String(connected ? "1" : "0") + ":";
+  status += String(wall ? "1" : "0") + ":";
+  status += String(bumper ? "1" : "0") + ":";
+  status += String(cliff ? "1" : "0") + ":";
+  status += String(_remoteEnabled ? "1" : "0");
 
   return status;
 }
@@ -306,7 +306,6 @@ void ArduRoombaBLE::onCentralDisconnected(BLEDevice central) {
 }
 
 void ArduRoombaBLE::onCommandWritten(BLEDevice central, BLECharacteristic characteristic) {
-  String value = characteristic.value();
   String valueStr = "";
 
   // Convert byte array to string
@@ -356,11 +355,7 @@ void ArduRoombaBLE::initPlatformBLE() {
 void ArduRoombaBLE::advertisePlatformBLE() {
   BLE.setDeviceName(_deviceName.c_str());
   BLE.setLocalName(_deviceName.c_str());
-
-  BLEAdvertising advertising = BLE.advertising();
-  advertising.addServiceUUID(BLE_SERVICE_UUID);
-  advertising.setAdvertisedService(*((BLEService*)_bleService));
-
+  BLE.setAdvertisedService(*((BLEService*)_bleService));
   BLE.advertise();
 }
 
@@ -403,8 +398,8 @@ void ArduRoombaBLE::updateStatus() {
   // Periodically update status characteristic
   if (_deviceConnected && (millis() - _lastStatusUpdate > STATUS_UPDATE_INTERVAL)) {
     String status = generateStatus();
+    // setValue automatically notifies if notifications are enabled in ArduinoBLE
     ((BLECharacteristic*)_statusChar)->setValue((const uint8_t*)status.c_str(), status.length());
-    ((BLECharacteristic*)_statusChar)->notify();
     _lastStatusUpdate = millis();
   }
 }

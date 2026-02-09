@@ -54,7 +54,8 @@ struct RoombaConfig {
     return config;
   }
 
-  // Configuration for ESP32 with hardware serial
+  #if defined(ESP32)
+  // Configuration for ESP32 with hardware serial (Serial2 by default)
   static RoombaConfig createESP32(HardwareSerial* serial = &Serial2, uint8_t brc = 5) {
     RoombaConfig config;
     config.rxPin = 16;  // Default ESP32 RX2
@@ -68,6 +69,39 @@ struct RoombaConfig {
     config.enableSafety = true;
     return config;
   }
+  #elif defined(ESP8266)
+  // Configuration for ESP8266 with hardware serial
+  static RoombaConfig createESP8266(uint8_t brc = 5) {
+    RoombaConfig config;
+    config.rxPin = 3;   // ESP8266 RX
+    config.txPin = 1;   // ESP8266 TX
+    config.brcPin = brc;
+    config.baudRate = 19200;
+    config.useHardwareSerial = true;
+    config.hwSerial = &Serial;
+    config.lowBatteryThreshold = 13000;
+    config.criticalBatteryThreshold = 12000;
+    config.enableSafety = true;
+    return config;
+  }
+  #endif
+
+  #if defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI)
+  // Configuration for Uno R4 WiFi with hardware serial (Serial1)
+  static RoombaConfig createUnoR4(uint8_t brc = 4) {
+    RoombaConfig config;
+    config.rxPin = 0;   // Serial1 RX on Uno R4
+    config.txPin = 1;   // Serial1 TX on Uno R4
+    config.brcPin = brc;
+    config.baudRate = 19200;
+    config.useHardwareSerial = true;
+    config.hwSerial = &Serial1;
+    config.lowBatteryThreshold = 13000;
+    config.criticalBatteryThreshold = 12000;
+    config.enableSafety = true;
+    return config;
+  }
+  #endif
 };
 
 /**
@@ -225,7 +259,7 @@ private:
 
 // Global sequence builder helper
 inline RoombaSequence RoombaSequenceBuilder(ArduRoomba& roomba) {
-  return RoombaSequence(roomba.movement());
+  return RoombaSequence(&roomba.movement());
 }
 
 #endif

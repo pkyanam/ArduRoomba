@@ -134,6 +134,7 @@ private:
   void sendCommand(uint8_t cmd, uint8_t param1, uint8_t param2);
   void sendCommand(uint8_t cmd, const uint8_t* params, uint8_t numParams);
   void debugPrint(const char* msg);
+  void debugPrint(const char* msg, int value);
 };
 
 #endif
