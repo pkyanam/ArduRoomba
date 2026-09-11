@@ -3,7 +3,7 @@
  * @brief Implementation of Roomba movement control
  */
 
-#include "RoombaMovement.h"
+#include "core/RoombaMovement.h"
 
 // RoombaMovement implementation
 RoombaMovement::RoombaMovement(RoombaSerial* serial)
@@ -18,6 +18,7 @@ void RoombaMovement::stop() {
 }
 
 void RoombaMovement::moveForward(int16_t speed) {
+  normalizeSpeed(speed);
   clampVelocity(speed);
   drive(speed, DRIVE_STRAIGHT);
   _currentDirection = Direction::FORWARD;
@@ -26,6 +27,7 @@ void RoombaMovement::moveForward(int16_t speed) {
 }
 
 void RoombaMovement::moveBackward(int16_t speed) {
+  normalizeSpeed(speed);
   clampVelocity(speed);
   drive(-speed, DRIVE_STRAIGHT);
   _currentDirection = Direction::BACKWARD;
@@ -34,6 +36,7 @@ void RoombaMovement::moveBackward(int16_t speed) {
 }
 
 void RoombaMovement::turnLeft(int16_t speed) {
+  normalizeSpeed(speed);
   clampVelocity(speed);
   drive(speed, DRIVE_TURN_CCW);
   _currentDirection = Direction::LEFT;
@@ -42,6 +45,7 @@ void RoombaMovement::turnLeft(int16_t speed) {
 }
 
 void RoombaMovement::turnRight(int16_t speed) {
+  normalizeSpeed(speed);
   clampVelocity(speed);
   drive(speed, DRIVE_TURN_CW);
   _currentDirection = Direction::RIGHT;
@@ -50,6 +54,7 @@ void RoombaMovement::turnRight(int16_t speed) {
 }
 
 void RoombaMovement::spinLeft(int16_t speed) {
+  normalizeSpeed(speed);
   clampVelocity(speed);
   driveDirect(speed, -speed);
   _currentDirection = Direction::SPIN_LEFT;
@@ -58,6 +63,7 @@ void RoombaMovement::spinLeft(int16_t speed) {
 }
 
 void RoombaMovement::spinRight(int16_t speed) {
+  normalizeSpeed(speed);
   clampVelocity(speed);
   driveDirect(-speed, speed);
   _currentDirection = Direction::SPIN_RIGHT;
@@ -67,6 +73,10 @@ void RoombaMovement::spinRight(int16_t speed) {
 
 void RoombaMovement::drive(int16_t velocity, int16_t radius) {
   clampVelocity(velocity);
+  if (radius != DRIVE_STRAIGHT) {
+    if (radius > 2000) radius = 2000;
+    if (radius < -2000) radius = -2000;
+  }
 
   uint8_t params[4];
   params[0] = (velocity >> 8) & 0xFF;  // High byte
@@ -169,6 +179,12 @@ void RoombaMovement::clampVelocity(int16_t& velocity) {
   if (velocity < MIN_VELOCITY) velocity = MIN_VELOCITY;
 }
 
+void RoombaMovement::normalizeSpeed(int16_t& speed) {
+  int32_t magnitude = speed;
+  if (magnitude < 0) magnitude = -magnitude;
+  speed = magnitude > MAX_VELOCITY ? MAX_VELOCITY : static_cast<int16_t>(magnitude);
+}
+
 void RoombaMovement::sendCommand(uint8_t cmd) {
   if (_serial && _serial->isActive()) {
     _serial->write(cmd);
@@ -259,7 +275,7 @@ void RoombaSequence::execute() {
 
     if (cmd.direction == Direction::STOP && cmd.velocity == 0 && cmd.duration > 0) {
       // Just a delay
-      delay(cmd.duration);
+      ::delay(cmd.duration);
     } else {
       _movement->execute(cmd);
     }

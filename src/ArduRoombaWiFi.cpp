@@ -3,7 +3,7 @@
  * @brief Implementation of base WiFi functionality
  */
 
-#include "ArduRoombaWiFi.h"
+#include "extensions/ArduRoombaWiFi.h"
 
 ArduRoombaWiFi::ArduRoombaWiFi(ArduRoomba& roomba)
   : _roomba(roomba), _remoteEnabled(true), _commandCallback(nullptr),
@@ -21,9 +21,15 @@ CommandResult ArduRoombaWiFi::processCommand(const RoombaCommand& cmd) {
     return CommandResult::UNKNOWN_ACTION;
   }
 
+  // Docking and charging can leave the robot's OI in Passive or Off mode.
+  // Re-enter Safe before accepting a remote actuator command.
+  if (!_roomba.resumeControl()) {
+    return CommandResult::ERROR;
+  }
+
   // Check battery
   uint16_t voltage = _roomba.getBatteryVoltage();
-  if (voltage > 0 && voltage < _lowBatteryThreshold) {
+  if (voltage > 0 && voltage < _lowBatteryThreshold && action != "stop" && action != "dock") {
     return CommandResult::LOW_BATTERY;
   }
 

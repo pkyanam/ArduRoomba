@@ -15,13 +15,18 @@
 #include "RoombaSerial.h"
 
 /**
- * LED bit masks for OI command
+ * LED bit masks for the Roomba Open Interface LED command.
+ *
+ * The OI does not expose separate "dock" and "check robot" bits. It has
+ * Dirt Detect, Max, Clean, Spot, and a two-bit red/green status LED.
  */
 enum class LedMask : uint8_t {
-  DEBRIS     = 0x01,  // Debris LED (blue)
-  SPOT       = 0x02,  // Spot LED (green)
-  DOCK       = 0x04,  // Dock LED (green)
-  CHECK_ROBOT = 0x08, // Check Robot LED (red)
+  DIRT_DETECT = 0x01,
+  MAX         = 0x02,
+  CLEAN       = 0x04,
+  SPOT        = 0x08,
+  STATUS_RED  = 0x10,
+  STATUS_GREEN = 0x20,
 };
 
 /**
@@ -127,6 +132,7 @@ private:
   RoombaSerial* _serial;
   bool _debug;
   bool _songsDefined;
+  uint8_t _motorBits;
 
   // Helper methods
   void sendCommand(uint8_t cmd);

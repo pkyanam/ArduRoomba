@@ -44,7 +44,7 @@ public:
 
 private:
   ESP8266WebServer* _server;
-  WiFiMode _wifiMode;
+  ArduRoombaWiFiMode _wifiMode;
   bool _connected;
 
   // HTTP request handlers

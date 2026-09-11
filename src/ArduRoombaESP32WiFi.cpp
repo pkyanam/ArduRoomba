@@ -1,25 +1,25 @@
 /**
- * @file ArduRoombaESP8266WiFi.cpp
- * @brief Implementation of WiFi control for ESP8266
+ * @file ArduRoombaESP32WiFi.cpp
+ * @brief Implementation of WiFi control for ESP32
  */
 
-#include "ArduRoombaESP8266WiFi.h"
+#include "extensions/ArduRoombaESP32WiFi.h"
 
-#if defined(ESP8266)
+#if defined(ESP32)
 
-ArduRoombaESP8266WiFi::ArduRoombaESP8266WiFi(ArduRoomba& roomba)
-  : ArduRoombaWiFi(roomba), _server(nullptr), _wifiMode(WiFiMode::AP), _connected(false) {
+ArduRoombaESP32WiFi::ArduRoombaESP32WiFi(ArduRoomba& roomba)
+  : ArduRoombaWiFi(roomba), _server(nullptr), _mode(ArduRoombaWiFiMode::UNKNOWN), _connected(false) {
 }
 
-ArduRoombaESP8266WiFi::~ArduRoombaESP8266WiFi() {
+ArduRoombaESP32WiFi::~ArduRoombaESP32WiFi() {
   end();
 }
 
-bool ArduRoombaESP8266WiFi::beginAP(const char* ssid, const char* password) {
+bool ArduRoombaESP32WiFi::beginAP(const char* ssid, const char* password) {
   Serial.print("Creating WiFi AP: ");
   Serial.println(ssid);
 
-  _wifiMode = WiFiMode::AP;
+  _mode = ArduRoombaWiFiMode::AP;
 
   // Create access point
   bool success;
@@ -44,11 +44,11 @@ bool ArduRoombaESP8266WiFi::beginAP(const char* ssid, const char* password) {
   return true;
 }
 
-bool ArduRoombaESP8266WiFi::beginClient(const char* ssid, const char* password) {
+bool ArduRoombaESP32WiFi::beginClient(const char* ssid, const char* password) {
   Serial.print("Connecting to WiFi: ");
   Serial.println(ssid);
 
-  _wifiMode = WiFiMode::CLIENT;
+  _mode = ArduRoombaWiFiMode::CLIENT;
 
   // Connect to WiFi
   WiFi.begin(ssid, password);
@@ -75,58 +75,60 @@ bool ArduRoombaESP8266WiFi::beginClient(const char* ssid, const char* password) 
   return true;
 }
 
-void ArduRoombaESP8266WiFi::end() {
+void ArduRoombaESP32WiFi::end() {
   if (_server) {
     _server->stop();
     delete _server;
     _server = nullptr;
   }
 
-  if (_wifiMode == WiFiMode::AP) {
+  if (_mode == ArduRoombaWiFiMode::AP) {
     WiFi.softAPdisconnect(true);
-  } else {
+  } else if (_mode == ArduRoombaWiFiMode::CLIENT) {
     WiFi.disconnect(true);
   }
 
   _connected = false;
 }
 
-bool ArduRoombaESP8266WiFi::isConnected() const {
-  if (_wifiMode == WiFiMode::CLIENT) {
+bool ArduRoombaESP32WiFi::isConnected() const {
+  if (_mode == ArduRoombaWiFiMode::CLIENT) {
     return WiFi.status() == WL_CONNECTED;
   }
   return _connected;
 }
 
-String ArduRoombaESP8266WiFi::getModeString() const {
-  return _wifiMode == WiFiMode::AP ? "AP" : "Client";
+String ArduRoombaESP32WiFi::getModeString() const {
+  if (_mode == ArduRoombaWiFiMode::AP) return "AP";
+  if (_mode == ArduRoombaWiFiMode::CLIENT) return "Client";
+  return "Unknown";
 }
 
-String ArduRoombaESP8266WiFi::getIPAddress() const {
-  if (_wifiMode == WiFiMode::AP) {
+String ArduRoombaESP32WiFi::getIPAddress() const {
+  if (_mode == ArduRoombaWiFiMode::AP) {
     return WiFi.softAPIP().toString();
   }
   return WiFi.localIP().toString();
 }
 
-String ArduRoombaESP8266WiFi::getMACAddress() const {
+String ArduRoombaESP32WiFi::getMACAddress() const {
   return WiFi.macAddress();
 }
 
-int ArduRoombaESP8266WiFi::getRSSI() const {
-  if (_wifiMode == WiFiMode::CLIENT && WiFi.status() == WL_CONNECTED) {
+int ArduRoombaESP32WiFi::getRSSI() const {
+  if (_mode == ArduRoombaWiFiMode::CLIENT && WiFi.status() == WL_CONNECTED) {
     return WiFi.RSSI();
   }
   return 0;
 }
 
-void ArduRoombaESP8266WiFi::startWebServer(uint16_t port) {
+void ArduRoombaESP32WiFi::startWebServer(uint16_t port) {
   if (_server) {
     _server->stop();
     delete _server;
   }
 
-  _server = new ESP8266WebServer(port);
+  _server = new WebServer(port);
   _serverPort = port;
 
   // Setup routes
@@ -143,18 +145,18 @@ void ArduRoombaESP8266WiFi::startWebServer(uint16_t port) {
   Serial.println(getIPAddress());
 }
 
-void ArduRoombaESP8266WiFi::handleClient() {
+void ArduRoombaESP32WiFi::handleClient() {
   if (_server) {
     _server->handleClient();
   }
 }
 
-void ArduRoombaESP8266WiFi::handleRoot() {
+void ArduRoombaESP32WiFi::handleRoot() {
   String html = generateControlPage();
   _server->send(200, "text/html", html);
 }
 
-void ArduRoombaESP8266WiFi::handleCommand() {
+void ArduRoombaESP32WiFi::handleCommand() {
   RoombaCommand cmd = parseCommand();
 
   CommandResult result = processCommand(cmd);
@@ -171,17 +173,17 @@ void ArduRoombaESP8266WiFi::handleCommand() {
   }
 }
 
-void ArduRoombaESP8266WiFi::handleStatus() {
+void ArduRoombaESP32WiFi::handleStatus() {
   String json = generateStatusJSON();
   _server->sendHeader("Access-Control-Allow-Origin", "*");
   _server->send(200, "application/json", json);
 }
 
-void ArduRoombaESP8266WiFi::handleNotFound() {
+void ArduRoombaESP32WiFi::handleNotFound() {
   _server->send(404, "text/plain", "Not Found");
 }
 
-RoombaCommand ArduRoombaESP8266WiFi::parseCommand() {
+RoombaCommand ArduRoombaESP32WiFi::parseCommand() {
   RoombaCommand cmd;
 
   if (_server->hasArg("action")) {
@@ -201,4 +203,4 @@ RoombaCommand ArduRoombaESP8266WiFi::parseCommand() {
   return cmd;
 }
 
-#endif // ESP8266
+#endif // ESP32

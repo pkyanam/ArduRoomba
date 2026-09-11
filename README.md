@@ -5,7 +5,9 @@
 [![GitHub](https://img.shields.io/github/license/pkyanam/ArduRoomba)](https://github.com/pkyanam/ArduRoomba)
 [![GitHub release](https://img.shields.io/github/v/release/pkyanam/ArduRoomba)](https://github.com/pkyanam/ArduRoomba/releases)
 
-Breathe new life into legacy Roomba robots. Complete iRobot Open Interface support with WiFi web control and Bluetooth LE for Arduino Uno R4, ESP32, ESP8266, and more.
+Breathe new life into legacy Roomba robots. ArduRoomba targets the iRobot Open
+Interface used by Create 2 and Roomba 500/600-family robots, with optional WiFi
+and Bluetooth LE extensions for Arduino Uno R4 WiFi, ESP32, and ESP8266.
 
 ## Features
 
@@ -87,6 +89,10 @@ ArduRoomba v4 uses a modular, layered architecture:
 
 ## Installation
 
+The BLE extension additionally requires the `ArduinoBLE` library. The Uno R4
+WiFi board package supplies `WiFiS3`; ESP32 and ESP8266 supply their WiFi/BLE
+implementations through their board cores.
+
 ### Arduino Library Manager
 
 1. Open Arduino IDE
@@ -137,7 +143,13 @@ lib_deps = pkyanam/ArduRoomba
 
 ### Uno R4 WiFi Wiring
 
-Same as Arduino Uno/Mega (uses SoftwareSerial).
+Use the hardware `Serial1` UART: Roomba TX (Mini-DIN pin 4) to Arduino pin 0
+(RX), Roomba RX (Mini-DIN pin 3) to Arduino pin 1 (TX), Roomba DD (Mini-DIN
+pin 5) to an Arduino GPIO used as BRC (the examples use pin 5), and connect
+ground to ground. `RoombaConfig::createUnoR4()` selects this UART.
+
+The default example uses Arduino pin 5 for DD/BRC; the DD pin is an input to
+the Roomba and the Arduino drives it low during the baud-rate/wake sequence.
 
 ## Basic Usage
 
@@ -453,6 +465,11 @@ Examples:
 | `spotClean()` | Spot clean |
 | `dock()` | Return to dock |
 
+The OI LED byte has Dirt Detect, Max, Clean, Spot, and red/green status bits;
+it does not expose separate dock/check-robot bits. The compatibility overload
+`setLED(debris, spot, dock, checkRobot)` maps `dock` to green status and
+`checkRobot` to red status.
+
 ### Component Classes
 
 #### RoombaMovement
@@ -514,8 +531,10 @@ roomba.actuators().setFullMode();
 - iRobot Create 2
 - Roomba 500 series
 - Roomba 600 series
-- Roomba 700 series
-- Roomba 800 series (basic support)
+
+The library speaks the documented Open Interface command set. Later models
+that expose a compatible OI/SCI port may work, but are not claimed as tested
+by this repository.
 
 ## Safety Features
 

@@ -11,11 +11,10 @@
  * Connections (Uno R4 uses Serial1 hardware serial):
  * - Roomba TX (Mini-DIN pin 4) -> Arduino Pin 0 (Serial1 RX)
  * - Roomba RX (Mini-DIN pin 3) -> Arduino Pin 1 (Serial1 TX)
- * - Roomba DD (Mini-DIN pin 5) -> Arduino Pin 4 (BRC)
+ * - Roomba DD (Mini-DIN pin 5) -> Arduino Pin 5 (BRC)
  * - GND (Mini-DIN pin 6/7) -> Arduino GND
  *
- * IMPORTANT: The Uno R4 WiFi does NOT support SoftwareSerial.
- * It uses Serial1 (hardware serial) on pins 0 and 1.
+ * The Uno R4 WiFi example uses Serial1 (hardware serial) on pins 0 and 1.
  * You can still use the USB serial monitor (Serial) for debugging.
  *
  * BLE Service Info:
@@ -44,8 +43,8 @@
 #include "extensions/ArduRoombaBLE.h"
 
 // Roomba configuration for Uno R4 WiFi (uses Serial1 on pins 0/1)
-// Pin 4 is used for BRC (Baud Rate Change / Device Detect)
-ArduRoomba roomba(RoombaConfig::createUnoR4(4));
+// Pin 5 is used for BRC (Baud Rate Change / Device Detect)
+ArduRoomba roomba(RoombaConfig::createUnoR4(5));
 
 // BLE configuration
 const char* BLE_DEVICE_NAME = "ArduRoomba-R4";

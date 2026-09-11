@@ -3,7 +3,7 @@
  * @brief Implementation of Roomba sensor reading functionality
  */
 
-#include "RoombaSensors.h"
+#include "core/RoombaSensors.h"
 
 RoombaSensors::RoombaSensors(RoombaSerial* serial)
   : _serial(serial), _debug(false) {

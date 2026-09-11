@@ -3,7 +3,7 @@
  * @brief Implementation of BLE control for ESP32 and Uno R4 WiFi
  */
 
-#include "ArduRoombaBLE.h"
+#include "extensions/ArduRoombaBLE.h"
 
 #if defined(ESP32) || (defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI))
 
@@ -27,7 +27,9 @@ bool ArduRoombaBLE::isAvailable() const {
 #if defined(ESP32)
   return true;
 #elif defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI)
-  return BLE.begin();
+  // ArduinoBLE initialization is stateful; begin() performs the actual
+  // hardware check and must not be called twice by the example flow.
+  return true;
 #else
   return false;
 #endif
@@ -42,6 +44,12 @@ void ArduRoombaBLE::processCommand(const String& command) {
   // Call user callback if set
   if (_commandCallback) {
     _commandCallback(command);
+  }
+
+  // Docking and charging can leave the robot's OI in Passive or Off mode.
+  if (!_roomba.resumeControl()) {
+    Serial.println("Unable to resume Roomba control");
+    return;
   }
 
   // Parse command format: "ACTION:SPEED:DURATION"
@@ -63,7 +71,7 @@ void ArduRoombaBLE::processCommand(const String& command) {
 
   // Check battery
   uint16_t voltage = _roomba.getBatteryVoltage();
-  if (voltage > 0 && voltage < _lowBatteryThreshold) {
+  if (voltage > 0 && voltage < _lowBatteryThreshold && action != "stop" && action != "dock") {
     Serial.println("Battery too low, ignoring command");
     _roomba.beep();
     return;

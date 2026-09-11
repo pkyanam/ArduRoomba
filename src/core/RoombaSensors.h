@@ -82,7 +82,8 @@ struct BatteryData {
 
   uint8_t getPercent() const {
     if (capacity == 0) return 0;
-    return (charge * 100) / capacity;
+    uint32_t percent = (static_cast<uint32_t>(charge) * 100U) / capacity;
+    return percent > 100U ? 100U : static_cast<uint8_t>(percent);
   }
 
   bool isLow() const { return voltage > 0 && voltage < 13000; }  // Below 13V

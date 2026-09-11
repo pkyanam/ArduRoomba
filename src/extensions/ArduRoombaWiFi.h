@@ -17,7 +17,8 @@
 #include "../ArduRoomba.h"
 
 // WiFi operating modes
-enum class WiFiMode : uint8_t {
+enum class ArduRoombaWiFiMode : uint8_t {
+  UNKNOWN,
   AP,      // Access Point - Roomba creates its own network
   CLIENT   // Client - Roomba connects to existing network
 };

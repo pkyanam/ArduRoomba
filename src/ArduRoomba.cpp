@@ -59,13 +59,13 @@ bool ArduRoomba::begin(uint32_t baudRate) {
   pulseBRC();
   delay(100);
 
-  // Send START command
-  sendStartCommand();
-  delay(100);
-
-  // Enter safe mode
-  _actuators->setSafeMode();
-  delay(100);
+  // Send START and enter Safe mode. Roomba can leave the OI in Passive/Off
+  // after docking or charging, so this sequence is also exposed as
+  // resumeControl() for remote commands.
+  if (!resumeControl()) {
+    if (_debug) Serial.println("ArduRoomba: Failed to enter Safe mode");
+    return false;
+  }
 
   _connected = true;
 
@@ -76,21 +76,35 @@ bool ArduRoomba::begin(uint32_t baudRate) {
   return true;
 }
 
+bool ArduRoomba::resumeControl() {
+  if (!_serial || !_serial->isActive() || !_actuators) {
+    return false;
+  }
+
+  sendStartCommand();
+  delay(20);
+  _actuators->setSafeMode();
+  delay(20);
+  return true;
+}
+
 // End connection
 void ArduRoomba::end() {
-  if (_connected) {
+  if (_connected && _actuators) {
     _actuators->powerOff();
-    _serial->end();
-    _connected = false;
   }
+  if (_serial && _serial->isActive()) {
+    _serial->end();
+  }
+  _connected = false;
 }
 
 // Set debug mode
 void ArduRoomba::setDebug(bool enable) {
   _debug = enable;
-  _sensors->setDebug(enable);
-  _movement->setDebug(enable);
-  _actuators->setDebug(enable);
+  if (_sensors) _sensors->setDebug(enable);
+  if (_movement) _movement->setDebug(enable);
+  if (_actuators) _actuators->setDebug(enable);
 }
 
 // Update safety features (call in loop)
@@ -164,37 +178,41 @@ ArduRoomba::RoombaOI_Legacy& ArduRoomba::getOI() {
 // Private methods
 
 bool ArduRoomba::initSerial() {
+  delete _actuators;
+  _actuators = nullptr;
+  delete _movement;
+  _movement = nullptr;
+  delete _sensors;
+  _sensors = nullptr;
+
   if (_serial) {
     delete _serial;
+    _serial = nullptr;
   }
 
   // Platform-specific serial initialization
-  #if defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI)
-    // Uno R4 WiFi: Always use Serial1 (hardware serial)
-    if (_debug) {
-      Serial.println("ArduRoomba: Using Serial1 (Uno R4 WiFi)");
-      Serial.println("ArduRoomba: Note - RX/TX pins must match Serial1 (default RX=0, TX=1)");
-    }
-    _serial = new HardwareSerialAdapter(&Serial1);
-  #elif defined(ESP32) || defined(ESP8266)
-    // ESP32/ESP8266: Use hardware serial if specified, default to Serial2 on ESP32
+  #if defined(ESP32)
+    // ESP32: Use hardware serial if specified, default to Serial2.
     if (_config.useHardwareSerial && _config.hwSerial) {
       _serial = new HardwareSerialAdapter(_config.hwSerial);
       if (_debug) {
         Serial.println("ArduRoomba: Using specified HardwareSerial");
       }
     } else {
-      #ifdef ESP32
-        _serial = new HardwareSerialAdapter(&Serial2);
-        if (_debug) {
-          Serial.println("ArduRoomba: Using Serial2 (default for ESP32)");
-        }
-      #else
-        _serial = new HardwareSerialAdapter(&Serial);
-        if (_debug) {
-          Serial.println("ArduRoomba: Using Serial (ESP8266)");
-        }
-      #endif
+      _serial = new HardwareSerialAdapter(&Serial2);
+      if (_debug) {
+        Serial.println("ArduRoomba: Using Serial2 (default for ESP32)");
+      }
+    }
+  #elif defined(ESP8266)
+    // ESP8266: use EspSoftwareSerial for the pin-based constructor so the
+    // debug console on Serial is not also used for robot traffic.
+    if (_config.useHardwareSerial && _config.hwSerial) {
+      _serial = new HardwareSerialAdapter(_config.hwSerial);
+      if (_debug) Serial.println("ArduRoomba: Using configured HardwareSerial");
+    } else {
+      _serial = new SoftwareSerialAdapter(_config.rxPin, _config.txPin);
+      if (_debug) Serial.println("ArduRoomba: Using SoftwareSerial");
     }
   #else
     // AVR and other boards: Use SoftwareSerial or HardwareSerial if specified
@@ -220,6 +238,8 @@ bool ArduRoomba::initSerial() {
   _sensors = new RoombaSensors(_serial);
   _movement = new RoombaMovement(_serial);
   _actuators = new RoombaActuators(_serial);
+
+  setDebug(_debug);
 
   return true;
 }

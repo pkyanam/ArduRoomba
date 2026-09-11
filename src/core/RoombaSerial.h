@@ -13,8 +13,9 @@
 
 #include <Arduino.h>
 
-// Include SoftwareSerial on platforms that support it
-#if !defined(ESP32) && !defined(ESP8266) && !defined(ARDUINO_UNOWIFIR4) && !defined(ARDUINO_UNOR4_WIFI)
+// Include SoftwareSerial on platforms where pin-selectable serial is useful.
+// ESP8266 and Uno R4 ship compatible implementations with their board cores.
+#if !defined(ESP32)
   #include <SoftwareSerial.h>
 #endif
 
@@ -56,7 +57,7 @@
 #define SENSOR_BATTERY_CAPACITY 26
 
 // Drive constants
-#define DRIVE_STRAIGHT     32768
+#define DRIVE_STRAIGHT     (-32768)
 #define DRIVE_TURN_CCW     1
 #define DRIVE_TURN_CW      -1
 #define MAX_VELOCITY       500
@@ -90,9 +91,9 @@ public:
 
 /**
  * SoftwareSerial adapter for boards without extra hardware serial
- * Note: Not available on ESP32, ESP8266, or Uno R4 WiFi
+ * Note: Not available on ESP32
  */
-#if !defined(ESP32) && !defined(ESP8266) && !defined(ARDUINO_UNOWIFIR4) && !defined(ARDUINO_UNOR4_WIFI)
+#if !defined(ESP32)
 class SoftwareSerialAdapter : public RoombaSerial {
 public:
   SoftwareSerialAdapter(uint8_t rxPin, uint8_t txPin);
@@ -128,10 +129,11 @@ public:
   int available() override;
   int read() override;
   void flush() override;
-  bool isActive() const override { return _serial != nullptr; }
+  bool isActive() const override { return _serial != nullptr && _active; }
 
 private:
   ::HardwareSerial* _serial;
+  bool _active;
 };
 
 #endif

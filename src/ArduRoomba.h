@@ -29,15 +29,15 @@
  * Centralizes all configurable parameters
  */
 struct RoombaConfig {
-  uint8_t rxPin;           // RX pin for serial communication
-  uint8_t txPin;           // TX pin for serial communication
-  uint8_t brcPin;          // BRC (Baud Rate Change) / Device Detect pin
-  uint32_t baudRate;       // Serial baud rate (default: 19200)
-  bool useHardwareSerial;  // Use HardwareSerial if available
-  HardwareSerial* hwSerial; // HardwareSerial instance (if useHardwareSerial)
-  uint16_t lowBatteryThreshold;  // Low battery threshold in mV
-  uint16_t criticalBatteryThreshold; // Critical battery threshold in mV
-  bool enableSafety;       // Enable automatic safety features
+  uint8_t rxPin = 2;           // RX pin for serial communication
+  uint8_t txPin = 3;           // TX pin for serial communication
+  uint8_t brcPin = 4;          // BRC (Baud Rate Change) / Device Detect pin
+  uint32_t baudRate = 19200;   // Serial baud rate
+  bool useHardwareSerial = false;  // Use HardwareSerial if available
+  HardwareSerial* hwSerial = nullptr; // HardwareSerial instance (if enabled)
+  uint16_t lowBatteryThreshold = 13000;  // Low battery threshold in mV
+  uint16_t criticalBatteryThreshold = 12000; // Critical battery threshold in mV
+  bool enableSafety = true;       // Enable automatic safety features
 
   // Default configuration for software serial
   static RoombaConfig createDefault(uint8_t rx = 2, uint8_t tx = 3, uint8_t brc = 4) {
@@ -88,7 +88,7 @@ struct RoombaConfig {
 
   #if defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_UNOR4_WIFI)
   // Configuration for Uno R4 WiFi with hardware serial (Serial1)
-  static RoombaConfig createUnoR4(uint8_t brc = 4) {
+  static RoombaConfig createUnoR4(uint8_t brc = 5) {
     RoombaConfig config;
     config.rxPin = 0;   // Serial1 RX on Uno R4
     config.txPin = 1;   // Serial1 TX on Uno R4
@@ -121,6 +121,8 @@ public:
   bool begin();
   bool begin(uint32_t baudRate);
   void end();
+  // Re-enter Safe mode after charging or another OI-side mode reset.
+  bool resumeControl();
   bool isConnected() const { return _connected; }
 
   // Component access
@@ -131,6 +133,7 @@ public:
 
   // Quick access to common movement commands
   void stop() { _movement->stop(); }
+  void drive(int16_t velocity, int16_t radius) { _movement->drive(velocity, radius); }
   void moveForward(int16_t speed = 200) { _movement->moveForward(speed); }
   void moveBackward(int16_t speed = 200) { _movement->moveBackward(speed); }
   void turnLeft(int16_t speed = 200) { _movement->turnLeft(speed); }
@@ -152,10 +155,16 @@ public:
   void setLED(bool debris, bool spot, bool dock, bool checkRobot) {
     _actuators->setLED(debris, spot, dock, checkRobot);
   }
+  void setLED(bool debris, bool spot, bool dock) {
+    _actuators->setLED(debris, spot, dock, false);
+  }
   void setPowerLED(uint8_t color, uint8_t intensity = 255) {
     _actuators->setPowerLED(color, intensity);
   }
   void setMotors(bool mainBrush, bool sideBrush, bool vacuum) {
+    _actuators->setMotors(mainBrush, sideBrush, vacuum);
+  }
+  void setBrushes(bool mainBrush, bool sideBrush, bool vacuum) {
     _actuators->setMotors(mainBrush, sideBrush, vacuum);
   }
   void beep() { _actuators->beep(); }

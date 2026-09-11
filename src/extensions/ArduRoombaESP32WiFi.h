@@ -40,7 +40,7 @@ public:
 
 private:
   WebServer* _server;
-  ::WiFiMode _mode;  // Use ::WiFiMode to avoid conflict with our enum
+  ArduRoombaWiFiMode _mode;
   bool _connected;
 
   // HTTP request handlers

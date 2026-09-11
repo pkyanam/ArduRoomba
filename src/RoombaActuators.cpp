@@ -3,19 +3,21 @@
  * @brief Implementation of Roomba actuator control
  */
 
-#include "RoombaActuators.h"
+#include "core/RoombaActuators.h"
 
 RoombaActuators::RoombaActuators(RoombaSerial* serial)
-  : _serial(serial), _debug(false), _songsDefined(false) {
+  : _serial(serial), _debug(false), _songsDefined(false), _motorBits(0) {
 }
 
 // LED control
 void RoombaActuators::setLED(bool debris, bool spot, bool dock, bool checkRobot) {
   uint8_t ledBits = 0;
-  if (debris) ledBits |= (uint8_t)LedMask::DEBRIS;
+  if (debris) ledBits |= (uint8_t)LedMask::DIRT_DETECT;
   if (spot) ledBits |= (uint8_t)LedMask::SPOT;
-  if (dock) ledBits |= (uint8_t)LedMask::DOCK;
-  if (checkRobot) ledBits |= (uint8_t)LedMask::CHECK_ROBOT;
+  // Compatibility mapping for the old semantic API: the Create/Roomba OI
+  // exposes a two-bit status LED rather than dedicated dock/check LEDs.
+  if (dock) ledBits |= (uint8_t)LedMask::STATUS_GREEN;
+  if (checkRobot) ledBits |= (uint8_t)LedMask::STATUS_RED;
   setLED(ledBits);
 }
 
@@ -40,41 +42,37 @@ void RoombaActuators::setAllLEDs(uint8_t ledBits, uint8_t powerColor, uint8_t po
 
 // Motor control
 void RoombaActuators::setMotors(bool mainBrush, bool sideBrush, bool vacuum) {
-  uint8_t motorBits = 0;
-  if (sideBrush) motorBits |= 0x01;
-  if (vacuum) motorBits |= 0x02;
-  if (mainBrush) motorBits |= 0x04;
+  _motorBits = 0;
+  if (sideBrush) _motorBits |= 0x01;
+  if (vacuum) _motorBits |= 0x02;
+  if (mainBrush) _motorBits |= 0x04;
 
-  sendCommand(OI_MOTORS, motorBits);
-  debugPrint("Motors set", motorBits);
+  sendCommand(OI_MOTORS, _motorBits);
+  debugPrint("Motors set", _motorBits);
 }
 
 void RoombaActuators::setMainBrush(bool on, int8_t direction) {
-  uint8_t motorBits = 0;
-  if (on) {
-    motorBits |= 0x04; // Main brush on
-    // Note: OI doesn't support individual brush direction control
-  }
-  sendCommand(OI_MOTORS, motorBits);
+  (void)direction; // The OI exposes no brush direction control.
+  if (on) _motorBits |= 0x04;
+  else _motorBits &= static_cast<uint8_t>(~0x04);
+  sendCommand(OI_MOTORS, _motorBits);
 }
 
 void RoombaActuators::setSideBrush(bool on, int8_t direction) {
-  uint8_t motorBits = 0;
-  if (on) {
-    motorBits |= 0x01; // Side brush on
-  }
-  sendCommand(OI_MOTORS, motorBits);
+  (void)direction; // The OI exposes no brush direction control.
+  if (on) _motorBits |= 0x01;
+  else _motorBits &= static_cast<uint8_t>(~0x01);
+  sendCommand(OI_MOTORS, _motorBits);
 }
 
 void RoombaActuators::setVacuum(bool on) {
-  uint8_t motorBits = 0;
-  if (on) {
-    motorBits |= 0x02; // Vacuum on
-  }
-  sendCommand(OI_MOTORS, motorBits);
+  if (on) _motorBits |= 0x02;
+  else _motorBits &= static_cast<uint8_t>(~0x02);
+  sendCommand(OI_MOTORS, _motorBits);
 }
 
 void RoombaActuators::stopAllMotors() {
+  _motorBits = 0;
   sendCommand(OI_MOTORS, 0);
   debugPrint("All motors stopped");
 }
@@ -101,7 +99,7 @@ void RoombaActuators::playSong(uint8_t songNumber) {
 }
 
 void RoombaActuators::defineSong(uint8_t songNumber, const SongNote* notes, uint8_t noteCount) {
-  if (noteCount == 0 || noteCount > 16) return; // Max 16 notes per song
+  if (!notes || noteCount == 0 || noteCount > 16) return; // Max 16 notes per song
 
   // Calculate total data size: song number, note count, then 2 bytes per note
   uint8_t dataSize = 2 + (noteCount * 2);

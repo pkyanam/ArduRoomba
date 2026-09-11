@@ -8,10 +8,10 @@
  * - Arduino Uno R4 WiFi
  * - iRobot Create 2 or compatible Roomba (500/600/700 series)
  *
- * Connections:
- * - Roomba TX (Mini-DIN pin 4) -> Arduino Pin 2 (RX)
- * - Roomba RX (Mini-DIN pin 3) -> Arduino Pin 3 (TX)
- * - Roomba DD (Mini-DIN pin 5) -> Arduino Pin 4 (BRC)
+ * Connections (Serial1 hardware UART):
+ * - Roomba TX (Mini-DIN pin 4) -> Arduino Pin 0 (RX)
+ * - Roomba RX (Mini-DIN pin 3) -> Arduino Pin 1 (TX)
+ * - Roomba DD (Mini-DIN pin 5) -> Arduino Pin 5 (BRC)
  * - GND (Mini-DIN pin 6/7) -> Arduino GND
  *
  * Features:
@@ -24,8 +24,8 @@
 #include "ArduRoomba.h"
 #include "extensions/ArduRoombaWiFiS3.h"
 
-// Roomba configuration
-ArduRoomba roomba(2, 3, 4);  // RX, TX, BRC pins
+// Roomba configuration: Serial1 is on pins 0 (RX) and 1 (TX).
+ArduRoomba roomba(RoombaConfig::createUnoR4(5));
 
 // WiFi configuration - Choose AP or Client mode
 #define USE_AP_MODE true

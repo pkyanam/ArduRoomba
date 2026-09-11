@@ -88,6 +88,7 @@ private:
 
   // Helper methods
   void clampVelocity(int16_t& velocity);
+  void normalizeSpeed(int16_t& speed);
   void sendCommand(uint8_t cmd);
   void sendCommand(uint8_t cmd, const uint8_t* params, uint8_t numParams);
   void debugPrint(const char* msg);

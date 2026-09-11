@@ -39,7 +39,7 @@ public:
 
 private:
   WiFiServer* _server;
-  WiFiMode _mode;
+  ArduRoombaWiFiMode _mode;
   bool _connected;
 
   void handleHTTPRequest(WiFiClient& client);
